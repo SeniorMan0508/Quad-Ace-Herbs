@@ -1,0 +1,288 @@
+/**
+ * QUAD-ACE HERBS - PRODUCT CATALOG
+ * =================================
+ * Real, authentic herbal remedies with complete traditional benefits,
+ * ingredients, dosage, and pricing in Naira.
+ */
+
+const PRODUCTS_DATA = [
+  {
+    id: "agbo-jedi-extra",
+    name: "Agbo Jedi-Jedi Extra Strength",
+    subtitle: "Traditional Digestive, Waist & Lumbar Herbal Decoction",
+    category: "agbo",
+    categoryLabel: "Agbo & Tonics",
+    price: 6500,
+    originalPrice: 8000,
+    rating: 4.9,
+    reviewsCount: 148,
+    image: "images/agbo-jedi.jpg",
+    badge: "Bestseller",
+    badgeType: "hot",
+    healthGoals: ["digestion", "detox", "pain-relief"],
+    shortDesc: "Potent ancestral formulation brewed to flush excess sugar, relieve lower back pain, hemorrhoids (pile), and stubborn digestive sluggishness.",
+    fullDesc: "Agbo Jedi-Jedi Extra Strength is prepared using time-honored traditional Yoruba herbal extraction techniques. Formulated with wild-harvested roots and barks known to cleanse the digestive tract, tone colon health, restore natural blood sugar balance, and relieve chronic lumbar aches associated with traditional jedi-jedi.",
+    benefits: [
+      "Rapid relief from chronic lower back and waist stiffness",
+      "Cleanses intestinal buildup and supports bowel regularity",
+      "Assists in soothing internal and external hemorrhoids (pile)",
+      "Helps eliminate sugar toxins from the bloodstream",
+      "Boosts morning energy and metabolic lightness"
+    ],
+    ingredients: [
+      "Aristolochia albida (Baaka)",
+      "Morinda lucida (Oruwo bark)",
+      "Khaya senegalensis (Oganwo bark)",
+      "Zingiber officinale (Ginger root)",
+      "Allium sativum (Natural mountain garlic extract)"
+    ],
+    usage: "Take one measuring cup (50ml) morning on an empty stomach and night before bed. Can be taken warm for enhanced absorption.",
+    caution: "Not recommended for pregnant women or nursing mothers under 3 months postpartum."
+  },
+  {
+    id: "man-power-vitality",
+    name: "Man-Power Virility & Stamina Roots Infusion",
+    subtitle: "Ancient African Roots for Male Endurance & Peak Performance",
+    category: "men",
+    categoryLabel: "Men's Vitality",
+    price: 9500,
+    originalPrice: 12000,
+    rating: 5.0,
+    reviewsCount: 215,
+    image: "images/man-power.jpg",
+    badge: "Top Seller",
+    badgeType: "gold",
+    healthGoals: ["stamina", "energy", "mens-health"],
+    shortDesc: "Pure botanical vitality tonic crafted from potent African aphrodisiac roots to naturally boost testosterone, stamina, hardness, and all-day energy.",
+    fullDesc: "Crafted exclusively for men seeking robust stamina and vigor without chemical side effects. This 100% natural infusion leverages rare wild roots known in traditional African medicine to enhance nitric oxide levels, boost blood circulation, improve intimate performance, and combat physical fatigue.",
+    benefits: [
+      "Elevates natural testosterone and masculine vitality",
+      "Improves healthy pelvic circulation for sustained firmness",
+      "Increases sexual endurance and prevents premature tiredness",
+      "Deeply energizes muscles and relieves chronic fatigue",
+      "100% natural roots with zero chemical additives or heart palpitations"
+    ],
+    ingredients: [
+      "Mondia whitei (Isirigun / White's Ginger)",
+      "Securidaca longepedunculata (Ipeta root)",
+      "Cola acuminata (Ancestral Kola extract)",
+      "Ginger & Alligator Pepper seed extract",
+      "Wild African Ginseng"
+    ],
+    usage: "Shake well. Drink 50ml 45 minutes before intimacy, or take 30ml daily as a continuous vitality maintenance tonic.",
+    caution: "Keep out of reach of children. Store in a cool dry place or refrigerate after opening."
+  },
+  {
+    id: "queens-hormonal-balance",
+    name: "Queen's Hormonal Balance & Womb Cleanse",
+    subtitle: "Organic Fertility, Cycle Regulator & Womb Wellness Herbal Blend",
+    category: "women",
+    categoryLabel: "Women's Wellness",
+    price: 8500,
+    originalPrice: 10500,
+    rating: 4.9,
+    reviewsCount: 182,
+    image: "images/hormonal-balance.jpg",
+    badge: "Doctor Approved",
+    badgeType: "featured",
+    healthGoals: ["fertility", "hormones", "womb-care"],
+    shortDesc: "A gentle yet restorative herbal tea and botanical tonic to regulate irregular menstrual cycles, ease cramps, clear hormonal acne, and prepare the womb for conception.",
+    fullDesc: "Designed for women seeking optimal endocrine harmony. This restorative botanical blend gently cleanses the reproductive tract, balances estrogen and progesterone levels, dissolves stubborn hormonal blockages, and nurtures ovulatory health for natural conception.",
+    benefits: [
+      "Regulates irregular or missed menstrual cycles",
+      "Significantly eases severe menstrual cramps and bloating",
+      "Clears stubborn adult hormonal acne and balances skin oil",
+      "Nourishes uterine lining and supports natural conception",
+      "Assists in clearing internal womb blockages and stagnant fluids"
+    ],
+    ingredients: [
+      "Hibiscus sabdariffa (Zobo calyx)",
+      "Red Raspberry leaf (Rubus idaeus)",
+      "Ficus capensis (Opoto leaf)",
+      "Tetrapleura tetraptera (Prekese / Aidan pod)",
+      "Chasteberry & Wild Marigold petals"
+    ],
+    usage: "Steep 1 tablespoon in freshly boiled water for 10-15 minutes. Drink warm 2 times daily. Best started right after your period ends.",
+    caution: "Discontinue use once pregnancy is officially confirmed."
+  },
+  {
+    id: "agbo-idakole-blend",
+    name: "Agbo Idakole Traditional Male Elixir",
+    subtitle: "Ancestral Formulation for Male Reproductive Health & Energy",
+    category: "agbo",
+    categoryLabel: "Agbo & Tonics",
+    price: 7500,
+    originalPrice: 9000,
+    rating: 4.8,
+    reviewsCount: 94,
+    image: "images/agbo-idakole.jpg",
+    badge: "Ancient Recipe",
+    badgeType: "standard",
+    healthGoals: ["mens-health", "stamina", "detox"],
+    shortDesc: "Targeted traditional Yoruba decoction formulated specifically to purify the male prostate, enhance sperm count & motility, and strengthen lower core muscles.",
+    fullDesc: "Idakole is a classic herbal science practiced for centuries. It directly targets deep-seated infections, strengthens pelvic floor musculature, enhances sperm vitality, and revitalizes men suffering from low drive or lingering reproductive infections.",
+    benefits: [
+      "Cleanses deep urinary and prostate channels",
+      "Supports healthy sperm quality, volume, and motility",
+      "Combats lingering microbial infections in the reproductive tract",
+      "Relieves dull groin aches and discomfort",
+      "Boosts long-term physical vigor and vitality"
+    ],
+    ingredients: [
+      "Cassia occidentalis (Agbado / Senna leaf)",
+      "Nauclea latifolia (Tafia bark / African peach)",
+      "Bridelia ferruginea (Ira bark)",
+      "Clove & Wild Peppercorns"
+    ],
+    usage: "Take 1 small glass (60ml) every other day, preferably after dinner.",
+    caution: "Avoid taking with alcohol or sour carbonated sodas."
+  },
+  {
+    id: "raw-ancestral-roots",
+    name: "Raw Ancestral Roots & Pods Bundle",
+    subtitle: "Aidan Pod (Prekese), Bitter Kola, Alligator Pepper & Goron Tula",
+    category: "raw",
+    categoryLabel: "Raw Herbs & Spices",
+    price: 12000,
+    originalPrice: 15000,
+    rating: 5.0,
+    reviewsCount: 167,
+    image: "images/raw-herbs.jpg",
+    badge: "100% Wildcrafted",
+    badgeType: "organic",
+    healthGoals: ["detox", "immunity", "fertility"],
+    shortDesc: "An all-in-one sacred bundle of Nigeria's most potent sun-dried whole medicinal roots, aromatic Aidan pods, selected bitter kola nuts, and alligator peppers.",
+    fullDesc: "Experience herbalism in its purest unadulterated state. This bundle includes freshly harvested and sun-cured Aidan pods (Prekese), grade-A bitter kola, pungent alligator pepper pods, and assorted dried medicinal barks. Perfect for preparing your personal home decoctions, cooking medicinal soups, or daily raw chewing.",
+    benefits: [
+      "100% chemical-free, pesticide-free whole botanicals",
+      "Prekese pods assist blood pressure and postpartum womb healing",
+      "Bitter Kola protects the respiratory tract and lungs",
+      "Alligator pepper delivers antioxidant and anti-inflammatory properties",
+      "Versatile for cooking, boiling as tea, or macerating in water"
+    ],
+    ingredients: [
+      "3x Grade-A Whole Aidan Pods (Prekese)",
+      "250g Dried Organic Bitter Kola Nuts",
+      "2x Whole Alligator Pepper Pods (Atare)",
+      "Selected Assorted Bitter Barks & Licorice Wood"
+    ],
+    usage: "Crush or break desired pods/roots into 1.5L of clean water and boil for 25 minutes. Filter and drink warm.",
+    caution: "Store in an airtight container away from moisture."
+  },
+  {
+    id: "immune-booster-elixir",
+    name: "Immune Booster & Blood Purifier Elixir",
+    subtitle: "High-Potency Anti-Inflammatory & Vitality Shield",
+    category: "wellness",
+    categoryLabel: "Wellness & Detox",
+    price: 7000,
+    originalPrice: 8500,
+    rating: 4.9,
+    reviewsCount: 112,
+    image: "images/agbo-jedi.jpg",
+    badge: "All Natural",
+    badgeType: "standard",
+    healthGoals: ["immunity", "detox", "energy"],
+    shortDesc: "Fortify your body's natural defense system against seasonal malaria, fatigue, typhoid symptoms, and environmental toxins with this bitter-sweet bio-elixir.",
+    fullDesc: "Formulated with wild neem leaf, ginger, organic raw honey, turmeric, and bitter leaf extracts. It purifies sluggish lymphatic fluid, enhances liver detoxification, and rapidly recharges your natural immunity.",
+    benefits: [
+      "Stimulates active white blood cell defense",
+      "Deeply flushes toxins from liver and kidneys",
+      "Helps combat recurring malaria weakness and chills",
+      "Reduces chronic full-body inflammation",
+      "Supports clear, glowing skin from within"
+    ],
+    ingredients: [
+      "Azadirachta indica (Dogonyaro / Neem leaf)",
+      "Curcuma longa (Raw wild turmeric)",
+      "Zingiber officinale (Ginger juice)",
+      "Vernonia amygdalina (Bitter leaf)",
+      "Organic Raw Mountain Honey"
+    ],
+    usage: "Take 2 tablespoons (30ml) once daily in the morning with a cup of warm lemon water.",
+    caution: "Shake vigorously before each use."
+  },
+  {
+    id: "goron-tula-fruit-pack",
+    name: "Organic Goron Tula Fruit & Syrup Pack",
+    subtitle: "Silky Miracle Fruit for Intimacy, Lubrication & Hormonal Libido",
+    category: "women",
+    categoryLabel: "Women's Wellness",
+    price: 6000,
+    originalPrice: 7500,
+    rating: 5.0,
+    reviewsCount: 230,
+    image: "images/raw-herbs.jpg",
+    badge: "Customer Favorite",
+    badgeType: "hot",
+    healthGoals: ["fertility", "hormones", "stamina"],
+    shortDesc: "Famous Northern Nigerian sweet miracle fruit known to naturally boost intimate lubrication, enhance female pleasure, balance vaginal pH, and boost libido.",
+    fullDesc: "Goron Tula (Azanza garckeana) is nature's gift for female vitality and passion. When chewed or taken as extracted syrup, it naturally promotes natural moisture, balances intimate flora, enhances sensation, and supports natural fertility.",
+    benefits: [
+      "Natural and rapid relief from vaginal dryness",
+      "Boosts sexual desire, arousal, and sensitivity",
+      "Helps maintain fresh, healthy intimate feminine balance",
+      "Naturally sweet taste, pleasant to chew daily",
+      "Rich in natural collagen and rejuvenating antioxidants"
+    ],
+    ingredients: [
+      "100% Pure Organic Sun-Ripened Goron Tula Fruits",
+      "Cold-Pressed Goron Tula Botanical Mucilage"
+    ],
+    usage: "Soak 2-3 fruits in warm water for 15 minutes, then chew the chewy flesh and swallow the sweet juice. Alternatively, take 1 tablespoon of syrup 1 hour before intimacy.",
+    caution: "100% natural, safe for long-term daily enjoyment."
+  },
+  {
+    id: "couples-conception-detox-kit",
+    name: "Complete Couples Conception & Womb Pack",
+    subtitle: "Dual Cleansing & Fertility Restoration for Husband & Wife",
+    category: "wellness",
+    categoryLabel: "Wellness & Detox",
+    price: 24500,
+    originalPrice: 32000,
+    rating: 5.0,
+    reviewsCount: 78,
+    image: "images/hero.jpg",
+    badge: "Save ₦7,500",
+    badgeType: "gold",
+    healthGoals: ["fertility", "mens-health", "womb-care", "detox"],
+    shortDesc: "Comprehensive herbal fertility regimen containing Queen's Womb Cleanse, Man-Power Vitality Tonic, and Raw Prekese Ancestral Roots Bundle.",
+    fullDesc: "When preparing for pregnancy, both partners benefit from deep biological cleansing and revitalization. This synergistic pack provides complete 30-day nourishment: regulating her cycle and preparing the womb while boosting his sperm count, motility, and stamina.",
+    benefits: [
+      "Complete 30-day herbal regimen for husband and wife",
+      "Flushes stubborn toxins, infection residues, and inflammation",
+      "Enhances male sperm parameters and female ovulation quality",
+      "Includes step-by-step fertility timing calendar and dosage guide",
+      "Massive 25% savings compared to purchasing items individually"
+    ],
+    ingredients: [
+      "1x Queen's Hormonal Balance & Womb Cleanse",
+      "1x Man-Power Virility & Stamina Roots Infusion",
+      "1x Agbo Idakole Traditional Male Elixir",
+      "1x Raw Ancestral Prekese & Roots Pack"
+    ],
+    usage: "Full instructions and calendar schedule provided inside the package.",
+    caution: "Both partners should adhere strictly to dosage guidelines."
+  }
+];
+
+// Quick Categories
+const CATEGORIES = [
+  { id: "all", label: "All Herbs", icon: "🌱" },
+  { id: "agbo", label: "Agbo & Tonics", icon: "🏺" },
+  { id: "men", label: "Men's Vitality", icon: "⚡" },
+  { id: "women", label: "Women's Wellness", icon: "🌸" },
+  { id: "raw", label: "Raw Roots & Pods", icon: "🪵" },
+  { id: "wellness", label: "Immunity & Detox", icon: "🛡️" }
+];
+
+// Health Goal Tags
+const HEALTH_GOALS = [
+  { id: "all", label: "All Health Goals" },
+  { id: "digestion", label: "Jedi-Jedi & Digestion" },
+  { id: "stamina", label: "Man-Power & Stamina" },
+  { id: "fertility", label: "Fertility & Womb Cleanse" },
+  { id: "hormones", label: "Hormonal Balance" },
+  { id: "immunity", label: "Immunity Booster" },
+  { id: "detox", label: "Blood Purifier & Detox" }
+];

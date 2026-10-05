@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quad-Ace Herbs | Authentic African Herbal Remedies & Natural Botanicals</title>
+  <meta name="description" content="Shop authentic wildcrafted African herbs, Agbo Jedi, Man-Power roots, Hormonal Balance teas, Agbo Idakole, Prekese, and raw medicinal barks. Fast delivery across Nigeria and worldwide.">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌿</text></svg>">
+</head>
+<body>
+
+  <!-- ANNOUNCEMENT BAR -->
+  <!-- <div class="announcement-bar">
+    <span>🌿 <strong>Quad-Ace Herbs:</strong> 100% Wildcrafted Ancestral Botanicals</span>
+    <span>🚚 Doorstep Delivery Nationwide in Nigeria & Worldwide Dispatch (DHL / FedEx)</span>
+    <span>💬 Instant Order via WhatsApp: <strong id="barPhone">+234 905 512 6388</strong></span>
+  </div> -->
+
+  <!-- MAIN HEADER / NAVBAR -->
+  <header class="main-header">
+    <div class="container navbar">
+      <a href="#" class="brand-logo">
+        <img  class="brand-icon" src="./images/bg image.jpeg" alt="logo Image">
+      </a>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="#catalog" class="active">Shop Remedies</a></li>
+          <li><a href="#quiz">Remedy Finder</a></li>
+          <li><a href="#guide">Brewing & Dosage</a></li>
+          <li><a href="#reviews">Customer Stories</a></li>
+          <li><a href="#contact">Contact Herbalist</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="https://wa.me/2349055126388?text=Hello%20Quad-Ace%20Herbs,%20I%20would%20like%20to%20consult%20on%20herbal%20remedies" target="_blank" class="whatsapp-consult-btn">
+          <span>💬</span>
+          <span>Consult Herbalist</span>
+        </a>
+
+        <button class="cart-toggle-btn" id="openCartBtn" aria-label="Open Cart">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <path d="M16 10a4 4 0 0 1-8 0"></path>
+          </svg>
+          <span class="cart-badge" id="cartCount">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO SECTION -->
+  <section class="hero-section">
+    <div class="container hero-grid">
+      <div class="hero-content">
+        <div class="hero-tag">
+          <span>✨</span>
+          <span>100% Organic & Wild-Harvested Roots</span>
+        </div>
+        <h2>Ancient Herbal Wisdom, Bottled for <span class="gold-highlight">Peak Modern Vitality</span></h2>
+        <p class="hero-description">
+          Authentic Nigerian & African traditional remedies prepared with ancestral precision. From potent <strong>Agbo Jedi-Jedi</strong> and <strong>Man-Power Stamina Roots</strong> to <strong>Queen's Hormonal Balance</strong> and <strong>Prekese Bundles</strong>.
+        </p>
+
+        <div class="hero-cta-group">
+          <a href="#catalog" class="btn-primary">
+            <span>Shop Best Sellers</span>
+            <span>→</span>
+          </a>
+          <a href="https://wa.me/2349055126388?text=Hello%20Quad-Ace%20Herbs,%20I%20want%20to%20place%20an%20order" target="_blank" class="btn-secondary">
+            <span>💬 1-Click WhatsApp Order</span>
+          </a>
+        </div>
+
+        <div class="hero-trust-metrics">
+          <div class="metric-item">
+            <span class="metric-number">10k+</span>
+            <span class="metric-label">Happy Customers</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-number">100%</span>
+            <span class="metric-label">Natural & Wildcrafted</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-number">48hrs</span>
+            <span class="metric-label">Nationwide Dispatch</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hero Showcase Card -->
+      <div class="hero-card-showcase">
+        <div class="featured-pill">🔥 Today's Most Requested Remedy</div>
+        <img src="images/agbo-jedi.jpg" alt="Agbo Jedi Extra Strength" class="showcase-product-img">
+        <div class="showcase-info">
+          <h3>Agbo Jedi-Jedi Extra Strength</h3>
+          <p>Potent traditional flush for excess sugar, lumbar stiffness, waist pain, and sluggish digestive tract.</p>
+        </div>
+        <div class="showcase-bottom">
+          <div class="showcase-price">₦6,500</div>
+          <button class="btn-primary" onclick="window.app.quickAdd('agbo-jedi-extra')">
+            <span>+ Add to Cart</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRUST PILLARS -->
+  <section class="trust-pillars-section">
+    <div class="container pillars-grid">
+      <div class="pillar-item">
+        <div class="pillar-icon">🌱</div>
+        <div class="pillar-content">
+          <h4>100% Wildcrafted Roots</h4>
+          <p>Sun-cured barks, pods and herbs with zero chemicals.</p>
+        </div>
+      </div>
+      <div class="pillar-item">
+        <div class="pillar-icon">🏺</div>
+        <div class="pillar-content">
+          <h4>Ancestral Formulations</h4>
+          <p>Generational remedies hand-blended for high potency.</p>
+        </div>
+      </div>
+      <div class="pillar-item">
+        <div class="pillar-icon">🚚</div>
+        <div class="pillar-content">
+          <h4>Nationwide & Global Delivery</h4>
+          <p>Doorstep delivery across all 36 states & worldwide via DHL.</p>
+        </div>
+      </div>
+      <div class="pillar-item">
+        <div class="pillar-icon">💬</div>
+        <div class="pillar-content">
+          <h4>Direct WhatsApp Support</h4>
+          <p>Chat directly with our herbalist for personalized guidance.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INTERACTIVE REMEDY FINDER / QUIZ -->
+  <section class="remedy-finder-section" id="quiz">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Herbal Recommendation Quiz</span>
+        <h2>Find Your Perfect Herbal Remedy in Seconds</h2>
+        <p>Select your primary health goal below, and we'll instantly recommend the exact traditional formulation crafted for your body.</p>
+      </div>
+
+      <div class="remedy-quiz-card">
+        <div class="quiz-step-title">
+          <span>🌿 What is your primary wellness focus right now?</span>
+        </div>
+        <div class="quiz-options-grid" id="quizOptions">
+          <button class="quiz-btn active" data-goal="digestion">
+            <span class="quiz-icon">🩺</span>
+            <strong>Jedi-Jedi & Digestion</strong>
+            <span>Waist pain, pile, blood sugar cleanse</span>
+          </button>
+          <button class="quiz-btn" data-goal="stamina">
+            <span class="quiz-icon">⚡</span>
+            <strong>Men's Vitality & Stamina</strong>
+            <span>Hardness, endurance, natural power</span>
+          </button>
+          <button class="quiz-btn" data-goal="fertility">
+            <span class="quiz-icon">🌸</span>
+            <strong>Hormonal & Womb Cleanse</strong>
+            <span>Cycle regulation, cramps & fertility</span>
+          </button>
+          <button class="quiz-btn" data-goal="immunity">
+            <span class="quiz-icon">🛡️</span>
+            <strong>Immunity & Detox</strong>
+            <span>Malaria defense, blood purification</span>
+          </button>
+        </div>
+
+        <div class="remedy-result-box visible" id="remedyResultBox">
+          <div class="result-content">
+            <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--accent-gold); font-weight: 700;">Recommended For You</span>
+            <h4 id="quizResultTitle">Agbo Jedi-Jedi Extra Strength</h4>
+            <p id="quizResultDesc">Targeted ancestral decoction to flush excess intestinal waste, relieve lower back aches, and resolve pile.</p>
+          </div>
+          <button class="btn-primary" id="quizAddBtn">
+            <span>Add to Cart (₦6,500)</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRODUCT CATALOG SECTION -->
+  <section class="catalog-section" id="catalog">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Apothecary Collection</span>
+        <h2>Explore Authentic Herbal Remedies</h2>
+        <p>Hand-selected, potent herbs prepared with ancient respect for nature. Guaranteed pure and unadulterated.</p>
+      </div>
+
+      <!-- Controls: Categories + Search + Sort -->
+      <div class="catalog-controls">
+        <!-- Category Pills -->
+        <div class="category-pills" id="categoryPills">
+          <!-- Populated by JavaScript -->
+        </div>
+
+        <!-- Search & Filter Bar -->
+        <div class="filter-bar">
+          <div class="search-input-wrapper">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-muted);">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="searchInput" placeholder="Search herbs by name or health goal (e.g. jedi, stamina, womb)...">
+          </div>
+
+          <div class="filter-actions">
+            <select class="sort-select" id="sortSelect">
+              <option value="featured">Sort by: Featured</option>
+              <option value="price-low">Price: Low to High</option>
+              <option value="price-high">Price: High to Low</option>
+              <option value="rating">Top Rated</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product Cards Grid -->
+      <div class="products-grid" id="productsGrid">
+        <!-- Populated dynamically by app.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- BREWING & DOSAGE GUIDE ACCORDION -->
+  <section class="guide-section" id="guide">
+    <div class="container guide-grid">
+      <div>
+        <span class="section-tag">Traditional Instructions</span>
+        <h2 style="font-family: var(--font-heading); font-size: 2.2rem; color: var(--deep-forest); margin-bottom: 1rem;">
+          How to Use Traditional Herbs for Best Results
+        </h2>
+        <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+          Traditional herbs work harmoniously with your system. Follow these time-tested guidelines to maximize vitality and absorption.
+        </p>
+
+        <div class="guide-accordion">
+          <div class="accordion-item active">
+            <button class="accordion-header">
+              <span>🏺 How do I drink and preserve Agbo Jedi / Agbo Idakole?</span>
+              <span class="accordion-icon">−</span>
+            </button>
+            <div class="accordion-content">
+              Take one measure (50ml) first thing in the morning before breakfast, and last thing at night. If you do not have refrigeration, boil the decoction gently for 5 minutes every 3 days to keep the herbs fresh and active.
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <button class="accordion-header">
+              <span>⚡ When should I take Man-Power Roots for best performance?</span>
+              <span class="accordion-icon">+</span>
+            </button>
+            <div class="accordion-content">
+              Shake the bottle well so the herbal sediment mixes thoroughly. Take 50ml approximately 45-60 minutes before intimacy. For general daily vitality, 30ml every morning maintains ongoing pelvic circulation and stamina.
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <button class="accordion-header">
+              <span>🌸 When is the best time for Queen's Hormonal Balance tea?</span>
+              <span class="accordion-icon">+</span>
+            </button>
+            <div class="accordion-content">
+              Start drinking the tea the day after your monthly period completely finishes. Drink one cup warm in the morning and one cup before sleep for 21 consecutive days. Always pause during active menstrual bleeding.
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <button class="accordion-header">
+              <span>🪵 How should I boil raw Prekese (Aidan) and Bitter Kola?</span>
+              <span class="accordion-icon">+</span>
+            </button>
+            <div class="accordion-content">
+              Wash the Aidan pod, bruise or break it into smaller pieces, and boil in 2 liters of water for 25-30 minutes until the water turns deep brown and aromatic. Drink 1 cup warm morning and night.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Guide Visual Card -->
+      <div class="guide-visual-card">
+        <h3>Personalized Herbal Consultation</h3>
+        <p>
+          Not sure which remedy matches your specific symptoms? Have questions about allergies or dosage? Quad-Ace Herbs offers direct 1-on-1 herbalist guidance right on WhatsApp.
+        </p>
+        <div style="margin-bottom: 2rem;">
+          <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; color: #ffffff;">
+            <span>✓</span> <span>Custom herbal combinations for chronic conditions</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; color: #ffffff;">
+            <span>✓</span> <span>Confidential consultation for men's & women's wellness</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.75rem; color: #ffffff;">
+            <span>✓</span> <span>Worldwide door-to-door delivery updates</span>
+          </div>
+        </div>
+        <a href="https://wa.me/2349055126388?text=Hello%20Quad-Ace%20Herbs,%20I%20need%20a%20private%20herbal%20consultation" target="_blank" class="btn-primary" style="width: 100%; justify-content: center;">
+          <span>💬 Chat with Our Herbalist</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CUSTOMER REVIEWS & STORIES -->
+  <section class="testimonials-section" id="reviews">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Real Customer Stories</span>
+        <h2>Loved by Customers Across Nigeria & Abroad</h2>
+        <p>Read real experiences from people whose wellness has been transformed by Quad-Ace Herbs.</p>
+      </div>
+
+      <div class="testimonials-grid">
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-text">
+            "I had suffered from severe Jedi-Jedi and lower back pain for over 8 months. Sitting in traffic was pure torture. After just 4 days of taking Quad-Ace Agbo Jedi Extra Strength, the waist stiffness completely dissolved. This is the real deal!"
+          </p>
+          <div class="testimonial-author">
+            <div class="author-avatar">O</div>
+            <div class="author-info">
+              <h5>Olumide B.</h5>
+              <span>Lekki, Lagos • <strong class="verified-badge">✓ Verified Buyer</strong></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-text">
+            "The Man-Power Stamina roots are incredible. No strange chemical headaches or rapid heartbeats like the synthetic pills sold in pharmacies. Just pure, natural, energetic power and lasting confidence. My wife noticed the difference immediately."
+          </p>
+          <div class="testimonial-author">
+            <div class="author-avatar">C</div>
+            <div class="author-info">
+              <h5>Chinedu E.</h5>
+              <span>Abuja, FCT • <strong class="verified-badge">✓ Verified Buyer</strong></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-text">
+            "I ordered the Queen's Hormonal Balance tea from the UK via DHL. It arrived in London in just 4 days! My cycle that had seized for 3 months returned naturally with zero pain. God bless Quad-Ace Herbs!"
+          </p>
+          <div class="testimonial-author">
+            <div class="author-avatar">A</div>
+            <div class="author-info">
+              <h5>Amina K.</h5>
+              <span>London, United Kingdom • <strong class="verified-badge">✓ Verified Buyer</strong></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE-OVER CART DRAWER -->
+  <div class="cart-drawer-overlay" id="cartOverlay">
+    <div class="cart-drawer" id="cartDrawer">
+      <div class="cart-header">
+        <h3>
+          <span>🌿</span>
+          <span>Your Herbal Basket</span>
+          <span style="font-size: 0.85rem; color: var(--text-muted);" id="drawerItemCount">(0 items)</span>
+        </h3>
+        <button class="close-drawer-btn" id="closeCartBtn" aria-label="Close cart">&times;</button>
+      </div>
+
+      <!-- Free Shipping Meter -->
+      <div class="free-shipping-bar" id="freeShippingContainer">
+        <span id="freeShippingText">Add ₦50,000 more for FREE Lagos Delivery!</span>
+        <div class="progress-track">
+          <div class="progress-fill" id="shippingProgressFill"></div>
+        </div>
+      </div>
+
+      <!-- Items List -->
+      <div class="cart-items-body" id="cartItemsList">
+        <!-- Rendered by app.js -->
+      </div>
+
+      <!-- Cart Footer -->
+      <div class="cart-footer" id="cartFooter">
+        <!-- Coupon Form -->
+        <div class="coupon-row">
+          <input type="text" id="couponInput" placeholder="Promo code (e.g. QUADACE10)">
+          <button class="apply-coupon-btn" id="applyCouponBtn">Apply</button>
+        </div>
+        <div id="couponMessage" style="font-size: 0.78rem; margin-top: -0.5rem; margin-bottom: 0.5rem; display: none;"></div>
+
+        <div class="cart-summary-line">
+          <span>Subtotal:</span>
+          <strong id="cartSubtotal">₦0</strong>
+        </div>
+        <div class="cart-summary-line" id="discountRow" style="display: none; color: #27ae60;">
+          <span>Discount:</span>
+          <strong id="cartDiscount">-₦0</strong>
+        </div>
+        <div class="cart-total-line">
+          <span>Estimated Total:</span>
+          <strong id="cartGrandTotal">₦0</strong>
+        </div>
+
+        <div class="cart-action-buttons">
+          <button class="btn-whatsapp-order" id="cartWhatsAppOrderBtn">
+            <span>💬 Fast Order via WhatsApp</span>
+          </button>
+          <button class="btn-checkout-modal" id="openCheckoutModalBtn">
+            <span>Proceed to Checkout & Bank Transfer</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHECKOUT MODAL -->
+  <div class="modal-overlay" id="checkoutModalOverlay">
+    <div class="checkout-modal-content">
+      <div class="modal-header">
+        <h3>
+          <span>🌿</span>
+          <span>Quad-Ace Herbs Secure Checkout</span>
+        </h3>
+        <button class="modal-close-btn" id="closeCheckoutBtn">&times;</button>
+      </div>
+
+      <div class="checkout-body">
+        <!-- Step Indicator -->
+        <div class="checkout-steps">
+          <div class="step-indicator active" id="stepIndicator1">
+            <span class="step-num">1</span>
+            <span>Delivery Info</span>
+          </div>
+          <div class="step-indicator" id="stepIndicator2">
+            <span class="step-num">2</span>
+            <span>Shipping Zone</span>
+          </div>
+          <div class="step-indicator" id="stepIndicator3">
+            <span class="step-num">3</span>
+            <span>Payment & Confirmation</span>
+          </div>
+        </div>
+
+        <!-- Form Step 1: Customer Details -->
+        <form id="checkoutForm" onsubmit="return false;">
+          <div id="stepSection1">
+            <h4 style="font-size: 1.1rem; color: var(--deep-forest); margin-bottom: 1rem;">Customer Delivery Information</h4>
+            <div class="form-grid">
+              <div class="form-group full-width">
+                <label class="form-label" for="custName">Full Name *</label>
+                <input type="text" id="custName" class="form-input" placeholder="e.g. Babatunde Adeleke" required>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="custPhone">WhatsApp / Mobile Number *</label>
+                <input type="tel" id="custPhone" class="form-input" placeholder="e.g. 08012345678" required>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="custEmail">Email Address (Optional)</label>
+                <input type="email" id="custEmail" class="form-input" placeholder="e.g. customer@gmail.com">
+              </div>
+
+              <div class="form-group full-width">
+                <label class="form-label" for="custAddress">Street Delivery Address *</label>
+                <input type="text" id="custAddress" class="form-input" placeholder="House number, street name, landmark" required>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="custCity">City / Local Govt *</label>
+                <input type="text" id="custCity" class="form-input" placeholder="e.g. Ikeja, Lekki, Garki" required>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="custState">State / Region *</label>
+                <input type="text" id="custState" class="form-input" placeholder="e.g. Lagos, Abuja, Rivers, etc." required>
+              </div>
+
+              <div class="form-group full-width">
+                <label class="form-label" for="custNotes">Special Delivery / Health Notes</label>
+                <textarea id="custNotes" class="form-textarea" rows="2" placeholder="Any specific instructions for preparation or courier..."></textarea>
+              </div>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end;">
+              <button class="btn-primary" type="button" id="goToStep2Btn">
+                <span>Continue to Shipping Method →</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Form Step 2: Shipping Method -->
+          <div id="stepSection2" style="display: none;">
+            <h4 style="font-size: 1.1rem; color: var(--deep-forest); margin-bottom: 1rem;">Select Your Delivery Destination</h4>
+            <div class="shipping-options" id="shippingOptionsList">
+              <label class="shipping-card selected" data-shipping="local">
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                  <input type="radio" name="shippingMethod" value="local" checked>
+                  <div class="shipping-info">
+                    <strong>Local Intra-State Dispatch</strong>
+                    <span>Fast doorstep courier within Lagos and environs (Same/Next Day)</span>
+                  </div>
+                </div>
+                <span class="shipping-rate" id="rateLocal">₦2,500</span>
+              </label>
+
+              <label class="shipping-card" data-shipping="nationwide">
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                  <input type="radio" name="shippingMethod" value="nationwide">
+                  <div class="shipping-info">
+                    <strong>Nationwide Interstate Delivery</strong>
+                    <span>Secure doorstep delivery to all states (Fee sorted between buyer & dispatch rider)</span>
+                  </div>
+                </div>
+                <span class="shipping-rate" id="rateNationwide" style="font-size: 0.825rem; color: var(--earth-terracotta); text-align: right; max-width: 150px; font-weight: 700;">Sorted with Dispatch Rider</span>
+              </label>
+
+              <label class="shipping-card" data-shipping="international">
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                  <input type="radio" name="shippingMethod" value="international">
+                  <div class="shipping-info">
+                    <strong>International Express Priority (DHL / FedEx)</strong>
+                    <span>Worldwide tracked air dispatch (Courier fee sorted between buyer & carrier)</span>
+                  </div>
+                </div>
+                <span class="shipping-rate" id="rateInternational" style="font-size: 0.825rem; color: var(--earth-terracotta); text-align: right; max-width: 150px; font-weight: 700;">Sorted with Courier</span>
+              </label>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <button class="btn-secondary" type="button" id="backToStep1Btn" style="color: var(--deep-forest); border-color: rgba(24, 66, 46, 0.2);">
+                <span>← Back</span>
+              </button>
+              <button class="btn-primary" type="button" id="goToStep3Btn">
+                <span>Continue to Payment →</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Form Step 3: Payment Method & Confirmation -->
+          <div id="stepSection3" style="display: none;">
+            <h4 style="font-size: 1.1rem; color: var(--deep-forest); margin-bottom: 1rem;">Choose Your Preferred Payment Method</h4>
+
+            <div class="payment-tabs">
+              <button type="button" class="payment-tab-btn active" data-paymethod="bank">
+                <span style="font-size: 1.3rem;">🏦</span>
+                <span>Direct Bank Transfer</span>
+              </button>
+              <button type="button" class="payment-tab-btn" data-paymethod="whatsapp">
+                <span style="font-size: 1.3rem;">💬</span>
+                <span>Order via WhatsApp</span>
+              </button>
+            </div>
+
+            <!-- Bank Transfer Details Box -->
+            <div id="bankDetailsView">
+              <div class="bank-transfer-card">
+                <div class="bank-header-row">
+                  <div>
+                    <span class="bank-badge">Official Store Bank Details</span>
+                    <h4 style="font-family: var(--font-heading); font-size: 1.25rem; color: #ffffff; margin-top: 0.35rem;" id="checkoutBankName">Access Bank</h4>
+                  </div>
+                  <div style="font-size: 1.75rem; color: var(--accent-gold);">🏦</div>
+                </div>
+
+                <div class="bank-detail-item">
+                  <span class="bank-detail-label">Account Number:</span>
+                  <div class="bank-detail-value account-number">
+                    <span id="checkoutAccountNumber">0123456789</span>
+                    <button type="button" class="copy-account-btn" id="copyAccountBtn">
+                      <span>📋 Copy</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="bank-detail-item">
+                  <span class="bank-detail-label">Account Name:</span>
+                  <div class="bank-detail-value" id="checkoutAccountName">QUAD-ACE HERBS</div>
+                </div>
+
+                <div class="bank-instructions" id="checkoutBankInstructions">
+                  Please use your Name or Phone number as the payment narration. Once the transfer is complete, click <strong>"Confirm Order & Send to Seller"</strong> to notify the herbalist on WhatsApp immediately!
+                </div>
+
+                <!-- Payment Verification Input -->
+                <div style="background: rgba(255, 255, 255, 0.08); padding: 1.1rem; border-radius: var(--radius-md); margin-top: 1.25rem; border: 1px dashed rgba(212, 175, 55, 0.4);">
+                  <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent-gold); margin-bottom: 0.6rem; text-transform: uppercase; letter-spacing: 0.05em;">
+                    ✍️ Your Transfer Details (For Verification):
+                  </div>
+                  <div class="form-grid" style="margin-bottom: 0.5rem;">
+                    <div class="form-group">
+                      <label class="form-label" style="color: #ffffff;" for="senderBank">Your Bank (Where you transferred from)</label>
+                      <input type="text" id="senderBank" class="form-input" placeholder="e.g. GTBank, OPay, Zenith, Kuda" style="background: rgba(0,0,0,0.3); color: #fff; border-color: rgba(255,255,255,0.25);">
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label" style="color: #ffffff;" for="senderName">Sender Account Name</label>
+                      <input type="text" id="senderName" class="form-input" placeholder="e.g. Babatunde Adeleke" style="background: rgba(0,0,0,0.3); color: #fff; border-color: rgba(255,255,255,0.25);">
+                    </div>
+                  </div>
+                  <p style="font-size: 0.78rem; color: var(--text-on-dark-muted); line-height: 1.4; margin-bottom: 0;">
+                    🔒 <strong>Security Notice:</strong> Quad-Ace Herbs will verify the incoming credit alert in her bank account before preparing and handing over your parcel to the courier.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- WhatsApp Direct View -->
+            <div id="whatsappMethodView" style="display: none; background: #e8f7ee; border: 1px solid #a3e9be; padding: 1.5rem; border-radius: var(--radius-lg); margin-bottom: 1.5rem;">
+              <h4 style="color: #1b5e20; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                <span>💬</span> <span>1-Click Order Confirmation on WhatsApp</span>
+              </h4>
+              <p style="font-size: 0.88rem; color: #2e7d32; line-height: 1.5;">
+                Clicking confirm will automatically format your full order items, delivery address, and total into a ready-to-send WhatsApp message straight to our verified seller number: <strong>+234 905 512 6388</strong>.
+              </p>
+            </div>
+
+            <!-- Order Total Recap -->
+            <div style="background: var(--bg-light); padding: 1rem 1.25rem; border-radius: var(--radius-md); margin-bottom: 1.5rem; border: 1px solid rgba(24, 66, 46, 0.08);">
+              <div style="display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 0.3rem;">
+                <span>Items Subtotal:</span>
+                <strong id="checkoutSubtotal">₦0</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 0.3rem;">
+                <span id="checkoutShippingLabel">Delivery Fee:</span>
+                <strong id="checkoutShippingFee">₦2,500</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: 1.25rem; font-weight: 800; color: var(--deep-forest); border-top: 1px dashed rgba(24, 66, 46, 0.2); padding-top: 0.6rem; margin-top: 0.4rem;">
+                <span>Total Amount Due:</span>
+                <strong id="checkoutFinalTotal" style="color: var(--primary-green);">₦0</strong>
+              </div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <button class="btn-secondary" type="button" id="backToStep2Btn" style="color: var(--deep-forest); border-color: rgba(24, 66, 46, 0.2);">
+                <span>← Back</span>
+              </button>
+              <button class="btn-primary" type="button" id="completeOrderBtn">
+                <span>Confirm Order & Send to Seller 🌿</span>
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ORDER SUCCESS / RECEIPT MODAL -->
+  <div class="modal-overlay" id="receiptModalOverlay">
+    <div class="receipt-card">
+      <div class="receipt-success-icon" id="receiptStatusIcon" style="background: rgba(243, 156, 18, 0.15); color: #d35400; border-color: #d35400;">⏳</div>
+      <h3 id="receiptStatusTitle">Order Submitted — Awaiting Verification</h3>
+      <p style="color: var(--text-secondary); margin-bottom: 0.75rem;" id="receiptStatusDesc">
+        Your order has been registered! <strong>Quad-Ace Herbs will verify the payment alert in her bank account before dispatching your package.</strong>
+      </p>
+
+      <div class="order-ref-pill" id="receiptOrderRef">#QA-00000</div>
+
+      <div class="receipt-summary-box">
+        <div class="line">
+          <span>Payment Status:</span>
+          <strong id="receiptPaymentStatus" style="color: #d35400;">🟡 Awaiting Bank Alert Verification</strong>
+        </div>
+        <div class="line">
+          <span>Customer:</span>
+          <strong id="receiptCustName">-</strong>
+        </div>
+        <div class="line">
+          <span>Phone:</span>
+          <strong id="receiptCustPhone">-</strong>
+        </div>
+        <div class="line">
+          <span>Delivery Address:</span>
+          <span id="receiptCustAddress" style="text-align: right; max-width: 250px;">-</span>
+        </div>
+        <div class="line">
+          <span>Shipping Zone:</span>
+          <strong id="receiptShippingZone">-</strong>
+        </div>
+        <div class="line">
+          <span>Payment Method:</span>
+          <strong id="receiptPayMethod">-</strong>
+        </div>
+        <div class="line total">
+          <span>Total Amount Due:</span>
+          <span id="receiptTotalAmount" style="color: var(--primary-green);">₦0</span>
+        </div>
+      </div>
+
+      <div style="background: #fff8e7; border: 1px solid #f39c12; border-radius: var(--radius-md); padding: 0.85rem 1rem; margin-bottom: 1.25rem; font-size: 0.825rem; color: #8a6d3b; text-align: left;">
+        📢 <strong>Next Step for Faster Dispatch:</strong> Click the button below to notify the seller on WhatsApp with your payment details so she can confirm your alert and prepare your delivery immediately.
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+        <button class="btn-whatsapp-order" id="receiptWhatsAppNotifyBtn">
+          <span>💬 Send Receipt via WhatsApp to Seller</span>
+        </button>
+        <button class="btn-secondary" onclick="window.print()" style="color: var(--deep-forest); border-color: rgba(24, 66, 46, 0.2); justify-content: center;">
+          <span>🖨️ Print / Save Receipt</span>
+        </button>
+        <button class="btn-primary" id="closeReceiptBtn" style="justify-content: center;">
+          <span>Continue Shopping</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRODUCT QUICK VIEW MODAL -->
+  <div class="modal-overlay" id="quickViewOverlay">
+    <div class="quick-view-dialog">
+      <button class="modal-close-btn" id="closeQuickViewBtn" style="position: absolute; top: 1rem; right: 1.25rem; z-index: 10; color: #111; background: #fff; width: 36px; height: 36px; border-radius: 50%; box-shadow: 0 4px 10px rgba(0,0,0,0.15);">&times;</button>
+      <div class="quick-view-grid">
+        <div class="quick-view-gallery">
+          <img src="" alt="" id="qvImage">
+        </div>
+        <div class="quick-view-details">
+          <span class="product-category-tag" id="qvCategory">Agbo & Tonics</span>
+          <h2 id="qvTitle">Product Name</h2>
+          <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 0.5rem;" id="qvSubtitle">Subtitle</p>
+          <div class="quick-view-price" id="qvPrice">₦0</div>
+
+          <p style="font-size: 0.92rem; color: var(--text-secondary); line-height: 1.6;" id="qvFullDesc">Full product description...</p>
+
+          <div class="detail-section-title">Key Traditional Benefits:</div>
+          <ul class="detail-list" id="qvBenefits"></ul>
+
+          <div class="detail-section-title">Herbal Ingredients:</div>
+          <p style="font-size: 0.88rem; color: var(--text-secondary);" id="qvIngredients"></p>
+
+          <div class="detail-section-title">Preparation & Dosage:</div>
+          <p style="font-size: 0.88rem; color: var(--text-secondary);" id="qvUsage"></p>
+
+          <div class="safety-note" id="qvCaution"></div>
+
+          <div style="margin-top: 2rem; display: flex; gap: 1rem;">
+            <button class="btn-primary" id="qvAddToCartBtn" style="flex: 1; justify-content: center;">
+              <span>+ Add to Cart</span>
+            </button>
+            <a href="#" id="qvWhatsAppBtn" target="_blank" class="btn-secondary" style="color: #27ae60; border-color: #27ae60; background: #eef9f2;">
+              <span>💬 Inquire on WhatsApp</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FLOATING WHATSAPP BUTTON -->
+  <a href="https://wa.me/2349055126388?text=Hello%20Quad-Ace%20Herbs,%20I%20have%20an%20inquiry%20about%20your%20remedies" target="_blank" class="floating-whatsapp-btn" aria-label="Chat on WhatsApp">
+    <div class="whatsapp-pulse"></div>
+    <span>💬</span>
+  </a>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- MAIN FOOTER -->
+  <footer class="main-footer" id="contact">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <h4>🌿 Quad-Ace Herbs</h4>
+        <p>
+          Nigeria's foremost trusted source for authentic ancestral herbal remedies, Agbo Jedi-Jedi, Man-Power roots, Hormonal Balance, and whole wildcrafted African botanicals.
+        </p>
+        <div style="display: flex; gap: 0.75rem;">
+          <a href="https://wa.me/2349055126388" target="_blank" class="whatsapp-consult-btn" style="padding: 0.4rem 0.9rem; font-size: 0.8rem;">
+            <span>💬 Official WhatsApp</span>
+          </a>
+        </div>
+      </div>
+
+      <div>
+        <h5 class="footer-title">Popular Remedies</h5>
+        <ul class="footer-links">
+          <li><a href="#catalog" onclick="window.app.filterByCategory('agbo')">Agbo Jedi-Jedi Extra Strength</a></li>
+          <li><a href="#catalog" onclick="window.app.filterByCategory('men')">Man-Power Stamina Roots</a></li>
+          <li><a href="#catalog" onclick="window.app.filterByCategory('women')">Queen's Hormonal Balance</a></li>
+          <li><a href="#catalog" onclick="window.app.filterByCategory('agbo')">Agbo Idakole Male Tonic</a></li>
+          <li><a href="#catalog" onclick="window.app.filterByCategory('raw')">Raw Prekese & Roots Bundle</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h5 class="footer-title">Customer Care</h5>
+        <ul class="footer-links">
+          <li><a href="#guide">Brewing & Dosage Guide</a></li>
+          <li><a href="#quiz">Herbal Matcher Quiz</a></li>
+          <li><a href="#reviews">Verified Testimonials</a></li>
+          <li><a href="javascript:void(0)" onclick="window.app.openBankInfoModal()">Bank Transfer Guide</a></li>
+          <li><a href="javascript:void(0)" onclick="window.app.openCart()">View Shopping Cart</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h5 class="footer-title">Direct Store Contact</h5>
+        <div class="footer-contact-list">
+          <div class="footer-contact-item">
+            <span>📍</span>
+            <span>Lagos, Nigeria (Dispatches Nationwide & Worldwide)</span>
+          </div>
+          <div class="footer-contact-item">
+            <span>📞</span>
+            <span>+234 905 512 6388 (Calls & WhatsApp)</span>
+          </div>
+          <div class="footer-contact-item">
+            <span>⏰</span>
+            <span>Mon - Sat: 8:00 AM - 7:00 PM (WAT)</span>
+          </div>
+          <div class="footer-contact-item">
+            <span>✈️</span>
+            <span>DHL & FedEx International Shipping</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container footer-bottom">
+      <div>&copy; <span id="currentYear"></span> Quad-Ace Herbs. All Rights Reserved. Pure Nature • Ancient Wisdom.</div>
+      <div>Crafted for optimal holistic wellness and natural healing.</div>
+    </div>
+  </footer>
+
+  <!-- JAVASCRIPT SCRIPTS -->
+  <script src="store-config.js"></script>
+  <script src="products.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
