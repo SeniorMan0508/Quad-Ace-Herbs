@@ -23,11 +23,14 @@ Look for lines 24–33 in `store-config.js`:
 ```
 
 Simply replace:
-- `"Access Bank"` with her actual bank (e.g. `"Guaranty Trust Bank"` or `"OPay"`).
+- `"Access Bank"` with her actual bank (e.g. `"Guaranty Trust Bank"`, `"Kuda Bank"` or `"OPay"`).
 - `"0123456789"` with her actual 10-digit account number.
 - `"QUAD-ACE HERBS"` with her actual bank account holder name.
 
 **Save the file (`Ctrl + S`)** and refresh the browser. The bank details in the checkout modal and bank transfer guide update immediately!
+
+> 💡 **Proof of Payment & Fraud Protection:**
+> The checkout now includes an automated **"Attach Proof of Transfer"** upload box. Customers must upload their bank payment screenshot before submitting. You receive the order with proof on WhatsApp & Email, giving you 100% peace of mind to verify your instant Kuda credit alert before dispatch!
 
 ---
 

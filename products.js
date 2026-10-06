@@ -286,3 +286,139 @@ const HEALTH_GOALS = [
   { id: "immunity", label: "Immunity Booster" },
   { id: "detox", label: "Blood Purifier & Detox" }
 ];
+
+// ==========================================================================
+// DYNAMIC PRODUCT CATALOG STORE (Syncs between Admin, Shop, & Home)
+// ==========================================================================
+const QUADACE_STORAGE_KEYS = {
+  CUSTOM_PRODUCTS: "quadace_custom_products",
+  DELETED_PRODUCTS: "quadace_deleted_products"
+};
+
+/**
+ * Retrieve all active products for the store.
+ * Combines default catalog with admin-added products, and excludes deleted items.
+ * Newly added admin products appear right at the top!
+ */
+function getStoreProducts() {
+  let custom = [];
+  let deleted = [];
+
+  try {
+    const savedCustom = localStorage.getItem(QUADACE_STORAGE_KEYS.CUSTOM_PRODUCTS);
+    if (savedCustom) {
+      custom = JSON.parse(savedCustom);
+      if (!Array.isArray(custom)) custom = [];
+    }
+  } catch (e) {
+    console.warn("Could not read custom products from storage", e);
+  }
+
+  try {
+    const savedDeleted = localStorage.getItem(QUADACE_STORAGE_KEYS.DELETED_PRODUCTS);
+    if (savedDeleted) {
+      deleted = JSON.parse(savedDeleted);
+      if (!Array.isArray(deleted)) deleted = [];
+    }
+  } catch (e) {
+    console.warn("Could not read deleted products from storage", e);
+  }
+
+  // Filter default catalog
+  const activeBase = PRODUCTS_DATA.filter(p => !deleted.includes(p.id));
+  // Filter custom admin products
+  const activeCustom = custom.filter(p => !deleted.includes(p.id));
+
+  // Admin products come first so new arrivals are highlighted!
+  return [...activeCustom, ...activeBase];
+}
+
+/**
+ * Save or update a product from the Admin Dashboard.
+ */
+function saveStoreProduct(product) {
+  if (!product || !product.id) return false;
+
+  let custom = [];
+  try {
+    const savedCustom = localStorage.getItem(QUADACE_STORAGE_KEYS.CUSTOM_PRODUCTS);
+    if (savedCustom) {
+      custom = JSON.parse(savedCustom);
+      if (!Array.isArray(custom)) custom = [];
+    }
+  } catch (e) {}
+
+  const existingIdx = custom.findIndex(p => p.id === product.id);
+  if (existingIdx >= 0) {
+    custom[existingIdx] = product;
+  } else {
+    // Add to top of custom list
+    custom.unshift(product);
+  }
+
+  localStorage.setItem(QUADACE_STORAGE_KEYS.CUSTOM_PRODUCTS, JSON.stringify(custom));
+
+  // If this ID was previously in deleted list, undelete it
+  try {
+    const savedDeleted = localStorage.getItem(QUADACE_STORAGE_KEYS.DELETED_PRODUCTS);
+    if (savedDeleted) {
+      let deleted = JSON.parse(savedDeleted);
+      deleted = deleted.filter(id => id !== product.id);
+      localStorage.setItem(QUADACE_STORAGE_KEYS.DELETED_PRODUCTS, JSON.stringify(deleted));
+    }
+  } catch (e) {}
+
+  return true;
+}
+
+/**
+ * Delete a product by ID (works for both custom and default items).
+ */
+function deleteStoreProduct(productId) {
+  if (!productId) return false;
+
+  // Remove from custom products
+  try {
+    const savedCustom = localStorage.getItem(QUADACE_STORAGE_KEYS.CUSTOM_PRODUCTS);
+    if (savedCustom) {
+      let custom = JSON.parse(savedCustom);
+      custom = custom.filter(p => p.id !== productId);
+      localStorage.setItem(QUADACE_STORAGE_KEYS.CUSTOM_PRODUCTS, JSON.stringify(custom));
+    }
+  } catch (e) {}
+
+  // Add to deleted products list
+  try {
+    let deleted = [];
+    const savedDeleted = localStorage.getItem(QUADACE_STORAGE_KEYS.DELETED_PRODUCTS);
+    if (savedDeleted) deleted = JSON.parse(savedDeleted);
+    if (!deleted.includes(productId)) {
+      deleted.push(productId);
+      localStorage.setItem(QUADACE_STORAGE_KEYS.DELETED_PRODUCTS, JSON.stringify(deleted));
+    }
+  } catch (e) {}
+
+  return true;
+}
+
+/**
+ * Reset store products to original factory defaults.
+ */
+function resetStoreProducts() {
+  localStorage.removeItem(QUADACE_STORAGE_KEYS.CUSTOM_PRODUCTS);
+  localStorage.removeItem(QUADACE_STORAGE_KEYS.DELETED_PRODUCTS);
+  return true;
+}
+
+/**
+ * Export complete catalog as a downloadable JSON file.
+ */
+function exportStoreProductsJSON() {
+  const allProducts = getStoreProducts();
+  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(allProducts, null, 2));
+  const dlAnchorElem = document.createElement("a");
+  dlAnchorElem.setAttribute("href", dataStr);
+  dlAnchorElem.setAttribute("download", `quadace_catalog_${new Date().toISOString().slice(0, 10)}.json`);
+  dlAnchorElem.click();
+}
+

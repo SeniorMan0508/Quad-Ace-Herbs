@@ -26,20 +26,16 @@
 
       <nav>
         <ul class="nav-links">
-          <li><a href="#catalog" class="active">Shop Remedies</a></li>
+          <li><a href="index.html" class="active">Home</a></li>
+          <li><a href="shop.html">Shop Catalog 🌿</a></li>
           <li><a href="#quiz">Remedy Finder</a></li>
           <li><a href="#guide">Brewing & Dosage</a></li>
           <li><a href="#reviews">Customer Stories</a></li>
-          <li><a href="#contact">Contact Herbalist</a></li>
+          <li><a href="#contact">Contact Us</a></li>
         </ul>
       </nav>
 
       <div class="nav-actions">
-        <a href="https://wa.me/2349055126388?text=Hello%20Quad-Ace%20Herbs,%20I%20would%20like%20to%20consult%20on%20herbal%20remedies" target="_blank" class="whatsapp-consult-btn">
-          <span>💬</span>
-          <span>Consult Herbalist</span>
-        </a>
-
         <button class="cart-toggle-btn" id="openCartBtn" aria-label="Open Cart">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
@@ -66,12 +62,12 @@
         </p>
 
         <div class="hero-cta-group">
-          <a href="#catalog" class="btn-primary">
-            <span>Shop Best Sellers</span>
+          <a href="shop.html" class="btn-primary">
+            <span>Explore Shop Catalog</span>
             <span>→</span>
           </a>
           <a href="https://wa.me/2349055126388?text=Hello%20Quad-Ace%20Herbs,%20I%20want%20to%20place%20an%20order" target="_blank" class="btn-secondary">
-            <span>💬 1-Click WhatsApp Order</span>
+            <span>💬 Click For WhatsApp Order</span>
           </a>
         </div>
 
@@ -137,7 +133,7 @@
         <div class="pillar-icon">💬</div>
         <div class="pillar-content">
           <h4>Direct WhatsApp Support</h4>
-          <p>Chat directly with our herbalist for personalized guidance.</p>
+          <p>Chat directly with Quad-Ace-Herbs for personalized guidance.</p>
         </div>
       </div>
     </div>
@@ -234,6 +230,22 @@
       <div class="products-grid" id="productsGrid">
         <!-- Populated dynamically by app.js -->
       </div>
+
+      <!-- Dedicated Shop Page Callout Banner -->
+      <div style="text-align: center; margin-top: 3.5rem; background: #ffffff; padding: 2.5rem 1.5rem; border-radius: var(--radius-xl); border: 1px solid rgba(24, 66, 46, 0.1); box-shadow: 0 6px 25px rgba(0,0,0,0.04);">
+        <span style="display: inline-block; background: rgba(212, 175, 55, 0.15); color: #b45309; font-size: 0.8rem; font-weight: 800; text-transform: uppercase; padding: 0.25rem 0.85rem; border-radius: 99px; margin-bottom: 0.75rem; letter-spacing: 0.05em;">
+          🌿 The Complete Apothecary
+        </span>
+        <h3 style="font-family: var(--font-heading); color: var(--deep-forest); font-size: 1.6rem; margin-bottom: 0.5rem;">
+          Looking for our full catalog of herbal remedies?
+        </h3>
+        <p style="color: var(--text-secondary); max-width: 560px; margin: 0 auto 1.5rem; font-size: 0.95rem; line-height: 1.5;">
+          Visit our dedicated Shop Page with live price filters, category explorers, and all authentic African botanicals in stock.
+        </p>
+        <a href="shop.html" class="btn-primary" style="display: inline-flex; font-size: 1.05rem; padding: 0.9rem 2.25rem;">
+          <span>Browse All Herbs in Shop Catalog →</span>
+        </a>
+      </div>
     </div>
   </section>
 
@@ -310,7 +322,7 @@
           </div>
         </div>
         <a href="https://wa.me/2349055126388?text=Hello%20Quad-Ace%20Herbs,%20I%20need%20a%20private%20herbal%20consultation" target="_blank" class="btn-primary" style="width: 100%; justify-content: center;">
-          <span>💬 Chat with Our Herbalist</span>
+          <span>💬 Chat with Quad-Ace-Herbs</span>
         </a>
       </div>
     </div>
@@ -599,24 +611,65 @@
                   Please use your Name or Phone number as the payment narration. Once the transfer is complete, click <strong>"Confirm Order & Send to Seller"</strong> to notify the herbalist on WhatsApp immediately!
                 </div>
 
-                <!-- Payment Verification Input -->
-                <div style="background: rgba(255, 255, 255, 0.08); padding: 1.1rem; border-radius: var(--radius-md); margin-top: 1.25rem; border: 1px dashed rgba(212, 175, 55, 0.4);">
-                  <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent-gold); margin-bottom: 0.6rem; text-transform: uppercase; letter-spacing: 0.05em;">
-                    ✍️ Your Transfer Details (For Verification):
-                  </div>
-                  <div class="form-grid" style="margin-bottom: 0.5rem;">
-                    <div class="form-group">
-                      <label class="form-label" style="color: #ffffff;" for="senderBank">Your Bank (Where you transferred from)</label>
-                      <input type="text" id="senderBank" class="form-input" placeholder="e.g. GTBank, OPay, Zenith, Kuda" style="background: rgba(0,0,0,0.3); color: #fff; border-color: rgba(255,255,255,0.25);">
-                    </div>
-                    <div class="form-group">
-                      <label class="form-label" style="color: #ffffff;" for="senderName">Sender Account Name</label>
-                      <input type="text" id="senderName" class="form-input" placeholder="e.g. Babatunde Adeleke" style="background: rgba(0,0,0,0.3); color: #fff; border-color: rgba(255,255,255,0.25);">
+                <!-- Payment Verification & Receipt Upload -->
+                <div class="transfer-verification-box">
+                  <div class="verification-box-header">
+                    <span class="verification-icon">🧾</span>
+                    <div>
+                      <h5 style="color: var(--accent-gold); font-size: 0.95rem; margin: 0; font-weight: 700; letter-spacing: 0.03em; text-transform: uppercase;">
+                        Step 2: Attach Proof of Transfer
+                      </h5>
+                      <p style="color: var(--text-on-dark-muted); font-size: 0.8rem; margin: 0.25rem 0 0 0;">
+                        Transfer exactly <strong id="checkoutTransferAmount" style="color: #ffffff; text-decoration: underline;">₦0</strong> to the Kuda Bank account above, then upload your transfer screenshot below:
+                      </p>
                     </div>
                   </div>
-                  <p style="font-size: 0.78rem; color: var(--text-on-dark-muted); line-height: 1.4; margin-bottom: 0;">
-                    🔒 <strong>Security Notice:</strong> Quad-Ace Herbs will verify the incoming credit alert in her bank account before preparing and handing over your parcel to the courier.
-                  </p>
+
+                  <!-- Receipt Upload Dropzone -->
+                  <div class="receipt-dropzone" id="receiptDropzone">
+                    <input type="file" id="transferReceiptFile" accept="image/*,.pdf" style="display: none;">
+                    
+                    <div id="dropzoneEmptyView" class="dropzone-empty-view">
+                      <div class="dropzone-camera-icon">📸</div>
+                      <div class="dropzone-main-text">Upload Transfer Receipt / Screenshot</div>
+                      <div class="dropzone-sub-text">Tap here to select photo from gallery or screenshot (JPG, PNG)</div>
+                      <button type="button" class="btn-choose-receipt" id="chooseReceiptBtn">
+                        <span>📎 Choose Screenshot</span>
+                      </button>
+                    </div>
+
+                    <div id="dropzonePreviewView" class="dropzone-preview-view" style="display: none;">
+                      <img id="receiptPreviewImg" src="" alt="Receipt Preview" class="receipt-thumb-img">
+                      <div class="receipt-preview-details">
+                        <div class="receipt-attached-badge">✓ Receipt Attached</div>
+                        <div class="receipt-filename" id="receiptFileName">receipt.jpg</div>
+                        <div class="receipt-filesize" id="receiptFileSize">Ready to verify</div>
+                      </div>
+                      <button type="button" class="btn-remove-receipt" id="removeReceiptBtn" title="Remove photo">✕ Change</button>
+                    </div>
+                  </div>
+
+                  <!-- Supplemental Sender Details -->
+                  <div class="form-grid" style="margin-top: 1rem; margin-bottom: 0.5rem;">
+                    <div class="form-group">
+                      <label class="form-label" style="color: #ffffff; font-size: 0.82rem;" for="senderBank">Your Bank / App Name</label>
+                      <input type="text" id="senderBank" class="form-input" placeholder="e.g. Kuda, OPay, GTBank, Zenith" style="background: rgba(0,0,0,0.35); color: #fff; border-color: rgba(255,255,255,0.25);">
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label" style="color: #ffffff; font-size: 0.82rem;" for="senderName">Sender Account Name</label>
+                      <input type="text" id="senderName" class="form-input" placeholder="e.g. Babatunde Adeleke" style="background: rgba(0,0,0,0.35); color: #fff; border-color: rgba(255,255,255,0.25);">
+                    </div>
+                  </div>
+
+                  <div class="form-group" style="margin-bottom: 0.65rem;">
+                    <label class="form-label" style="color: #ffffff; font-size: 0.82rem;" for="transferSessionId">Transaction Ref / Session ID (Optional)</label>
+                    <input type="text" id="transferSessionId" class="form-input" placeholder="e.g. 000013240905... (from bank app or receipt)" style="background: rgba(0,0,0,0.35); color: #fff; border-color: rgba(255,255,255,0.25);">
+                  </div>
+
+                  <div style="background: rgba(0, 0, 0, 0.25); border-radius: var(--radius-sm); padding: 0.65rem 0.85rem; display: flex; align-items: flex-start; gap: 0.5rem; font-size: 0.77rem; color: var(--text-on-dark-muted); line-height: 1.4;">
+                    <span style="font-size: 0.95rem;">🔒</span>
+                    <span><strong>Security Notice:</strong> Quad-Ace Herbs matches your attached receipt against our instant Kuda credit alerts before handing your parcel to the courier.</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -652,7 +705,7 @@
                 <span>← Back</span>
               </button>
               <button class="btn-primary" type="button" id="completeOrderBtn">
-                <span>Confirm Order & Send to Seller 🌿</span>
+                <span>Confirm Order & Send Proof 🌿</span>
               </button>
             </div>
           </div>
@@ -664,10 +717,10 @@
   <!-- ORDER SUCCESS / RECEIPT MODAL -->
   <div class="modal-overlay" id="receiptModalOverlay">
     <div class="receipt-card">
-      <div class="receipt-success-icon" id="receiptStatusIcon" style="background: rgba(243, 156, 18, 0.15); color: #d35400; border-color: #d35400;">⏳</div>
-      <h3 id="receiptStatusTitle">Order Submitted — Awaiting Verification</h3>
+      <div class="receipt-success-icon" id="receiptStatusIcon" style="background: rgba(39, 174, 96, 0.15); color: #27ae60; border-color: #27ae60;">🧾</div>
+      <h3 id="receiptStatusTitle">Proof of Payment Received! 🌿</h3>
       <p style="color: var(--text-secondary); margin-bottom: 0.75rem;" id="receiptStatusDesc">
-        Your order has been registered! <strong>Quad-Ace Herbs will verify the payment alert in her bank account before dispatching your package.</strong>
+        Your order is placed and your transfer proof has been recorded! <strong>Quad-Ace Herbs will verify the payment alert in her Kuda bank account and dispatch your package immediately.</strong>
       </p>
 
       <div class="order-ref-pill" id="receiptOrderRef">#QA-00000</div>
@@ -675,7 +728,7 @@
       <div class="receipt-summary-box">
         <div class="line">
           <span>Payment Status:</span>
-          <strong id="receiptPaymentStatus" style="color: #d35400;">🟡 Awaiting Bank Alert Verification</strong>
+          <strong id="receiptPaymentStatus" style="color: #27ae60;">🟢 Proof Attached — Verifying Bank Alert</strong>
         </div>
         <div class="line">
           <span>Customer:</span>
@@ -698,13 +751,29 @@
           <strong id="receiptPayMethod">-</strong>
         </div>
         <div class="line total">
-          <span>Total Amount Due:</span>
+          <span>Total Amount:</span>
           <span id="receiptTotalAmount" style="color: var(--primary-green);">₦0</span>
         </div>
       </div>
 
-      <div style="background: #fff8e7; border: 1px solid #f39c12; border-radius: var(--radius-md); padding: 0.85rem 1rem; margin-bottom: 1.25rem; font-size: 0.825rem; color: #8a6d3b; text-align: left;">
-        📢 <strong>Next Step for Faster Dispatch:</strong> Click the button below to notify the seller on WhatsApp with your payment details so she can confirm your alert and prepare your delivery immediately.
+      <!-- Attached Proof of Payment Preview Box -->
+      <div id="receiptAttachedProofBox" style="display: none; background: #f0f8f4; border: 1.5px dashed #27ae60; border-radius: var(--radius-md); padding: 0.9rem; margin-bottom: 1.25rem; text-align: left;">
+        <div style="font-size: 0.8rem; font-weight: 700; color: #1e7040; text-transform: uppercase; margin-bottom: 0.5rem; display: flex; align-items: center; justify-content: space-between;">
+          <span style="display: flex; align-items: center; gap: 0.4rem;">🧾 Attached Transfer Receipt</span>
+          <span style="background: #27ae60; color: #fff; font-size: 0.68rem; padding: 0.15rem 0.5rem; border-radius: 99px;">Recorded</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 0.85rem;">
+          <img id="receiptModalProofImg" src="" alt="Proof Thumbnail" style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px; border: 1px solid rgba(39, 174, 96, 0.3); box-shadow: 0 2px 6px rgba(0,0,0,0.1); cursor: pointer;" title="Click to view full image">
+          <div style="flex: 1; min-width: 0;">
+            <div id="receiptModalProofName" style="font-size: 0.88rem; font-weight: 700; color: var(--deep-forest); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Receipt Screenshot</div>
+            <div id="receiptModalSenderDetails" style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.15rem;">Sender: Verified</div>
+            <a id="receiptModalViewLink" href="#" target="_blank" style="display: inline-block; font-size: 0.75rem; color: #1e7040; font-weight: 600; text-decoration: underline; margin-top: 0.25rem;">🔍 View full receipt image</a>
+          </div>
+        </div>
+      </div>
+
+      <div style="background: #eef9f2; border: 1px solid #b7e6c7; border-radius: var(--radius-md); padding: 0.85rem 1rem; margin-bottom: 1.25rem; font-size: 0.825rem; color: #166534; text-align: left;">
+        ⚡ <strong>Fast Track Your Delivery:</strong> Click the green button below to send your order reference and receipt directly to the herbalist on WhatsApp (+234 905 512 6388) so your dispatch rider is assigned immediately!
       </div>
 
       <div style="display: flex; flex-direction: column; gap: 0.75rem;">

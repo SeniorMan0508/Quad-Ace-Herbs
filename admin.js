@@ -1,0 +1,490 @@
+/**
+ * QUAD-ACE HERBS - ADMIN DASHBOARD CONTROLLER
+ * ============================================
+ * Handles security passcode authentication, adding new products,
+ * deleting products, and catalog management for the store owner.
+ */
+
+(function () {
+  "use strict";
+
+  const AUTH_KEY = "quadace_admin_authenticated";
+  let activeImageSrc = "images/agbo-jedi.jpg";
+  let editingProductId = null;
+
+  // Category labels map
+  const CATEGORY_LABELS = {
+    agbo: "Agbo & Tonics",
+    men: "Men's Vitality",
+    women: "Women's Wellness",
+    raw: "Raw Roots & Pods",
+    wellness: "Immunity & Detox"
+  };
+
+  // Toast notification
+  function showAdminToast(message, icon = "🌿") {
+    const container = document.getElementById("toastContainer");
+    if (!container) return;
+
+    const toast = document.createElement("div");
+    toast.className = "toast";
+    toast.innerHTML = `<span>${icon}</span> <span>${message}</span>`;
+    container.appendChild(toast);
+
+    setTimeout(() => toast.classList.add("show"), 10);
+    setTimeout(() => {
+      toast.classList.remove("show");
+      setTimeout(() => toast.remove(), 400);
+    }, 3500);
+  }
+
+  // --- PASSCODE UTILITY ---
+  function getActivePasscode() {
+    const custom = localStorage.getItem("quadace_admin_passcode");
+    if (custom) return custom;
+    return (typeof STORE_CONFIG !== "undefined" && STORE_CONFIG.adminPasscode) ? STORE_CONFIG.adminPasscode : "quadace2026";
+  }
+
+  // --- PASSCODE GATEKEEPER ---
+  function checkAuth() {
+    const gatekeeper = document.getElementById("adminGatekeeper");
+    const isAuthenticated = sessionStorage.getItem(AUTH_KEY) === "true";
+
+    if (isAuthenticated) {
+      if (gatekeeper) gatekeeper.style.display = "none";
+      loadDashboard();
+    } else {
+      if (gatekeeper) gatekeeper.style.display = "flex";
+    }
+  }
+
+  function initLoginForm() {
+    const form = document.getElementById("adminLoginForm");
+    const pinInput = document.getElementById("adminPinInput");
+    const errorEl = document.getElementById("gatekeeperError");
+    const gatekeeper = document.getElementById("adminGatekeeper");
+
+    if (!form || !pinInput) return;
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const enteredPin = pinInput.value.trim();
+      const actualPin = getActivePasscode();
+
+      if (enteredPin === actualPin) {
+        sessionStorage.setItem(AUTH_KEY, "true");
+        if (errorEl) errorEl.style.display = "none";
+        if (gatekeeper) gatekeeper.style.display = "none";
+        showAdminToast("Welcome to your Admin Dashboard!", "👋");
+        loadDashboard();
+      } else {
+        if (errorEl) errorEl.style.display = "block";
+        pinInput.value = "";
+        pinInput.focus();
+      }
+    });
+
+    const logoutBtn = document.getElementById("adminLogoutBtn");
+    if (logoutBtn) {
+      logoutBtn.addEventListener("click", () => {
+        sessionStorage.removeItem(AUTH_KEY);
+        window.location.reload();
+      });
+    }
+  }
+
+  // --- TABS SWITCHING ---
+  function initTabs() {
+    const tabBtns = document.querySelectorAll(".admin-tab-btn");
+    const panels = document.querySelectorAll(".admin-panel");
+
+    tabBtns.forEach(btn => {
+      btn.addEventListener("click", () => {
+        tabBtns.forEach(b => b.classList.remove("active"));
+        panels.forEach(p => p.classList.remove("active"));
+
+        btn.classList.add("active");
+        const targetId = btn.dataset.tab;
+        const targetPanel = document.getElementById(targetId);
+        if (targetPanel) targetPanel.classList.add("active");
+
+        if (targetId === "tabManage") {
+          renderManageTable();
+        }
+      });
+    });
+  }
+
+  // --- IMAGE SELECTION & UPLOAD HANDLERS ---
+  function initImageHandlers() {
+    const presetImages = document.querySelectorAll("#presetImagesList .preset-img-thumb");
+    const activePreview = document.getElementById("activeImagePreview");
+    const activeName = document.getElementById("activeImageName");
+    const fileInput = document.getElementById("prodImageFile");
+    const urlInput = document.getElementById("prodImageUrl");
+
+    // Presets click
+    presetImages.forEach(img => {
+      img.addEventListener("click", () => {
+        presetImages.forEach(i => i.classList.remove("selected"));
+        img.classList.add("selected");
+        activeImageSrc = img.dataset.src;
+        if (activePreview) activePreview.src = activeImageSrc;
+        if (activeName) activeName.textContent = img.alt || activeImageSrc;
+        if (urlInput) urlInput.value = "";
+      });
+    });
+
+    // File upload
+    if (fileInput) {
+      fileInput.addEventListener("change", (e) => {
+        if (e.target.files && e.target.files[0]) {
+          const file = e.target.files[0];
+          const reader = new FileReader();
+          reader.onload = (loadEvent) => {
+            activeImageSrc = loadEvent.target.result;
+            if (activePreview) activePreview.src = activeImageSrc;
+            if (activeName) activeName.textContent = `Uploaded: ${file.name}`;
+            presetImages.forEach(i => i.classList.remove("selected"));
+            showAdminToast("Product photo loaded successfully! ✓", "📸");
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+    }
+
+    // URL input
+    if (urlInput) {
+      urlInput.addEventListener("input", (e) => {
+        const val = e.target.value.trim();
+        if (val) {
+          activeImageSrc = val;
+          if (activePreview) activePreview.src = activeImageSrc;
+          if (activeName) activeName.textContent = `URL: ${val.slice(0, 30)}...`;
+          presetImages.forEach(i => i.classList.remove("selected"));
+        }
+      });
+    }
+  }
+
+  // --- ADD / EDIT PRODUCT FORM ---
+  function initProductForm() {
+    const form = document.getElementById("addProductForm");
+    const publishBtn = document.getElementById("publishProductBtn");
+    const resetBtn = document.getElementById("resetFormBtn");
+
+    if (!form) return;
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById("prodName").value.trim();
+      const category = document.getElementById("prodCategory").value;
+      const subtitle = document.getElementById("prodSubtitle").value.trim();
+      const price = Number(document.getElementById("prodPrice").value);
+      const originalPriceVal = document.getElementById("prodOriginalPrice").value;
+      const originalPrice = originalPriceVal ? Number(originalPriceVal) : null;
+      const badge = document.getElementById("prodBadge").value.trim();
+      const badgeType = document.getElementById("prodBadgeType").value;
+      const shortDesc = document.getElementById("prodShortDesc").value.trim();
+      const fullDesc = document.getElementById("prodFullDesc").value.trim() || shortDesc;
+      const usage = document.getElementById("prodUsage").value.trim() || "Take as traditionally directed on bottle.";
+      const caution = document.getElementById("prodCaution").value.trim() || "";
+
+      // Split multiline benefits & ingredients
+      const benefitsText = document.getElementById("prodBenefits").value.trim();
+      const benefits = benefitsText 
+        ? benefitsText.split("\n").map(b => b.trim()).filter(Boolean)
+        : ["100% pure wildcrafted botanical formula", "Promotes natural bodily restoration"];
+
+      const ingredientsText = document.getElementById("prodIngredients").value.trim();
+      const ingredients = ingredientsText
+        ? ingredientsText.split("\n").map(i => i.trim()).filter(Boolean)
+        : ["Wild-harvested ancestral African roots and leaves"];
+
+      if (!name || !price || !shortDesc) {
+        showAdminToast("Please fill in Product Name, Price, and Short Summary.", "⚠️");
+        return;
+      }
+
+      // Generate ID
+      const prodId = editingProductId || ("custom-" + name.toLowerCase().replace(/[^a-z0-9]/g, "-") + "-" + Date.now().toString().slice(-4));
+
+      const newProduct = {
+        id: prodId,
+        name: name,
+        subtitle: subtitle || `${CATEGORY_LABELS[category] || 'Ancestral'} Herbal Remedy`,
+        category: category,
+        categoryLabel: CATEGORY_LABELS[category] || "Agbo & Tonics",
+        price: price,
+        originalPrice: originalPrice,
+        rating: 5.0,
+        reviewsCount: Math.floor(20 + Math.random() * 80),
+        image: activeImageSrc,
+        badge: badge || "New Remedy",
+        badgeType: badgeType || "gold",
+        healthGoals: [category],
+        shortDesc: shortDesc,
+        fullDesc: fullDesc,
+        benefits: benefits,
+        ingredients: ingredients,
+        usage: usage,
+        caution: caution,
+        isCustom: true,
+        createdAt: new Date().toISOString()
+      };
+
+      // Save to store
+      if (typeof saveStoreProduct === "function") {
+        saveStoreProduct(newProduct);
+      }
+
+      showAdminToast(
+        editingProductId ? `Updated '${name}' successfully!` : `✨ '${name}' published! Now live on Shop page.`,
+        "🌿"
+      );
+
+      // Reset form
+      form.reset();
+      editingProductId = null;
+      if (publishBtn) publishBtn.innerHTML = `<span>🌿 Publish Product to Shop Page</span>`;
+      activeImageSrc = "images/agbo-jedi.jpg";
+      const previewImg = document.getElementById("activeImagePreview");
+      if (previewImg) previewImg.src = activeImageSrc;
+
+      // Update stats and switch to Manage tab
+      updateStats();
+      renderManageTable();
+
+      const manageTabBtn = document.querySelector(".admin-tab-btn[data-tab='tabManage']");
+      if (manageTabBtn) manageTabBtn.click();
+    });
+
+    if (resetBtn) {
+      resetBtn.addEventListener("click", () => {
+        editingProductId = null;
+        if (publishBtn) publishBtn.innerHTML = `<span>🌿 Publish Product to Shop Page</span>`;
+      });
+    }
+  }
+
+  // --- STATS OVERVIEW ---
+  function updateStats() {
+    const products = typeof getStoreProducts === "function" ? getStoreProducts() : PRODUCTS_DATA;
+    let customCount = 0;
+
+    try {
+      const savedCustom = localStorage.getItem("quadace_custom_products");
+      if (savedCustom) {
+        const parsed = JSON.parse(savedCustom);
+        customCount = Array.isArray(parsed) ? parsed.length : 0;
+      }
+    } catch (e) {}
+
+    const totalEl = document.getElementById("statTotalProducts");
+    const customEl = document.getElementById("statCustomProducts");
+    const badgeEl = document.getElementById("tabCountBadge");
+
+    if (totalEl) totalEl.textContent = products.length;
+    if (customEl) customEl.textContent = customCount;
+    if (badgeEl) badgeEl.textContent = products.length;
+  }
+
+  // --- MANAGE TABLE ---
+  function renderManageTable() {
+    const tbody = document.getElementById("productsTableBody");
+    const searchInput = document.getElementById("manageSearchInput");
+    if (!tbody) return;
+
+    let products = typeof getStoreProducts === "function" ? getStoreProducts() : PRODUCTS_DATA;
+    const query = searchInput ? searchInput.value.toLowerCase().trim() : "";
+
+    if (query) {
+      products = products.filter(p => 
+        p.name.toLowerCase().includes(query) ||
+        p.categoryLabel.toLowerCase().includes(query)
+      );
+    }
+
+    if (products.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="6" style="text-align: center; padding: 3rem; color: var(--text-muted);">
+            No products found matching '${query}'.
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    tbody.innerHTML = products.map(p => {
+      const isCustom = p.id.startsWith("custom-") || p.isCustom;
+      const sourceBadge = isCustom 
+        ? `<span class="source-badge custom">✨ Admin Added</span>`
+        : `<span class="source-badge default">🌱 Default</span>`;
+
+      return `
+        <tr data-id="${p.id}">
+          <td>
+            <img src="${p.image}" alt="${p.name}" class="product-table-thumb" onerror="this.src='images/agbo-jedi.jpg'">
+          </td>
+          <td>
+            <div style="font-weight: 700; color: var(--deep-forest);">${p.name}</div>
+            <div style="font-size: 0.78rem; color: var(--text-muted);">${p.subtitle || ''}</div>
+          </td>
+          <td>
+            <span class="product-category-tag">${p.categoryLabel || p.category}</span>
+          </td>
+          <td style="font-weight: 800; color: var(--primary-green);">
+            ₦${Number(p.price).toLocaleString("en-NG")}
+          </td>
+          <td>
+            ${sourceBadge}
+          </td>
+          <td style="text-align: right; white-space: nowrap;">
+            <button type="button" class="btn-action-del" data-id="${p.id}" data-name="${p.name}">
+              🗑️ Remove
+            </button>
+            <a href="shop.html" target="_blank" class="btn-action-view" style="margin-left: 0.35rem;">
+              👁️ View in Shop
+            </a>
+          </td>
+        </tr>
+      `;
+    }).join("");
+
+    // Wire delete buttons
+    tbody.querySelectorAll(".btn-action-del").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const id = btn.dataset.id;
+        const name = btn.dataset.name;
+        handleDeleteProduct(id, name);
+      });
+    });
+  }
+
+  // Handle Delete Product
+  function handleDeleteProduct(productId, productName) {
+    const confirmed = window.confirm(`Are you sure you want to remove '${productName}' from your store? It will disappear from the Shop page immediately.`);
+    if (!confirmed) return;
+
+    if (typeof deleteStoreProduct === "function") {
+      deleteStoreProduct(productId);
+      showAdminToast(`'${productName}' removed from shop.`, "🗑️");
+      updateStats();
+      renderManageTable();
+    }
+  }
+
+  // --- BACKUP & RESET ACTIONS ---
+  function initBackupAndReset() {
+    const exportBtn = document.getElementById("exportCatalogBtn");
+    const resetBtn = document.getElementById("resetCatalogBtn");
+
+    if (exportBtn) {
+      exportBtn.addEventListener("click", () => {
+        if (typeof exportStoreProductsJSON === "function") {
+          exportStoreProductsJSON();
+          showAdminToast("Catalog JSON downloaded!", "📥");
+        }
+      });
+    }
+
+    if (resetBtn) {
+      resetBtn.addEventListener("click", () => {
+        const confirmed = window.confirm("⚠️ WARNING: This will reset your product catalog to the original factory default remedies and remove all custom products you added. Are you sure?");
+        if (confirmed) {
+          if (typeof resetStoreProducts === "function") {
+            resetStoreProducts();
+            showAdminToast("Store reset to original default remedies.", "🔄");
+            updateStats();
+            renderManageTable();
+          }
+        }
+      });
+    }
+
+    const searchInput = document.getElementById("manageSearchInput");
+    if (searchInput) {
+      searchInput.addEventListener("input", renderManageTable);
+    }
+  }
+
+  // --- LOAD DASHBOARD ---
+  function loadDashboard() {
+    updateStats();
+    renderManageTable();
+  }
+
+  // --- CHANGE ADMIN PASSCODE ---
+  function initPasscodeChange() {
+    const form = document.getElementById("changePasscodeForm");
+    const currentInput = document.getElementById("currentPasscodeInput");
+    const newInput = document.getElementById("newPasscodeInput");
+    const confirmInput = document.getElementById("confirmPasscodeInput");
+    const alertBox = document.getElementById("passcodeChangeAlert");
+
+    if (!form) return;
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const current = currentInput.value.trim();
+      const next = newInput.value.trim();
+      const confirm = confirmInput.value.trim();
+      const active = getActivePasscode();
+
+      if (current !== active) {
+        alertBox.style.display = "block";
+        alertBox.style.background = "#fee2e2";
+        alertBox.style.color = "#b91c1c";
+        alertBox.textContent = "❌ Current passcode is incorrect!";
+        return;
+      }
+
+      if (next.length < 4) {
+        alertBox.style.display = "block";
+        alertBox.style.background = "#fee2e2";
+        alertBox.style.color = "#b91c1c";
+        alertBox.textContent = "❌ New passcode must be at least 4 characters long.";
+        return;
+      }
+
+      if (next !== confirm) {
+        alertBox.style.display = "block";
+        alertBox.style.background = "#fee2e2";
+        alertBox.style.color = "#b91c1c";
+        alertBox.textContent = "❌ New passcodes do not match!";
+        return;
+      }
+
+      // Save custom passcode
+      localStorage.setItem("quadace_admin_passcode", next);
+
+      alertBox.style.display = "block";
+      alertBox.style.background = "#dcfce7";
+      alertBox.style.color = "#15803d";
+      alertBox.textContent = "✅ Admin passcode updated successfully! Remember to use your new passcode next time.";
+
+      form.reset();
+      showAdminToast("Passcode updated successfully! 🔒", "✅");
+    });
+  }
+
+  // --- INITIALIZATION ---
+  function initAdmin() {
+    initLoginForm();
+    initTabs();
+    initImageHandlers();
+    initProductForm();
+    initPasscodeChange();
+    initBackupAndReset();
+    checkAuth();
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initAdmin);
+  } else {
+    initAdmin();
+  }
+})();

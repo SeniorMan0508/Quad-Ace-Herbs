@@ -1,10 +1,3 @@
-/**
- * QUAD-ACE HERBS - APPLICATION LOGIC
- * ==================================
- * E-commerce engine handling cart, real-time filtering,
- * interactive remedy quiz, bank transfer checkout, and WhatsApp order dispatch.
- */
-
 (function () {
   "use strict";
 
@@ -19,7 +12,10 @@
     appliedCoupon: null,
     discountAmount: 0,
     currentQuickViewProduct: null,
-    lastOrder: null
+    lastOrder: null,
+    attachedReceiptData: null,
+    attachedReceiptName: null,
+    attachedReceiptSize: null
   };
 
   // --- HELPER: FORMAT CURRENCY ---
@@ -83,7 +79,7 @@
     // Current Year in footer
     const currentYear = document.getElementById("currentYear");
     if (currentYear) currentYear.textContent = new Date().getFullYear();
-
+   
     // Bank Details in Checkout
     const checkoutBankName = document.getElementById("checkoutBankName");
     if (checkoutBankName) checkoutBankName.textContent = STORE_CONFIG.bankDetails.bankName;
@@ -126,7 +122,7 @@
 
   // --- FILTER & SORT PRODUCTS ---
   function getFilteredProducts() {
-    let list = [...PRODUCTS_DATA];
+    let list = typeof getStoreProducts === "function" ? getStoreProducts() : [...PRODUCTS_DATA];
 
     // Filter by Category
     if (state.activeCategory !== "all") {
@@ -220,7 +216,8 @@
   }
 
   function addToCart(productId, quantity = 1) {
-    const product = PRODUCTS_DATA.find(p => p.id === productId);
+    const allProducts = typeof getStoreProducts === "function" ? getStoreProducts() : PRODUCTS_DATA;
+    const product = allProducts.find(p => p.id === productId);
     if (!product) return;
 
     const existingIndex = state.cart.findIndex(item => item.id === productId);
@@ -403,7 +400,8 @@
 
   // --- QUICK VIEW MODAL ---
   function openQuickView(productId) {
-    const product = PRODUCTS_DATA.find(p => p.id === productId);
+    const allProducts = typeof getStoreProducts === "function" ? getStoreProducts() : PRODUCTS_DATA;
+    const product = allProducts.find(p => p.id === productId);
     if (!product) return;
 
     state.currentQuickViewProduct = product;
@@ -607,6 +605,9 @@
       checkoutShippingLabel.textContent = `Delivery (${shippingMethod.toUpperCase()}):`;
     }
     if (checkoutFinalTotal) checkoutFinalTotal.textContent = formatMoney(finalTotal);
+
+    const checkoutTransferAmount = document.getElementById("checkoutTransferAmount");
+    if (checkoutTransferAmount) checkoutTransferAmount.textContent = formatMoney(finalTotal);
   }
 
   function initCheckoutForm() {
@@ -682,6 +683,110 @@
       });
     }
 
+    // Bank Transfer Receipt Upload Handlers
+    const receiptFileInput = document.getElementById("transferReceiptFile");
+    const chooseReceiptBtn = document.getElementById("chooseReceiptBtn");
+    const receiptDropzone = document.getElementById("receiptDropzone");
+    const dropzoneEmptyView = document.getElementById("dropzoneEmptyView");
+    const dropzonePreviewView = document.getElementById("dropzonePreviewView");
+    const receiptPreviewImg = document.getElementById("receiptPreviewImg");
+    const receiptFileName = document.getElementById("receiptFileName");
+    const receiptFileSize = document.getElementById("receiptFileSize");
+    const removeReceiptBtn = document.getElementById("removeReceiptBtn");
+
+    function handleReceiptFile(file) {
+      if (!file) return;
+      if (!file.type.startsWith("image/") && file.type !== "application/pdf") {
+        showToast("Please select an image file (PNG, JPG) or PDF receipt.", "⚠️");
+        return;
+      }
+      if (file.size > 10 * 1024 * 1024) {
+        showToast("Receipt file is too large (max 10MB).", "⚠️");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        state.attachedReceiptData = e.target.result;
+        state.attachedReceiptName = file.name;
+        state.attachedReceiptSize = `${(file.size / 1024).toFixed(1)} KB`;
+
+        if (receiptFileName) receiptFileName.textContent = file.name;
+        if (receiptFileSize) receiptFileSize.textContent = `${state.attachedReceiptSize} • Ready to verify`;
+        if (receiptPreviewImg) {
+          if (file.type.startsWith("image/")) {
+            receiptPreviewImg.src = e.target.result;
+            receiptPreviewImg.style.display = "block";
+          } else {
+            receiptPreviewImg.src = "";
+            receiptPreviewImg.style.display = "none";
+          }
+        }
+        if (dropzoneEmptyView) dropzoneEmptyView.style.display = "none";
+        if (dropzonePreviewView) dropzonePreviewView.style.display = "flex";
+        showToast("Receipt screenshot attached! ✓", "🧾");
+      };
+      reader.readAsDataURL(file);
+    }
+
+    if (chooseReceiptBtn && receiptFileInput) {
+      chooseReceiptBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        receiptFileInput.click();
+      });
+    }
+
+    if (receiptDropzone && receiptFileInput) {
+      receiptDropzone.addEventListener("click", () => {
+        if (!state.attachedReceiptData) {
+          receiptFileInput.click();
+        }
+      });
+
+      // Drag and drop support
+      ["dragenter", "dragover"].forEach(evtName => {
+        receiptDropzone.addEventListener(evtName, (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          receiptDropzone.classList.add("dragover");
+        });
+      });
+
+      ["dragleave", "drop"].forEach(evtName => {
+        receiptDropzone.addEventListener(evtName, (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          receiptDropzone.classList.remove("dragover");
+        });
+      });
+
+      receiptDropzone.addEventListener("drop", (e) => {
+        const dt = e.dataTransfer;
+        if (dt && dt.files && dt.files[0]) {
+          handleReceiptFile(dt.files[0]);
+        }
+      });
+
+      receiptFileInput.addEventListener("change", (e) => {
+        if (e.target.files && e.target.files[0]) {
+          handleReceiptFile(e.target.files[0]);
+        }
+      });
+    }
+
+    if (removeReceiptBtn && receiptFileInput) {
+      removeReceiptBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        state.attachedReceiptData = null;
+        state.attachedReceiptName = null;
+        state.attachedReceiptSize = null;
+        receiptFileInput.value = "";
+        if (dropzoneEmptyView) dropzoneEmptyView.style.display = "block";
+        if (dropzonePreviewView) dropzonePreviewView.style.display = "none";
+        showToast("Receipt removed. You can attach a new one.", "ℹ️");
+      });
+    }
+
     // Complete Order button
     document.getElementById("completeOrderBtn").addEventListener("click", completeOrder);
   }
@@ -697,11 +802,24 @@
     const custNotes = document.getElementById("custNotes").value.trim();
     const senderBank = document.getElementById("senderBank") ? document.getElementById("senderBank").value.trim() : "";
     const senderName = document.getElementById("senderName") ? document.getElementById("senderName").value.trim() : "";
+    const transferSessionId = document.getElementById("transferSessionId") ? document.getElementById("transferSessionId").value.trim() : "";
 
     if (!custName || !custPhone || !custAddress) {
       showToast("Please complete your delivery details first.", "⚠️");
       setCheckoutStep(1);
       return;
+    }
+
+    // Protect seller: require either receipt screenshot OR sender details for Bank Transfer
+    if (state.selectedPaymentMethod === "bank") {
+      const hasReceipt = Boolean(state.attachedReceiptData);
+      const hasSenderDetails = Boolean(senderName || senderBank || transferSessionId);
+      if (!hasReceipt && !hasSenderDetails) {
+        showToast("Please attach your transfer receipt screenshot or enter your sender name!", "⚠️");
+        const dropzone = document.getElementById("receiptDropzone");
+        if (dropzone) dropzone.scrollIntoView({ behavior: "smooth", block: "center" });
+        return;
+      }
     }
 
     // Generate unique Order Reference
@@ -740,7 +858,14 @@
       },
       senderDetails: {
         bank: senderBank,
-        name: senderName
+        name: senderName,
+        sessionId: transferSessionId
+      },
+      receiptProof: {
+        hasReceipt: Boolean(state.attachedReceiptData),
+        fileName: state.attachedReceiptName,
+        dataUrl: state.attachedReceiptData,
+        sessionId: transferSessionId
       },
       items: [...state.cart],
       shippingMethod: state.selectedShipping,
@@ -763,14 +888,19 @@
 
     let verificationBlock = "";
     if (state.selectedPaymentMethod === "bank") {
+      const proofStatus = state.attachedReceiptData 
+        ? "✅ SCREENSHOT ATTACHED (Customer will send receipt in chat)" 
+        : "⚠️ NO SCREENSHOT ATTACHED (Check sender details below)";
+
       verificationBlock = 
-`⚠️ *PAYMENT STATUS: PENDING VERIFICATION*
-*(SELLER NOTICE: Do NOT dispatch until you confirm the credit alert of ${formatMoney(orderData.finalTotal)} in your bank app!)*
+`🧾 *PAYMENT PROOF & VERIFICATION:*
+• *Receipt Proof:* ${proofStatus}
 • *Customer Sender Bank:* ${senderBank || "Not specified by buyer"}
 • *Customer Sender Name:* ${senderName || "Not specified by buyer"}
-• *Store Account:* ${STORE_CONFIG.bankDetails.bankName} - ${STORE_CONFIG.bankDetails.accountNumber}`;
+${transferSessionId ? `• *Session ID / Ref:* ${transferSessionId}\n` : ""}• *Store Account:* ${STORE_CONFIG.bankDetails.bankName} - ${STORE_CONFIG.bankDetails.accountNumber}
+*(SELLER NOTICE: Cross-check your instant Kuda credit alert of ${formatMoney(orderData.finalTotal)} before dispatching package!)*`;
     } else {
-      verificationBlock = `⚠️ *STATUS: WHATSAPP ORDER INQUIRY*
+      verificationBlock = `💬 *STATUS: WHATSAPP ORDER INQUIRY*
 (Customer placed order directly via WhatsApp)`;
     }
 
@@ -819,9 +949,11 @@ Please verify the payment alert and confirm dispatch! Thank you 🌿`;
         "Delivery Zone": deliveryNote,
         "Total Amount Due": formatMoney(orderData.finalTotal),
         "Payment Method": paymentLabel,
+        "Payment Proof Attached": state.attachedReceiptData ? `Yes (${state.attachedReceiptName})` : "No screenshot attached",
         "Sender Bank (Claimed)": senderBank || "Not specified",
         "Sender Name (Claimed)": senderName || "Not specified",
-        "Payment Status": "PENDING VERIFICATION (Check bank app alert before dispatch!)"
+        "Session ID / Ref": transferSessionId || "None",
+        "Payment Status": state.attachedReceiptData ? "PROOF ATTACHED (Cross-check Kuda alert before dispatch!)" : "PENDING VERIFICATION (Check bank app alert before dispatch!)"
       };
 
       fetch(`https://formsubmit.co/ajax/${STORE_CONFIG.sellerEmail}`, {
@@ -844,8 +976,11 @@ Please verify the payment alert and confirm dispatch! Thank you 🌿`;
     // Auto-launch WhatsApp so the seller gets both WhatsApp AND Email!
     window.open(waLink, "_blank");
 
-    // Clear cart
+    // Clear cart & attached receipt
     state.cart = [];
+    state.attachedReceiptData = null;
+    state.attachedReceiptName = null;
+    state.attachedReceiptSize = null;
     saveCart();
     updateCartUI();
   }
@@ -857,16 +992,83 @@ Please verify the payment alert and confirm dispatch! Thank you 🌿`;
     document.getElementById("receiptCustPhone").textContent = order.customer.phone;
     document.getElementById("receiptCustAddress").textContent = order.customer.address;
     
-    // Status text
+    // Status text & icon
     const statusEl = document.getElementById("receiptPaymentStatus");
-    if (statusEl) {
-      if (order.paymentMethod === "bank") {
-        statusEl.textContent = "🟡 Awaiting Bank Alert Verification";
-        statusEl.style.color = "#d35400";
+    const iconEl = document.getElementById("receiptStatusIcon");
+    const titleEl = document.getElementById("receiptStatusTitle");
+    const descEl = document.getElementById("receiptStatusDesc");
+
+    if (order.paymentMethod === "bank") {
+      if (order.receiptProof && order.receiptProof.hasReceipt) {
+        if (statusEl) {
+          statusEl.textContent = "🟢 Proof Attached — Verifying Bank Alert";
+          statusEl.style.color = "#27ae60";
+        }
+        if (iconEl) {
+          iconEl.textContent = "🧾";
+          iconEl.style.background = "rgba(39, 174, 96, 0.15)";
+          iconEl.style.color = "#27ae60";
+          iconEl.style.borderColor = "#27ae60";
+        }
+        if (titleEl) titleEl.textContent = "Proof of Payment Received! 🌿";
+        if (descEl) descEl.innerHTML = "Your order is placed and your transfer proof has been recorded! <strong>Quad-Ace Herbs will verify the payment alert in her Kuda bank account and dispatch your package immediately.</strong>";
       } else {
+        if (statusEl) {
+          statusEl.textContent = "🟡 Awaiting Bank Alert Verification";
+          statusEl.style.color = "#d35400";
+        }
+        if (iconEl) {
+          iconEl.textContent = "⏳";
+          iconEl.style.background = "rgba(243, 156, 18, 0.15)";
+          iconEl.style.color = "#d35400";
+          iconEl.style.borderColor = "#d35400";
+        }
+        if (titleEl) titleEl.textContent = "Order Submitted — Awaiting Verification";
+        if (descEl) descEl.innerHTML = "Your order has been registered! <strong>Quad-Ace Herbs will verify the payment alert in her bank account before dispatching your package.</strong>";
+      }
+    } else {
+      if (statusEl) {
         statusEl.textContent = "💬 Order via WhatsApp (Pending Confirmation)";
         statusEl.style.color = "#27ae60";
       }
+      if (iconEl) {
+        iconEl.textContent = "💬";
+        iconEl.style.background = "rgba(39, 174, 96, 0.15)";
+        iconEl.style.color = "#27ae60";
+        iconEl.style.borderColor = "#27ae60";
+      }
+      if (titleEl) titleEl.textContent = "WhatsApp Order Ready! 💬";
+      if (descEl) descEl.innerHTML = "Your order details have been prepared for direct confirmation on WhatsApp.";
+    }
+
+    // Proof of Payment preview box in receipt modal
+    const proofBox = document.getElementById("receiptAttachedProofBox");
+    const proofImg = document.getElementById("receiptModalProofImg");
+    const proofName = document.getElementById("receiptModalProofName");
+    const proofSender = document.getElementById("receiptModalSenderDetails");
+    const proofLink = document.getElementById("receiptModalViewLink");
+
+    if (order.receiptProof && order.receiptProof.hasReceipt && proofBox) {
+      proofBox.style.display = "block";
+      if (proofImg && order.receiptProof.dataUrl) {
+        proofImg.src = order.receiptProof.dataUrl;
+        proofImg.onclick = () => window.open(order.receiptProof.dataUrl, "_blank");
+      }
+      if (proofName) proofName.textContent = order.receiptProof.fileName || "Transfer Receipt Screenshot";
+      if (proofSender) {
+        const sender = order.senderDetails && order.senderDetails.name 
+          ? `Sender: ${order.senderDetails.name} (${order.senderDetails.bank || 'Bank'})` 
+          : "Attached via checkout";
+        proofSender.textContent = sender;
+      }
+      if (proofLink && order.receiptProof.dataUrl) {
+        proofLink.onclick = (e) => {
+          e.preventDefault();
+          window.open(order.receiptProof.dataUrl, "_blank");
+        };
+      }
+    } else if (proofBox) {
+      proofBox.style.display = "none";
     }
 
     let receiptDeliveryText = "";
@@ -885,7 +1087,7 @@ Please verify the payment alert and confirm dispatch! Thank you 🌿`;
 
     const waBtn = document.getElementById("receiptWhatsAppNotifyBtn");
     if (waBtn) {
-      waBtn.innerHTML = `<span>💬 Send Payment Details to Seller on WhatsApp</span>`;
+      waBtn.innerHTML = `<span>💬 Send Receipt via WhatsApp to Seller</span>`;
       waBtn.onclick = () => window.open(waLink, "_blank");
     }
 
@@ -1003,6 +1205,13 @@ Please verify the payment alert and confirm dispatch! Thank you 🌿`;
     // Receipt Modal Close
     document.getElementById("closeReceiptBtn").addEventListener("click", () => {
       document.getElementById("receiptModalOverlay").classList.remove("active");
+    });
+
+    // Hidden Admin Shortcut: Press Ctrl + Shift + A to open admin portal secretly
+    window.addEventListener("keydown", (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === "A" || e.key === "a")) {
+        window.location.href = "admin.html";
+      }
     });
   });
 

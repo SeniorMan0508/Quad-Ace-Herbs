@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard — Quad-Ace Herbs | Store & Product Manager</title>
+  <link rel="icon" type="image/x-icon" href="./images/bg-image.jpeg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Dedicated Admin Styles */
+    body.admin-body {
+      background: #f4f6f5;
+      color: #1a2e22;
+      font-family: var(--font-body);
+      min-height: 100vh;
+    }
+
+    .admin-gatekeeper-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(13, 34, 24, 0.94);
+      backdrop-filter: blur(12px);
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .admin-gate-card {
+      background: #ffffff;
+      max-width: 440px;
+      width: 100%;
+      border-radius: var(--radius-xl);
+      padding: 2.5rem 2rem;
+      text-align: center;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(212, 175, 55, 0.3);
+    }
+
+    .admin-header-nav {
+      background: #0d2218;
+      color: #ffffff;
+      padding: 1rem 0;
+      border-bottom: 2px solid var(--accent-gold);
+    }
+
+    .admin-nav-flex {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .admin-brand-info {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .admin-brand-info img {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: 2px solid var(--accent-gold);
+    }
+
+    .admin-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.25rem;
+      margin: 2rem 0;
+    }
+
+    .admin-stat-card {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      border: 1px solid rgba(24, 66, 46, 0.1);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+    }
+
+    .stat-icon-wrap {
+      width: 52px;
+      height: 52px;
+      border-radius: var(--radius-md);
+      background: rgba(39, 174, 96, 0.12);
+      color: var(--primary-green);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+    }
+
+    .stat-number {
+      font-size: 1.85rem;
+      font-weight: 800;
+      color: var(--deep-forest);
+      line-height: 1.1;
+    }
+
+    .stat-label {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-top: 0.2rem;
+    }
+
+    .admin-tabs-nav {
+      display: flex;
+      gap: 0.5rem;
+      border-bottom: 2px solid rgba(24, 66, 46, 0.12);
+      margin-bottom: 2rem;
+      overflow-x: auto;
+    }
+
+    .admin-tab-btn {
+      background: none;
+      border: none;
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      padding: 0.85rem 1.5rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+      transition: all var(--transition-fast);
+      white-space: nowrap;
+    }
+
+    .admin-tab-btn:hover {
+      color: var(--primary-green);
+    }
+
+    .admin-tab-btn.active {
+      color: var(--deep-forest);
+      border-bottom-color: var(--primary-green);
+      background: rgba(24, 66, 46, 0.04);
+      border-radius: var(--radius-md) var(--radius-md) 0 0;
+    }
+
+    .admin-panel {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .admin-panel.active {
+      display: block;
+    }
+
+    .admin-card {
+      background: #ffffff;
+      border-radius: var(--radius-xl);
+      padding: 2.25rem;
+      border: 1px solid rgba(24, 66, 46, 0.1);
+      box-shadow: 0 6px 25px rgba(0, 0, 0, 0.05);
+      margin-bottom: 2.5rem;
+    }
+
+    .admin-card h3 {
+      font-family: var(--font-heading);
+      font-size: 1.4rem;
+      color: var(--deep-forest);
+      margin-bottom: 0.5rem;
+    }
+
+    .admin-card-subtitle {
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      margin-bottom: 1.75rem;
+    }
+
+    .preset-images-picker {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+      gap: 0.75rem;
+      margin-top: 0.5rem;
+    }
+
+    .preset-img-thumb {
+      width: 100%;
+      height: 75px;
+      object-fit: cover;
+      border-radius: var(--radius-sm);
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .preset-img-thumb:hover,
+    .preset-img-thumb.selected {
+      border-color: var(--primary-green);
+      transform: scale(1.04);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    .product-manage-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    .product-manage-table th {
+      text-align: left;
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      padding: 0.85rem 1rem;
+      border-bottom: 2px solid rgba(24, 66, 46, 0.1);
+      background: #f8faf9;
+    }
+
+    .product-manage-table td {
+      padding: 1rem;
+      border-bottom: 1px solid rgba(24, 66, 46, 0.08);
+      vertical-align: middle;
+      font-size: 0.9rem;
+    }
+
+    .product-table-thumb {
+      width: 50px;
+      height: 50px;
+      border-radius: var(--radius-sm);
+      object-fit: cover;
+    }
+
+    .source-badge {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.2rem 0.55rem;
+      border-radius: var(--radius-full);
+      text-transform: uppercase;
+    }
+
+    .source-badge.default {
+      background: #e2e8f0;
+      color: #475569;
+    }
+
+    .source-badge.custom {
+      background: #dcfce7;
+      color: #15803d;
+      border: 1px solid #86efac;
+    }
+
+    .btn-action-del {
+      background: rgba(239, 68, 68, 0.12);
+      color: #dc2626;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      padding: 0.4rem 0.85rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .btn-action-del:hover {
+      background: #dc2626;
+      color: #ffffff;
+    }
+
+    .btn-action-view {
+      background: rgba(24, 66, 46, 0.08);
+      color: var(--deep-forest);
+      border: 1px solid rgba(24, 66, 46, 0.2);
+      padding: 0.4rem 0.85rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-decoration: none;
+      display: inline-block;
+      transition: all var(--transition-fast);
+    }
+
+    .btn-action-view:hover {
+      background: var(--primary-green);
+      color: #ffffff;
+    }
+
+    .live-preview-box {
+      background: #f8faf9;
+      border: 1px dashed rgba(24, 66, 46, 0.25);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      text-align: center;
+    }
+  </style>
+</head>
+<body class="admin-body">
+
+  <!-- ADMIN PASSCODE GATEKEEPER (Visible only to authorized store admin) -->
+  <div class="admin-gatekeeper-overlay" id="adminGatekeeper">
+    <div class="admin-gate-card">
+      <div style="font-size: 3rem; margin-bottom: 0.5rem;">🔒</div>
+      <h2 style="font-family: var(--font-heading); color: var(--deep-forest); margin-bottom: 0.35rem;">Quad-Ace Herbs</h2>
+      <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 1.5rem;">
+        Enter your Admin Security Passcode to access product management and catalog controls.
+      </p>
+
+      <form id="adminLoginForm" onsubmit="return false;">
+        <div class="form-group" style="text-align: left; margin-bottom: 1rem;">
+          <label class="form-label" for="adminPinInput">Admin Passcode</label>
+          <input type="password" id="adminPinInput" class="form-input" placeholder="Enter admin passcode" style="text-align: center; font-size: 1.15rem; letter-spacing: 0.15em;" required autofocus>
+        </div>
+
+        <div id="gatekeeperError" style="display: none; background: #fee2e2; color: #b91c1c; padding: 0.5rem; border-radius: var(--radius-sm); font-size: 0.82rem; margin-bottom: 1rem;">
+          ⚠️ Incorrect passcode! Please try again.
+        </div>
+
+        <button type="submit" class="btn-primary" id="unlockAdminBtn" style="width: 100%; justify-content: center;">
+          <span>Unlock Admin Dashboard 🌿</span>
+        </button>
+
+        <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 1.25rem;">
+          Passcode is configured in <code style="background: #e2e8f0; padding: 0.2rem 0.4rem; border-radius: 4px;">store-config.js</code> (Default: <code>quadace2026</code>)
+        </p>
+      </form>
+    </div>
+  </div>
+
+  <!-- ADMIN DASHBOARD MAIN WRAPPER -->
+  <div id="adminDashboardApp">
+    
+    <!-- HEADER -->
+    <header class="admin-header-nav">
+      <div class="container admin-nav-flex">
+        <div class="admin-brand-info">
+          <img src="./images/bg-image.jpeg" alt="Logo">
+          <div>
+            <h3 style="font-family: var(--font-heading); font-size: 1.15rem; color: #ffffff; margin: 0;">Quad-Ace Herbs</h3>
+            <span style="font-size: 0.75rem; color: var(--accent-gold); text-transform: uppercase; letter-spacing: 0.05em;">Admin Command Center</span>
+          </div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 0.85rem;">
+          <a href="shop.html" target="_blank" class="btn-secondary" style="background: rgba(255, 255, 255, 0.1); color: #ffffff; border-color: rgba(255, 255, 255, 0.25); padding: 0.45rem 1rem; font-size: 0.85rem;">
+            <span>🛍️ View Live Shop</span>
+          </a>
+          <a href="index.html" target="_blank" class="btn-secondary" style="background: rgba(255, 255, 255, 0.1); color: #ffffff; border-color: rgba(255, 255, 255, 0.25); padding: 0.45rem 1rem; font-size: 0.85rem;">
+            <span>🏠 View Home</span>
+          </a>
+          <button type="button" id="adminLogoutBtn" style="background: none; border: 1px solid rgba(255, 255, 255, 0.3); color: #fca5a5; padding: 0.45rem 0.85rem; border-radius: var(--radius-sm); font-size: 0.82rem; cursor: pointer;">
+            <span>🚪 Logout</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="container" style="padding-top: 2rem; padding-bottom: 4rem;">
+      
+      <!-- WELCOME BAR -->
+      <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <h1 style="font-family: var(--font-heading); font-size: 1.85rem; color: var(--deep-forest); margin-bottom: 0.35rem;">
+            Store & Product Management
+          </h1>
+          <p style="color: var(--text-secondary); font-size: 0.92rem;">
+            Add new herbal remedies, adjust prices, remove products, or view store configuration.
+          </p>
+        </div>
+        <div>
+          <span style="display: inline-flex; align-items: center; gap: 0.4rem; background: #e8f7ee; color: #166534; font-size: 0.8rem; font-weight: 700; padding: 0.35rem 0.75rem; border-radius: var(--radius-full); border: 1px solid #86efac;">
+            <span style="width: 8px; height: 8px; border-radius: 50%; background: #22c55e;"></span>
+            Live Catalog Synced
+          </span>
+        </div>
+      </div>
+
+      <!-- METRICS STATS -->
+      <div class="admin-stats-grid">
+        <div class="admin-stat-card">
+          <div class="stat-icon-wrap">🌿</div>
+          <div>
+            <div class="stat-number" id="statTotalProducts">0</div>
+            <div class="stat-label">Total Products Active</div>
+          </div>
+        </div>
+
+        <div class="admin-stat-card">
+          <div class="stat-icon-wrap" style="background: rgba(212, 175, 55, 0.15); color: #b45309;">✨</div>
+          <div>
+            <div class="stat-number" id="statCustomProducts">0</div>
+            <div class="stat-label">Added by Admin</div>
+          </div>
+        </div>
+
+        <div class="admin-stat-card">
+          <div class="stat-icon-wrap" style="background: rgba(59, 130, 246, 0.12); color: #2563eb;">🏺</div>
+          <div>
+            <div class="stat-number">5</div>
+            <div class="stat-label">Herbal Categories</div>
+          </div>
+        </div>
+
+        <div class="admin-stat-card">
+          <div class="stat-icon-wrap" style="background: rgba(16, 185, 129, 0.12); color: #059669;">🏦</div>
+          <div>
+            <div class="stat-number" style="font-size: 1.15rem; font-weight: 800;">Kuda Bank</div>
+            <div class="stat-label">2023980523 (Daniel)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TABS NAVIGATION -->
+      <div class="admin-tabs-nav">
+        <button class="admin-tab-btn active" data-tab="tabAdd">
+          <span>➕ Add New Product</span>
+        </button>
+        <button class="admin-tab-btn" data-tab="tabManage">
+          <span>📦 Manage All Products (<span id="tabCountBadge">0</span>)</span>
+        </button>
+        <button class="admin-tab-btn" data-tab="tabSettings">
+          <span>⚙️ Store Info & Backup</span>
+        </button>
+      </div>
+
+      <!-- TAB 1: ADD NEW PRODUCT -->
+      <div class="admin-panel active" id="tabAdd">
+        <div class="admin-card">
+          <h3>➕ Add a New Herbal Remedy to Your Shop</h3>
+          <p class="admin-card-subtitle">
+            Fill in the details below. Once you click <strong>"Publish Product"</strong>, it will appear immediately on both the <strong>Shop page</strong> and <strong>Home page</strong>!
+          </p>
+
+          <form id="addProductForm" onsubmit="return false;">
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label" for="prodName">Product Name *</label>
+                <input type="text" id="prodName" class="form-input" placeholder="e.g. Agbo Iba & Typhoid Herbal Flush" required>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="prodCategory">Category *</label>
+                <select id="prodCategory" class="form-input" required>
+                  <option value="agbo">Agbo & Tonics (Digestive, Flushes)</option>
+                  <option value="men">Men's Vitality (Virility, Stamina)</option>
+                  <option value="women">Women's Wellness (Womb, Fertility, Hormones)</option>
+                  <option value="raw">Raw Roots & Pods (Prekese, Spices)</option>
+                  <option value="wellness">Immunity & Detox (Liver, Blood, General)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="prodSubtitle">Subtitle / Tagline</label>
+              <input type="text" id="prodSubtitle" class="form-input" placeholder="e.g. Traditional Wild Neem & Bitter Leaf Antiviral Decoction">
+            </div>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label" for="prodPrice">Selling Price (₦) *</label>
+                <input type="number" id="prodPrice" class="form-input" placeholder="e.g. 7500" required min="100">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="prodOriginalPrice">Original / Market Price (₦) (Optional Strikethrough)</label>
+                <input type="number" id="prodOriginalPrice" class="form-input" placeholder="e.g. 9000 (shows discount)">
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label" for="prodBadge">Promotional Badge (Optional)</label>
+                <input type="text" id="prodBadge" class="form-input" placeholder="e.g. New Remedy, Bestseller, Doctor Recommended">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="prodBadgeType">Badge Style</label>
+                <select id="prodBadgeType" class="form-input">
+                  <option value="gold">Gold Premium (Bestseller)</option>
+                  <option value="hot">Hot Red (High Demand)</option>
+                  <option value="organic">Green (100% Organic)</option>
+                  <option value="featured">Blue (Doctor Approved)</option>
+                  <option value="standard">Standard Forest Green</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Image Picker -->
+            <div class="form-group" style="background: #f8faf9; padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid rgba(24, 66, 46, 0.12); margin-bottom: 1.25rem;">
+              <label class="form-label" style="font-weight: 700; margin-bottom: 0.5rem;">Product Photo / Image *</label>
+              <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.85rem;">
+                Choose one of our authentic herb photos, upload your own photo, or enter an image link:
+              </p>
+
+              <!-- Option 1: File Upload -->
+              <div style="margin-bottom: 1rem;">
+                <label style="font-size: 0.82rem; font-weight: 700; color: var(--deep-forest); display: block; margin-bottom: 0.35rem;">
+                  📸 Option A: Upload from your device (Phone/Computer)
+                </label>
+                <input type="file" id="prodImageFile" accept="image/*" class="form-input" style="padding: 0.45rem;">
+              </div>
+
+              <!-- Option 2: Presets -->
+              <div style="margin-bottom: 1rem;">
+                <label style="font-size: 0.82rem; font-weight: 700; color: var(--deep-forest); display: block; margin-bottom: 0.35rem;">
+                  🖼️ Option B: Or pick from our stock herbal photos:
+                </label>
+                <div class="preset-images-picker" id="presetImagesList">
+                  <img src="images/agbo-jedi.jpg" alt="Agbo Jedi" class="preset-img-thumb selected" data-src="images/agbo-jedi.jpg" title="Agbo Jedi Bottle">
+                  <img src="images/man-power.jpg" alt="Man Power" class="preset-img-thumb" data-src="images/man-power.jpg" title="Man Power Infusion">
+                  <img src="images/hormonal-balance.jpg" alt="Hormonal Balance" class="preset-img-thumb" data-src="images/hormonal-balance.jpg" title="Queen's Tea">
+                  <img src="images/raw-herbs.jpg" alt="Raw Herbs" class="preset-img-thumb" data-src="images/raw-herbs.jpg" title="Raw Prekese & Roots">
+                  <img src="images/agbo-idakole.jpg" alt="Idakole" class="preset-img-thumb" data-src="images/agbo-idakole.jpg" title="Idakole Elixir">
+                  <img src="images/hero.jpg" alt="Herb Hero" class="preset-img-thumb" data-src="images/hero.jpg" title="Couple Detox Pack">
+                </div>
+              </div>
+
+              <!-- Option 3: URL -->
+              <div>
+                <label style="font-size: 0.82rem; font-weight: 700; color: var(--deep-forest); display: block; margin-bottom: 0.35rem;">
+                  🌐 Option C: Or paste image web URL
+                </label>
+                <input type="url" id="prodImageUrl" class="form-input" placeholder="https://example.com/herb.jpg">
+              </div>
+
+              <!-- Current Preview Thumbnail -->
+              <div style="display: flex; align-items: center; gap: 1rem; margin-top: 1rem; padding-top: 0.75rem; border-top: 1px dashed rgba(24, 66, 46, 0.15);">
+                <img id="activeImagePreview" src="images/agbo-jedi.jpg" alt="Selected Preview" style="width: 60px; height: 60px; object-fit: cover; border-radius: var(--radius-sm); border: 2px solid var(--primary-green);">
+                <div style="font-size: 0.82rem; color: var(--text-secondary);">
+                  <strong style="color: var(--deep-forest);">Active Image:</strong> <span id="activeImageName">images/agbo-jedi.jpg</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="prodShortDesc">Short Summary (Shown on product card) *</label>
+              <textarea id="prodShortDesc" class="form-input" rows="2" placeholder="e.g. Potent traditional formulation brewed to flush stubborn infections, eliminate chills, and cleanse the bloodstream." required></textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="prodFullDesc">Full Traditional Description (Shown in Quick Details popup)</label>
+              <textarea id="prodFullDesc" class="form-input" rows="3" placeholder="Provide detailed ancestral history and medicinal benefits of this formulation..."></textarea>
+            </div>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label" for="prodBenefits">Key Health Benefits (One benefit per line)</label>
+                <textarea id="prodBenefits" class="form-input" rows="3" placeholder="Relieves chronic body weakness&#10;Flushes stagnant toxins from liver&#10;Strengthens natural immunity"></textarea>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="prodIngredients">Herbal Ingredients (One ingredient per line)</label>
+                <textarea id="prodIngredients" class="form-input" rows="3" placeholder="Neem leaf (Dogonyaro)&#10;Ginger & Mountain Garlic&#10;Bitter leaf extract"></textarea>
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label" for="prodUsage">Dosage & How to Take</label>
+                <input type="text" id="prodUsage" class="form-input" placeholder="e.g. Drink 1 measuring cup (50ml) morning and night before bed.">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="prodCaution">Caution & Warnings</label>
+                <input type="text" id="prodCaution" class="form-input" placeholder="e.g. Not recommended for pregnant women.">
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 1rem; margin-top: 1.5rem; justify-content: flex-end;">
+              <button type="reset" class="btn-secondary" id="resetFormBtn" style="color: var(--deep-forest);">
+                <span>Reset Form</span>
+              </button>
+              <button type="submit" class="btn-primary" id="publishProductBtn" style="padding: 0.85rem 2rem;">
+                <span>🌿 Publish Product to Shop Page</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- TAB 2: MANAGE ALL PRODUCTS -->
+      <div class="admin-panel" id="tabManage">
+        <div class="admin-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.75rem;">
+            <div>
+              <h3>All Products in Catalog</h3>
+              <p class="admin-card-subtitle" style="margin-bottom: 0;">
+                View, edit, or remove any product currently available in your shop.
+              </p>
+            </div>
+            <div>
+              <input type="text" id="manageSearchInput" class="form-input" placeholder="Search catalog..." style="max-width: 260px; padding: 0.45rem 0.85rem; font-size: 0.85rem;">
+            </div>
+          </div>
+
+          <div style="overflow-x: auto;">
+            <table class="product-manage-table" id="productsTable">
+              <thead>
+                <tr>
+                  <th>Photo</th>
+                  <th>Remedy Name</th>
+                  <th>Category</th>
+                  <th>Price</th>
+                  <th>Source</th>
+                  <th style="text-align: right;">Action</th>
+                </tr>
+              </thead>
+              <tbody id="productsTableBody">
+                <!-- Dynamically generated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 3: STORE INFO & BACKUP -->
+      <div class="admin-panel" id="tabSettings">
+        <div class="admin-card">
+          <h3>⚙️ Store Settings & Bank Account Details</h3>
+          <p class="admin-card-subtitle">
+            Review your live store configuration, WhatsApp number, and bank account for direct customer transfers.
+          </p>
+
+          <div class="form-grid" style="margin-bottom: 1.5rem;">
+            <div style="background: #f8faf9; padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid rgba(24, 66, 46, 0.1);">
+              <h4 style="color: var(--deep-forest); font-size: 1rem; margin-bottom: 0.5rem;">🏦 Bank Transfer Account</h4>
+              <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6; margin: 0;">
+                <strong>Bank Name:</strong> Kuda Bank<br>
+                <strong>Account Number:</strong> 2023980523<br>
+                <strong>Account Name:</strong> Badmus Daniel Ayodapo<br>
+                <em style="font-size: 0.78rem; color: var(--text-muted);">(To change bank details, edit <code>store-config.js</code>)</em>
+              </p>
+            </div>
+
+            <div style="background: #f8faf9; padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid rgba(24, 66, 46, 0.1);">
+              <h4 style="color: var(--deep-forest); font-size: 1rem; margin-bottom: 0.5rem;">📱 Contact & Notifications</h4>
+              <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6; margin: 0;">
+                <strong>Seller Phone:</strong> +234 905 512 6388<br>
+                <strong>WhatsApp Orders:</strong> 2349055126388<br>
+                <strong>Notification Email:</strong> badmusdaniel0508@gmail.com<br>
+                <strong>Store Location:</strong> Abeokuta, Ogun State
+              </p>
+            </div>
+          </div>
+
+          <!-- Passcode Change Section -->
+          <div style="background: #ffffff; border: 1.5px solid rgba(24, 66, 46, 0.15); border-radius: var(--radius-lg); padding: 1.75rem; margin-bottom: 2rem; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+              <span style="font-size: 1.6rem;">🔐</span>
+              <div>
+                <h4 style="color: var(--deep-forest); font-size: 1.15rem; margin: 0;">Change Admin Security Passcode</h4>
+                <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0.15rem 0 0 0;">
+                  Handing over the store to the owner? Change your admin password right here without touching any code!
+                </p>
+              </div>
+            </div>
+
+            <form id="changePasscodeForm" onsubmit="return false;" style="max-width: 520px; margin-top: 1.25rem;">
+              <div class="form-group" style="margin-bottom: 0.85rem;">
+                <label class="form-label" for="currentPasscodeInput">Current Passcode *</label>
+                <input type="password" id="currentPasscodeInput" class="form-input" placeholder="Enter current passcode" required>
+              </div>
+
+              <div class="form-grid" style="margin-bottom: 0.85rem;">
+                <div class="form-group">
+                  <label class="form-label" for="newPasscodeInput">New Passcode *</label>
+                  <input type="password" id="newPasscodeInput" class="form-input" placeholder="New passcode (min. 4 chars)" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="confirmPasscodeInput">Confirm New Passcode *</label>
+                  <input type="password" id="confirmPasscodeInput" class="form-input" placeholder="Repeat new passcode" required>
+                </div>
+              </div>
+
+              <div id="passcodeChangeAlert" style="display: none; padding: 0.65rem 0.9rem; border-radius: var(--radius-sm); font-size: 0.825rem; margin-bottom: 1rem;"></div>
+
+              <button type="submit" class="btn-primary" id="updatePasscodeBtn">
+                <span>Update Admin Passcode 🔒</span>
+              </button>
+            </form>
+          </div>
+
+          <h4 style="color: var(--deep-forest); font-size: 1.1rem; margin-bottom: 0.5rem;">Catalog Backup & Safety Reset</h4>
+          <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
+            Download a permanent JSON backup file of all products, or reset your catalog to original factory defaults.
+          </p>
+
+          <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+            <button type="button" class="btn-primary" id="exportCatalogBtn">
+              <span>📥 Download Complete Catalog JSON</span>
+            </button>
+            <button type="button" class="btn-action-del" id="resetCatalogBtn" style="padding: 0.75rem 1.5rem; font-size: 0.85rem;">
+              <span>🔄 Reset to Factory Default Products</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- TOAST NOTIFICATIONS -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- SCRIPTS -->
+  <script src="store-config.js"></script>
+  <script src="products.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

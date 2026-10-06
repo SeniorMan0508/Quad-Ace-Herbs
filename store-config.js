@@ -23,6 +23,9 @@ const STORE_CONFIG = {
   currencySymbol: "₦",
   currencyCode: "NGN",
 
+  // Security: Admin Dashboard Passcode
+  adminPasscode: "quadace2026",
+
   // -------------------------------------------------------------
   // BANK TRANSFER DETAILS (Customer sees this at checkout)
   // EDIT THESE WHEN YOU HAVE HER OFFICIAL BANK ACCOUNT:
