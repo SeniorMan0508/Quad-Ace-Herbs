@@ -49,21 +49,18 @@ The Admin Dashboard is **100% invisible to regular customers**:
 3. Click the red **"🗑️ Remove"** button and confirm.
 4. The product vanishes from the Shop page and Home page immediately.
 
-### 🔐 How to Change the Admin Passcode:
-There are **two easy ways** to change the admin password when you hand over the site to the owner:
-
-- **Method A (Easiest — Direct in Admin Dashboard, No Code Needed)**:
-  1. Open `admin.html` and unlock it.
+### 🔐 How to Change the Password (When Handing Over):
+You or the new store owner can change the passcode at any time using either method:
+- **Method 1 (Directly on screen — No coding required)**:
+  1. Open `admin.html` and log in.
   2. Click the **"⚙️ Store Info & Backup"** tab.
-  3. Under **"Change Admin Security Passcode"**, enter your current passcode and the new passcode.
-  4. Click **"Update Admin Passcode"**.
-  5. The new passcode is active immediately!
-
-- **Method B (Inside the Code File)**:
-  1. Open `store-config.js`.
-  2. Look for line 27: `adminPasscode: "quadace2026",`.
-  3. Replace `"quadace2026"` with whatever password the owner wants (e.g. `"myherbs2026"`).
-  4. Save the file.
+  3. Look for the **"🔐 Change Admin Security Passcode"** box.
+  4. Type your current passcode, enter your new passcode, and click **"Save New Passcode"**. Done!
+- **Method 2 (In Code)**:
+  - Open [`store-config.js`](file:///c:/Users/USER/OneDrive/Desktop/herbs%20website/store-config.js) and update line 27:
+    ```javascript
+    adminPasscode: "herbs2026", // Change to whatever you want
+    ```
 
 ### ⚙️ Store Info & Backup:
 - In the **"⚙️ Store Info & Backup"** tab, you can download a complete backup of your entire catalog as a `.json` file, or reset back to default factory remedies if needed.

@@ -650,28 +650,26 @@
             </div>
           </div>
 
-          <!-- Passcode Change Section -->
-          <div style="background: #ffffff; border: 1.5px solid rgba(24, 66, 46, 0.15); border-radius: var(--radius-lg); padding: 1.75rem; margin-bottom: 2rem; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
-            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
-              <span style="font-size: 1.6rem;">🔐</span>
-              <div>
-                <h4 style="color: var(--deep-forest); font-size: 1.15rem; margin: 0;">Change Admin Security Passcode</h4>
-                <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0.15rem 0 0 0;">
-                  Handing over the store to the owner? Change your admin password right here without touching any code!
-                </p>
-              </div>
+          <!-- Change Passcode Card -->
+          <div style="background: #ffffff; border: 1.5px solid rgba(212, 175, 55, 0.4); border-radius: var(--radius-lg); padding: 1.5rem; margin-bottom: 2rem; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
+            <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.5rem;">
+              <span style="font-size: 1.5rem;">🔐</span>
+              <h4 style="color: var(--deep-forest); font-size: 1.15rem; margin: 0;">Change Admin Security Passcode</h4>
             </div>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
+              Handing over the website? You or the owner can easily set a brand-new login password here anytime without touching any code:
+            </p>
 
-            <form id="changePasscodeForm" onsubmit="return false;" style="max-width: 520px; margin-top: 1.25rem;">
-              <div class="form-group" style="margin-bottom: 0.85rem;">
+            <form id="changePasscodeForm" onsubmit="return false;" style="max-width: 520px;">
+              <div class="form-group" style="margin-bottom: 0.75rem;">
                 <label class="form-label" for="currentPasscodeInput">Current Passcode *</label>
                 <input type="password" id="currentPasscodeInput" class="form-input" placeholder="Enter current passcode" required>
               </div>
 
-              <div class="form-grid" style="margin-bottom: 0.85rem;">
+              <div class="form-grid" style="margin-bottom: 0.75rem;">
                 <div class="form-group">
                   <label class="form-label" for="newPasscodeInput">New Passcode *</label>
-                  <input type="password" id="newPasscodeInput" class="form-input" placeholder="New passcode (min. 4 chars)" required>
+                  <input type="password" id="newPasscodeInput" class="form-input" placeholder="e.g. herbs2026" required>
                 </div>
                 <div class="form-group">
                   <label class="form-label" for="confirmPasscodeInput">Confirm New Passcode *</label>
@@ -679,10 +677,10 @@
                 </div>
               </div>
 
-              <div id="passcodeChangeAlert" style="display: none; padding: 0.65rem 0.9rem; border-radius: var(--radius-sm); font-size: 0.825rem; margin-bottom: 1rem;"></div>
+              <div id="passcodeMsg" style="display: none; padding: 0.5rem 0.75rem; border-radius: var(--radius-sm); font-size: 0.82rem; margin-bottom: 0.75rem;"></div>
 
-              <button type="submit" class="btn-primary" id="updatePasscodeBtn">
-                <span>Update Admin Passcode 🔒</span>
+              <button type="submit" class="btn-primary" id="savePasscodeBtn" style="padding: 0.6rem 1.5rem;">
+                <span>🔒 Save New Passcode</span>
               </button>
             </form>
           </div>

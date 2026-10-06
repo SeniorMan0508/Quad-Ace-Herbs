@@ -38,11 +38,12 @@
     }, 3500);
   }
 
-  // --- PASSCODE UTILITY ---
+  const PASSCODE_STORAGE_KEY = "quadace_admin_passcode";
+
   function getActivePasscode() {
-    const custom = localStorage.getItem("quadace_admin_passcode");
-    if (custom) return custom;
-    return (typeof STORE_CONFIG !== "undefined" && STORE_CONFIG.adminPasscode) ? STORE_CONFIG.adminPasscode : "quadace2026";
+    return localStorage.getItem(PASSCODE_STORAGE_KEY) || 
+      (typeof STORE_CONFIG !== "undefined" && STORE_CONFIG.adminPasscode) || 
+      "quadace2026";
   }
 
   // --- PASSCODE GATEKEEPER ---
@@ -416,58 +417,54 @@
     renderManageTable();
   }
 
-  // --- CHANGE ADMIN PASSCODE ---
-  function initPasscodeChange() {
+  // --- CHANGE PASSCODE HANDLER ---
+  function initChangePasscode() {
     const form = document.getElementById("changePasscodeForm");
     const currentInput = document.getElementById("currentPasscodeInput");
     const newInput = document.getElementById("newPasscodeInput");
     const confirmInput = document.getElementById("confirmPasscodeInput");
-    const alertBox = document.getElementById("passcodeChangeAlert");
+    const msgEl = document.getElementById("passcodeMsg");
 
-    if (!form) return;
+    if (!form || !currentInput) return;
 
     form.addEventListener("submit", (e) => {
       e.preventDefault();
+      const currentVal = currentInput.value.trim();
+      const newVal = newInput.value.trim();
+      const confirmVal = confirmInput.value.trim();
+      const actualCurrent = getActivePasscode();
 
-      const current = currentInput.value.trim();
-      const next = newInput.value.trim();
-      const confirm = confirmInput.value.trim();
-      const active = getActivePasscode();
+      const showMsg = (text, isError = true) => {
+        if (!msgEl) return;
+        msgEl.style.display = "block";
+        msgEl.style.background = isError ? "#fee2e2" : "#dcfce7";
+        msgEl.style.color = isError ? "#b91c1c" : "#15803d";
+        msgEl.style.border = isError ? "1px solid #fca5a5" : "1px solid #86efac";
+        msgEl.textContent = text;
+      };
 
-      if (current !== active) {
-        alertBox.style.display = "block";
-        alertBox.style.background = "#fee2e2";
-        alertBox.style.color = "#b91c1c";
-        alertBox.textContent = "❌ Current passcode is incorrect!";
+      if (currentVal !== actualCurrent) {
+        showMsg("Current passcode is incorrect! Please enter your active passcode.");
         return;
       }
 
-      if (next.length < 4) {
-        alertBox.style.display = "block";
-        alertBox.style.background = "#fee2e2";
-        alertBox.style.color = "#b91c1c";
-        alertBox.textContent = "❌ New passcode must be at least 4 characters long.";
+      if (!newVal || newVal.length < 4) {
+        showMsg("New passcode must be at least 4 characters long.");
         return;
       }
 
-      if (next !== confirm) {
-        alertBox.style.display = "block";
-        alertBox.style.background = "#fee2e2";
-        alertBox.style.color = "#b91c1c";
-        alertBox.textContent = "❌ New passcodes do not match!";
+      if (newVal !== confirmVal) {
+        showMsg("New passcode and confirmation do not match!");
         return;
       }
 
-      // Save custom passcode
-      localStorage.setItem("quadace_admin_passcode", next);
+      // Save new passcode
+      localStorage.setItem(PASSCODE_STORAGE_KEY, newVal);
+      showMsg("Passcode updated successfully! Your new password is now active.", false);
+      showAdminToast("Passcode changed successfully! 🔐", "✓");
 
-      alertBox.style.display = "block";
-      alertBox.style.background = "#dcfce7";
-      alertBox.style.color = "#15803d";
-      alertBox.textContent = "✅ Admin passcode updated successfully! Remember to use your new passcode next time.";
-
+      // Reset form
       form.reset();
-      showAdminToast("Passcode updated successfully! 🔒", "✅");
     });
   }
 
@@ -477,7 +474,7 @@
     initTabs();
     initImageHandlers();
     initProductForm();
-    initPasscodeChange();
+    initChangePasscode();
     initBackupAndReset();
     checkAuth();
   }

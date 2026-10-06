@@ -236,178 +236,180 @@
     </div>
   </div>
 
-  <!-- CART SLIDE-OVER DRAWER -->
-  <div class="modal-overlay" id="cartOverlay">
-    <div class="cart-drawer">
-      <div class="cart-drawer-header">
-        <div style="display: flex; align-items: center; gap: 0.5rem;">
-          <span style="font-size: 1.5rem;">🧺</span>
-          <h3 style="font-family: var(--font-heading); color: var(--deep-forest);">Your Herbal Basket</h3>
-          <span id="drawerItemCount" style="font-size: 0.85rem; color: var(--text-muted);">(0 items)</span>
-        </div>
-        <button class="modal-close-btn" id="closeCartBtn" aria-label="Close cart">&times;</button>
+  <!-- SLIDE-OVER CART DRAWER -->
+  <div class="cart-drawer-overlay" id="cartOverlay">
+    <div class="cart-drawer" id="cartDrawer">
+      <div class="cart-header">
+        <h3>
+          <span>🌿</span>
+          <span>Your Herbal Basket</span>
+          <span style="font-size: 0.85rem; color: var(--text-muted);" id="drawerItemCount">(0 items)</span>
+        </h3>
+        <button class="close-drawer-btn" id="closeCartBtn" aria-label="Close cart">&times;</button>
       </div>
 
-      <!-- Free Shipping Tracker -->
-      <div class="free-shipping-progress" id="freeShippingContainer">
-        <div style="display: flex; justify-content: space-between; font-size: 0.82rem; margin-bottom: 0.35rem;">
-          <span id="freeShippingText">Add ₦50,000 for FREE Local Delivery</span>
-          <strong id="freeShippingPercent">0%</strong>
-        </div>
-        <div class="progress-bar-bg">
-          <div class="progress-bar-fill" id="freeShippingBar"></div>
+      <!-- Free Shipping Meter -->
+      <div class="free-shipping-bar" id="freeShippingContainer">
+        <span id="freeShippingText">Add ₦50,000 more for FREE Lagos Delivery!</span>
+        <div class="progress-track">
+          <div class="progress-fill" id="shippingProgressFill"></div>
         </div>
       </div>
 
-      <!-- Cart Items List -->
-      <div class="cart-items-container" id="cartItemsList">
-        <!-- Rendered dynamically -->
+      <!-- Items List -->
+      <div class="cart-items-body" id="cartItemsList">
+        <!-- Rendered by app.js -->
       </div>
 
-      <!-- Cart Footer / Checkout -->
-      <div class="cart-drawer-footer" id="cartFooter">
+      <!-- Cart Footer -->
+      <div class="cart-footer" id="cartFooter">
         <!-- Coupon Form -->
-        <div class="coupon-box">
-          <input type="text" id="couponInput" placeholder="Enter coupon code (e.g. QUADACE10)" class="form-input" style="text-transform: uppercase;">
-          <button type="button" class="btn-secondary" id="applyCouponBtn" style="padding: 0.5rem 1rem;">Apply</button>
+        <div class="coupon-row">
+          <input type="text" id="couponInput" placeholder="Promo code (e.g. QUADACE10)">
+          <button class="apply-coupon-btn" id="applyCouponBtn">Apply</button>
         </div>
-        <div id="couponMessage" style="font-size: 0.8rem; margin-top: 0.35rem; display: none;"></div>
+        <div id="couponMessage" style="font-size: 0.78rem; margin-top: -0.5rem; margin-bottom: 0.5rem; display: none;"></div>
 
-        <div class="cart-totals">
-          <div class="line">
-            <span>Items Subtotal:</span>
-            <strong id="cartSubtotalText">₦0</strong>
-          </div>
-          <div class="line" id="discountLine" style="display: none; color: #27ae60;">
-            <span>Discount Applied:</span>
-            <strong id="cartDiscountText">-₦0</strong>
-          </div>
-          <div class="line total">
-            <span>Estimated Total:</span>
-            <strong id="cartTotalText">₦0</strong>
-          </div>
+        <div class="cart-summary-line">
+          <span>Subtotal:</span>
+          <strong id="cartSubtotal">₦0</strong>
+        </div>
+        <div class="cart-summary-line" id="discountRow" style="display: none; color: #27ae60;">
+          <span>Discount:</span>
+          <strong id="cartDiscount">-₦0</strong>
+        </div>
+        <div class="cart-total-line">
+          <span>Estimated Total:</span>
+          <strong id="cartGrandTotal">₦0</strong>
         </div>
 
-        <button class="btn-checkout" id="checkoutBtn">
-          <span>Proceed to Checkout 🌿</span>
-        </button>
-
-        <p style="text-align: center; font-size: 0.75rem; color: var(--text-muted); margin-top: 0.75rem;">
-          🔒 Direct Bank Transfer with Proof Upload • Instant WhatsApp Order
-        </p>
+        <div class="cart-action-buttons">
+          <button class="btn-whatsapp-order" id="cartWhatsAppOrderBtn">
+            <span>💬 Fast Order via WhatsApp</span>
+          </button>
+          <button class="btn-checkout-modal" id="openCheckoutModalBtn">
+            <span>Proceed to Checkout & Bank Transfer</span>
+          </button>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- MULTI-STEP CHECKOUT MODAL -->
+  <!-- CHECKOUT MODAL -->
   <div class="modal-overlay" id="checkoutModalOverlay">
-    <div class="checkout-modal-dialog">
-      <div class="checkout-modal-header">
-        <div>
-          <span class="badge-pill">Secure Quad-Ace Checkout</span>
-          <h3 style="font-family: var(--font-heading); color: var(--deep-forest); margin-top: 0.25rem;">Complete Your Order</h3>
-        </div>
+    <div class="checkout-modal-content">
+      <div class="modal-header">
+        <h3>
+          <span>🌿</span>
+          <span>Quad-Ace Herbs Secure Checkout</span>
+        </h3>
         <button class="modal-close-btn" id="closeCheckoutBtn">&times;</button>
       </div>
 
-      <!-- Checkout Step Indicators -->
-      <div class="checkout-steps-tracker">
-        <div class="step-indicator active" id="step1Indicator">
-          <span class="step-num">1</span>
-          <span class="step-title">Delivery Address</span>
-        </div>
-        <div class="step-indicator" id="step2Indicator">
-          <span class="step-num">2</span>
-          <span class="step-title">Shipping Method</span>
-        </div>
-        <div class="step-indicator" id="step3Indicator">
-          <span class="step-num">3</span>
-          <span class="step-title">Payment & Proof</span>
-        </div>
-      </div>
-
       <div class="checkout-body">
+        <!-- Step Indicator -->
+        <div class="checkout-steps">
+          <div class="step-indicator active" id="stepIndicator1">
+            <span class="step-num">1</span>
+            <span>Delivery Info</span>
+          </div>
+          <div class="step-indicator" id="stepIndicator2">
+            <span class="step-num">2</span>
+            <span>Shipping Zone</span>
+          </div>
+          <div class="step-indicator" id="stepIndicator3">
+            <span class="step-num">3</span>
+            <span>Payment & Confirmation</span>
+          </div>
+        </div>
+
+        <!-- Form Step 1: Customer Details -->
         <form id="checkoutForm" onsubmit="return false;">
-          <!-- Step 1: Customer & Delivery Details -->
           <div id="stepSection1">
+            <h4 style="font-size: 1.1rem; color: var(--deep-forest); margin-bottom: 1rem;">Customer Delivery Information</h4>
             <div class="form-grid">
-              <div class="form-group">
+              <div class="form-group full-width">
                 <label class="form-label" for="custName">Full Name *</label>
                 <input type="text" id="custName" class="form-input" placeholder="e.g. Babatunde Adeleke" required>
               </div>
+
               <div class="form-group">
-                <label class="form-label" for="custPhone">WhatsApp / Phone Number *</label>
+                <label class="form-label" for="custPhone">WhatsApp / Mobile Number *</label>
                 <input type="tel" id="custPhone" class="form-input" placeholder="e.g. 08012345678" required>
               </div>
-            </div>
 
-            <div class="form-group">
-              <label class="form-label" for="custEmail">Email Address (Optional)</label>
-              <input type="email" id="custEmail" class="form-input" placeholder="For automated receipt">
-            </div>
-
-            <div class="form-group">
-              <label class="form-label" for="custAddress">Detailed Delivery Address *</label>
-              <input type="text" id="custAddress" class="form-input" placeholder="House/Flat No., Street, Landmark" required>
-            </div>
-
-            <div class="form-grid">
               <div class="form-group">
-                <label class="form-label" for="custCity">City / Town *</label>
-                <input type="text" id="custCity" class="form-input" placeholder="e.g. Abeokuta, Ikeja, Ibadan" required>
+                <label class="form-label" for="custEmail">Email Address (Optional)</label>
+                <input type="email" id="custEmail" class="form-input" placeholder="e.g. customer@gmail.com">
               </div>
+
+              <div class="form-group full-width">
+                <label class="form-label" for="custAddress">Street Delivery Address *</label>
+                <input type="text" id="custAddress" class="form-input" placeholder="House number, street name, landmark" required>
+              </div>
+
               <div class="form-group">
-                <label class="form-label" for="custState">State *</label>
-                <input type="text" id="custState" class="form-input" placeholder="e.g. Ogun State, Lagos State" required>
+                <label class="form-label" for="custCity">City / Local Govt *</label>
+                <input type="text" id="custCity" class="form-input" placeholder="e.g. Ikeja, Lekki, Garki" required>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="custState">State / Region *</label>
+                <input type="text" id="custState" class="form-input" placeholder="e.g. Lagos, Abuja, Rivers, etc." required>
+              </div>
+
+              <div class="form-group full-width">
+                <label class="form-label" for="custNotes">Special Delivery / Health Notes</label>
+                <textarea id="custNotes" class="form-textarea" rows="2" placeholder="Any specific instructions for preparation or courier..."></textarea>
               </div>
             </div>
 
-            <div class="form-group">
-              <label class="form-label" for="custNotes">Special Delivery Instructions (Optional)</label>
-              <input type="text" id="custNotes" class="form-input" placeholder="e.g. Call before coming, leave with security">
-            </div>
-
-            <div style="display: flex; justify-content: flex-end; margin-top: 1.5rem;">
+            <div style="display: flex; justify-content: flex-end;">
               <button class="btn-primary" type="button" id="goToStep2Btn">
-                <span>Continue to Shipping →</span>
+                <span>Continue to Shipping Method →</span>
               </button>
             </div>
           </div>
 
-          <!-- Step 2: Shipping Method -->
+          <!-- Form Step 2: Shipping Method -->
           <div id="stepSection2" style="display: none;">
-            <h4 style="font-size: 1.1rem; color: var(--deep-forest); margin-bottom: 1rem;">Select Your Delivery Zone</h4>
-
+            <h4 style="font-size: 1.1rem; color: var(--deep-forest); margin-bottom: 1rem;">Select Your Delivery Destination</h4>
             <div class="shipping-options" id="shippingOptionsList">
-              <div class="shipping-card selected" data-shipping="local">
-                <input type="radio" name="shippingChoice" value="local" checked>
-                <div class="shipping-info">
-                  <strong>Local Intra-State Dispatch (Abeokuta & Nearby)</strong>
-                  <p>Fast doorstep delivery via direct dispatch rider</p>
+              <label class="shipping-card selected" data-shipping="local">
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                  <input type="radio" name="shippingMethod" value="local" checked>
+                  <div class="shipping-info">
+                    <strong>Local Intra-State Dispatch</strong>
+                    <span>Fast doorstep courier within Lagos and environs (Same/Next Day)</span>
+                  </div>
                 </div>
-                <div class="shipping-price" id="rateLocal">₦2,500</div>
-              </div>
+                <span class="shipping-rate" id="rateLocal">₦2,500</span>
+              </label>
 
-              <div class="shipping-card" data-shipping="nationwide">
-                <input type="radio" name="shippingChoice" value="nationwide">
-                <div class="shipping-info">
-                  <strong>Nationwide Interstate Courier (All 36 States)</strong>
-                  <p>Secure parcel transit to Lagos, Abuja, Port Harcourt, Kano, etc.</p>
+              <label class="shipping-card" data-shipping="nationwide">
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                  <input type="radio" name="shippingMethod" value="nationwide">
+                  <div class="shipping-info">
+                    <strong>Nationwide Interstate Delivery</strong>
+                    <span>Secure doorstep delivery to all states (Fee sorted between buyer & dispatch rider)</span>
+                  </div>
                 </div>
-                <div class="shipping-price" style="font-size: 0.85rem; color: var(--earth-terracotta);" id="rateNationwide">Sorted with dispatch rider</div>
-              </div>
+                <span class="shipping-rate" id="rateNationwide" style="font-size: 0.825rem; color: var(--earth-terracotta); text-align: right; max-width: 150px; font-weight: 700;">Sorted with Dispatch Rider</span>
+              </label>
 
-              <div class="shipping-card" data-shipping="international">
-                <input type="radio" name="shippingChoice" value="international">
-                <div class="shipping-info">
-                  <strong>International Express Shipping (DHL / FedEx)</strong>
-                  <p>Worldwide priority delivery (UK, US, Canada, Europe)</p>
+              <label class="shipping-card" data-shipping="international">
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                  <input type="radio" name="shippingMethod" value="international">
+                  <div class="shipping-info">
+                    <strong>International Express Priority (DHL / FedEx)</strong>
+                    <span>Worldwide tracked air dispatch (Courier fee sorted between buyer & carrier)</span>
+                  </div>
                 </div>
-                <div class="shipping-price" style="font-size: 0.85rem; color: var(--earth-terracotta);" id="rateInternational">Sorted with courier</div>
-              </div>
+                <span class="shipping-rate" id="rateInternational" style="font-size: 0.825rem; color: var(--earth-terracotta); text-align: right; max-width: 150px; font-weight: 700;">Sorted with Courier</span>
+              </label>
             </div>
 
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
               <button class="btn-secondary" type="button" id="backToStep1Btn" style="color: var(--deep-forest); border-color: rgba(24, 66, 46, 0.2);">
                 <span>← Back</span>
               </button>
@@ -417,7 +419,7 @@
             </div>
           </div>
 
-          <!-- Step 3: Payment Method & Proof Upload -->
+          <!-- Form Step 3: Payment Method & Confirmation -->
           <div id="stepSection3" style="display: none;">
             <h4 style="font-size: 1.1rem; color: var(--deep-forest); margin-bottom: 1rem;">Choose Your Preferred Payment Method</h4>
 
@@ -459,7 +461,7 @@
                 </div>
 
                 <div class="bank-instructions" id="checkoutBankInstructions">
-                  Please use your Name or Phone number as the payment narration. Once the transfer is complete, attach your receipt screenshot below to notify the herbalist immediately!
+                  Please use your Name or Phone number as the payment narration. Once the transfer is complete, click <strong>"Confirm Order & Send to Seller"</strong> to notify the herbalist on WhatsApp immediately!
                 </div>
 
                 <!-- Payment Verification & Receipt Upload -->
