@@ -1211,14 +1211,50 @@ Please verify the payment alert and confirm dispatch! Thank you 🌿`;
     const mobileMenuBtn = document.getElementById("mobileMenuBtn");
     const navLinks = document.querySelector(".nav-links");
     if (mobileMenuBtn && navLinks) {
-      mobileMenuBtn.addEventListener("click", () => {
-        navLinks.classList.toggle("mobile-active");
+      mobileMenuBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const isOpen = navLinks.classList.toggle("mobile-active");
+        mobileMenuBtn.classList.toggle("active", isOpen);
+        mobileMenuBtn.setAttribute("aria-expanded", isOpen ? "true" : "false");
+        const iconSpan = mobileMenuBtn.querySelector("span");
+        if (iconSpan) {
+          iconSpan.textContent = isOpen ? "✕" : "☰";
+        }
       });
+
       navLinks.querySelectorAll("a").forEach(link => {
         link.addEventListener("click", () => {
           navLinks.classList.remove("mobile-active");
+          mobileMenuBtn.classList.remove("active");
+          mobileMenuBtn.setAttribute("aria-expanded", "false");
+          const iconSpan = mobileMenuBtn.querySelector("span");
+          if (iconSpan) iconSpan.textContent = "☰";
         });
       });
+
+      document.addEventListener("click", (e) => {
+        if (!navLinks.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+          navLinks.classList.remove("mobile-active");
+          mobileMenuBtn.classList.remove("active");
+          mobileMenuBtn.setAttribute("aria-expanded", "false");
+          const iconSpan = mobileMenuBtn.querySelector("span");
+          if (iconSpan) iconSpan.textContent = "☰";
+        }
+      });
+    }
+
+    // Sticky Header Scroll Elevation Effect
+    const mainHeader = document.querySelector(".main-header");
+    if (mainHeader) {
+      const handleHeaderScroll = () => {
+        if (window.scrollY > 20) {
+          mainHeader.classList.add("scrolled");
+        } else {
+          mainHeader.classList.remove("scrolled");
+        }
+      };
+      window.addEventListener("scroll", handleHeaderScroll, { passive: true });
+      handleHeaderScroll();
     }
 
     // Hidden Admin Shortcut: Press Ctrl + Shift + A to open admin portal secretly
