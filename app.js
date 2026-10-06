@@ -1207,6 +1207,20 @@ Please verify the payment alert and confirm dispatch! Thank you 🌿`;
       document.getElementById("receiptModalOverlay").classList.remove("active");
     });
 
+    // Mobile Navigation Menu Toggle
+    const mobileMenuBtn = document.getElementById("mobileMenuBtn");
+    const navLinks = document.querySelector(".nav-links");
+    if (mobileMenuBtn && navLinks) {
+      mobileMenuBtn.addEventListener("click", () => {
+        navLinks.classList.toggle("mobile-active");
+      });
+      navLinks.querySelectorAll("a").forEach(link => {
+        link.addEventListener("click", () => {
+          navLinks.classList.remove("mobile-active");
+        });
+      });
+    }
+
     // Hidden Admin Shortcut: Press Ctrl + Shift + A to open admin portal secretly
     window.addEventListener("keydown", (e) => {
       if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === "A" || e.key === "a")) {
