@@ -1,74 +1,81 @@
 # 🌿 Quad-Ace Herbs — Shop & Admin Dashboard Guide
 
-We have created a dedicated **Shop Page** for your customers to browse all remedies, plus a secure **Admin Dashboard** for you to add, edit, or remove products at any time!
+We have created a dedicated **Shop Page** for your customers to browse all remedies, plus a secure **Admin Dashboard** and a **Node.js Backend Server** for the owner to manage products, update passwords, and recover access safely!
 
 ---
 
-## 🛍️ 1. The New Dedicated Shop Page (`shop.html`)
+## 🚀 How to Start the Website & Backend
 
-Customers can now enjoy a dedicated, full-screen shopping catalog without cluttering the homepage:
+Run the following command in your project terminal:
 
-- **Direct Link**: Open `shop.html` in your browser.
-- **Features**:
-  - **Sidebar Filters**: Filter by Category (Agbo & Tonics, Men's Vitality, Women's Wellness, Raw Roots, Immunity), Price Range, or instant search.
-  - **Live Counters**: Badges next to each category showing how many remedies are in stock.
-  - **Sort Dropdown**: Sort remedies by Featured, Price (Low to High / High to Low), or Customer Ratings.
-  - **Full Cart & Checkout**: Includes the **Proof of Bank Transfer Upload** and direct Kuda Bank payment flow.
-  - **Home Page Preserved**: The home page (`index.html`) still showcases the featured bestsellers, with a banner directing buyers to explore the complete catalog on the Shop page.
+```bash
+npm start
+```
+
+This launches the server at **`http://localhost:3000`**:
+- **Home Page**: [http://localhost:3000/index.html](http://localhost:3000/index.html)
+- **Shop Catalog**: [http://localhost:3000/shop.html](http://localhost:3000/shop.html)
+- **Admin Dashboard**: [http://localhost:3000/admin.html](http://localhost:3000/admin.html)
 
 ---
 
-## 🔒 2. The Private Admin Dashboard (`admin.html`)
+## 🔒 1. Private Admin Portal & Password Security
 
 The Admin Dashboard is **100% invisible to regular customers**:
-- **No visible buttons**: There are zero "Admin" links in the navbar, header, or footer. Customers will never know this page exists.
-- **How YOU access it**:
-  1. Simply type `admin.html` in your browser address bar (or bookmark `c:\Users\USER\OneDrive\Desktop\herbs website\admin.html`).
-  2. Or press the **secret keyboard shortcut**: `Ctrl + Shift + A` while on the website!
-- **Security Passcode**: Even if anyone finds the link, it is locked with your passcode: `quadace2026`.
-  *(You can change this passcode at any time in `store-config.js` under `adminPasscode`).*
+- **No public links**: There are zero "Admin" links in the navigation or footer.
+- **Secret Shortcut**: Press **`Ctrl + Shift + A`** on the keyboard while anywhere on the site to jump directly to the Admin login.
+- **Initial Default Passcode**: `quadace2026`
+- **Owner Registered Recovery Email**: `badmusdaniel0508@gmail.com`
 
-### ✨ How to Add a New Product:
-1. Open `admin.html` and enter your passcode (`quadace2026`).
-2. In the **"➕ Add New Product"** tab, enter:
-   - **Product Name** (e.g. *Agbo Iba & Typhoid Flush*)
-   - **Category** (e.g. *Agbo & Tonics*)
-   - **Selling Price in Naira** (e.g. *7500*)
-   - **Original / Discount Price** (e.g. *9000* — creates a strikethrough savings tag!)
-   - **Photo**:
-     - 📸 Upload a picture directly from your phone/laptop, OR
-     - 🖼️ Choose one of our stock authentic herbal photos, OR
-     - 🌐 Paste an image link.
-   - **Short Summary & Traditional Benefits**.
-3. Click **"🌿 Publish Product to Shop Page"**.
-4. **Done!** The product immediately appears at the top of your **Shop Page (`shop.html`)** and in your store catalog.
+> [!IMPORTANT]
+> **No Plaintext Passwords & No Visible Security Keys:**
+> Passwords are encrypted on the server using cryptographic salted hashing (`scrypt`). No security keys or passcodes are exposed on screen or in code. Whenever a password reset is requested, a secure **one-time 6-digit verification code** is sent directly to the owner's email address.
 
-### 🗑️ How to Remove a Product:
-1. In `admin.html`, click the **"📦 Manage All Products"** tab.
-2. Search or find the product in the table.
-3. Click the red **"🗑️ Remove"** button and confirm.
-4. The product vanishes from the Shop page and Home page immediately.
+---
 
-### 🔐 How to Change the Password (When Handing Over):
-You or the new store owner can change the passcode at any time using either method:
-- **Method 1 (Directly on screen — No coding required)**:
-  1. Open `admin.html` and log in.
-  2. Click the **"⚙️ Store Info & Backup"** tab.
-  3. Look for the **"🔐 Change Admin Security Passcode"** box.
-  4. Type your current passcode, enter your new passcode, and click **"Save New Passcode"**. Done!
-- **Method 2 (In Code)**:
-  - Open [`store-config.js`](file:///c:/Users/USER/OneDrive/Desktop/herbs%20website/store-config.js) and update line 27:
-    ```javascript
-    adminPasscode: "herbs2026", // Change to whatever you want
-    ```
+## 🔑 2. How the Owner Can Reset / Change Her Password
 
-### ⚙️ Store Info & Backup:
-- In the **"⚙️ Store Info & Backup"** tab, you can download a complete backup of your entire catalog as a `.json` file, or reset back to default factory remedies if needed.
+The owner has full control and can reset or change her password at any time without touching any code:
+
+### Method A: Forgot Password? (One-Time 6-Digit Email Reset)
+1. Open [admin.html](file:///c:/Users/USER/OneDrive/Desktop/herbs%20website/admin.html).
+2. Click **"Forgot Passcode? Send Reset Code to Email ✉️"** underneath the login button.
+3. Click **"📩 Send 6-Digit Code to My Email"**. A fresh verification code is sent directly to `badmusdaniel0508@gmail.com` (valid for 15 minutes).
+4. Enter the **6-Digit Verification Code** from the email.
+5. Enter her new passcode and confirm it.
+6. Click **"Verify & Save Passcode ✓"** — **Done!** The password is immediately updated on the server and she is logged in.
+
+### Method B: Changing Password Inside the Dashboard
+1. Log in to the Admin Dashboard.
+2. Click the **"⚙️ Store Info & Backup"** tab.
+3. Find the **"🔐 Change Admin Security Passcode"** section.
+4. Enter the current password, type the new password, and click **"Save New Passcode"**.
+5. The password updates immediately on the server and works across all devices.
+
+### Method C: Updating the Recovery Email Address
+In the **"⚙️ Store Info & Backup"** tab under **"Admin Recovery Email"**, she can change the email address where reset codes are delivered whenever she needs.
+
+---
+
+## 🛍️ 3. Adding and Managing Products
+
+### ✨ Adding a New Remedy:
+1. Log in to [admin.html](file:///c:/Users/USER/OneDrive/Desktop/herbs%20website/admin.html).
+2. Go to the **"➕ Add New Product"** tab.
+3. Fill in the Remedy Name, Category, Price in Naira, photo (upload from device or choose a stock herbal photo), and dosage instructions.
+4. Click **"Publish"**.
+5. The product immediately appears on both the **Shop Page (`shop.html`)** and **Home Page (`index.html`)**.
+
+### 🗑️ Removing a Remedy:
+1. Click the **"📦 Manage All Products"** tab.
+2. Find the product and click **"🗑️ Remove"**.
 
 ---
 
 ## 📁 Summary of Files:
-- [index.html](file:///c:/Users/USER/OneDrive/Desktop/herbs%20website/index.html) — Brand homepage with hero, featured remedies, remedy finder quiz, dosage guide, and customer reviews.
-- [shop.html](file:///c:/Users/USER/OneDrive/Desktop/herbs%20website/shop.html) — Complete dedicated shop page with sidebar filters, sorting, and full checkout.
-- [admin.html](file:///c:/Users/USER/OneDrive/Desktop/herbs%20website/admin.html) — Private Admin Portal to add & delete products with passcode protection.
-- [store-config.js](file:///c:/Users/USER/OneDrive/Desktop/herbs%20website/store-config.js) — Bank details (Kuda), phone number, email, and admin passcode.
+- [server.js](file:///c:/Users/USER/OneDrive/Desktop/herbs%20website/server.js) — Secure Node.js & Express backend for password auth, resets, and hosting.
+- [index.html](file:///c:/Users/USER/OneDrive/Desktop/herbs%20website/index.html) — Brand homepage with remedies, remedy finder quiz, dosage guide, and customer reviews.
+- [shop.html](file:///c:/Users/USER/OneDrive/Desktop/herbs%20website/shop.html) — Dedicated shop catalog with sidebar filters, sorting, and full bank transfer checkout.
+- [admin.html](file:///c:/Users/USER/OneDrive/Desktop/herbs%20website/admin.html) — Admin portal with passcode protection and password reset modal.
+- [admin.js](file:///c:/Users/USER/OneDrive/Desktop/herbs%20website/admin.js) — Admin frontend logic connected to the backend API.
+- [store-config.js](file:///c:/Users/USER/OneDrive/Desktop/herbs%20website/store-config.js) — Public store info (Bank details, WhatsApp numbers, shipping rates).

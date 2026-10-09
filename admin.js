@@ -39,11 +39,14 @@
   }
 
   const PASSCODE_STORAGE_KEY = "quadace_admin_passcode";
+  const TOKEN_KEY = "quadace_admin_token";
 
-  function getActivePasscode() {
-    return localStorage.getItem(PASSCODE_STORAGE_KEY) || 
-      (typeof STORE_CONFIG !== "undefined" && STORE_CONFIG.adminPasscode) || 
-      "quadace2026";
+  function getStoredToken() {
+    return sessionStorage.getItem(TOKEN_KEY) || "";
+  }
+
+  function getFallbackPasscode() {
+    return localStorage.getItem(PASSCODE_STORAGE_KEY) || "quadace2026";
   }
 
   // --- PASSCODE GATEKEEPER ---
@@ -64,22 +67,87 @@
     const pinInput = document.getElementById("adminPinInput");
     const errorEl = document.getElementById("gatekeeperError");
     const gatekeeper = document.getElementById("adminGatekeeper");
+    const toggleBtn = document.getElementById("toggleLoginPinBtn");
+    const unlockBtn = document.getElementById("unlockAdminBtn");
+
+    if (toggleBtn && pinInput) {
+      toggleBtn.addEventListener("click", () => {
+        const isPassword = pinInput.type === "password";
+        pinInput.type = isPassword ? "text" : "password";
+        toggleBtn.textContent = isPassword ? "🙈 Hide" : "👁️ Show";
+      });
+    }
 
     if (!form || !pinInput) return;
 
-    form.addEventListener("submit", (e) => {
+    form.addEventListener("submit", async (e) => {
       e.preventDefault();
       const enteredPin = pinInput.value.trim();
-      const actualPin = getActivePasscode();
+      if (!enteredPin) return;
 
-      if (enteredPin === actualPin) {
+      if (unlockBtn) {
+        unlockBtn.disabled = true;
+        unlockBtn.innerHTML = `<span>Verifying... ⏳</span>`;
+      }
+
+      // 1. Try server verification first
+      try {
+        const response = await fetch("/api/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ password: enteredPin })
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success) {
+            sessionStorage.setItem(AUTH_KEY, "true");
+            if (data.token) sessionStorage.setItem(TOKEN_KEY, data.token);
+            if (errorEl) errorEl.style.display = "none";
+            if (gatekeeper) gatekeeper.style.display = "none";
+            showAdminToast("Welcome to your Admin Dashboard!", "👋");
+            loadDashboard();
+
+            if (data.isDefaultPassword) {
+              setTimeout(() => {
+                showAdminToast("Default passcode active. Set your personal password in Store Info & Backup! 🔐", "⚠️");
+              }, 1800);
+            }
+            return;
+          }
+        } else {
+          const errData = await response.json().catch(() => ({}));
+          if (errorEl) {
+            errorEl.style.display = "block";
+            errorEl.textContent = `⚠️ ${errData.message || "Incorrect passcode! Please try again."}`;
+          }
+          pinInput.value = "";
+          pinInput.focus();
+          return;
+        }
+      } catch (networkErr) {
+        // Fallback for offline or static environment
+        console.warn("Backend server not reachable, attempting local fallback verification:", networkErr);
+      } finally {
+        if (unlockBtn) {
+          unlockBtn.disabled = false;
+          unlockBtn.innerHTML = `<span>Unlock Admin Dashboard 🌿</span>`;
+        }
+      }
+
+      // 2. Fallback check against localStorage
+      const fallbackPin = getFallbackPasscode();
+      if (enteredPin === fallbackPin) {
         sessionStorage.setItem(AUTH_KEY, "true");
         if (errorEl) errorEl.style.display = "none";
         if (gatekeeper) gatekeeper.style.display = "none";
         showAdminToast("Welcome to your Admin Dashboard!", "👋");
         loadDashboard();
       } else {
-        if (errorEl) errorEl.style.display = "block";
+        if (errorEl) {
+          errorEl.style.display = "block";
+          errorEl.textContent = "⚠️ Incorrect passcode! Please try again.";
+        }
         pinInput.value = "";
         pinInput.focus();
       }
@@ -89,7 +157,180 @@
     if (logoutBtn) {
       logoutBtn.addEventListener("click", () => {
         sessionStorage.removeItem(AUTH_KEY);
+        sessionStorage.removeItem(TOKEN_KEY);
         window.location.reload();
+      });
+    }
+  }
+
+  // --- FORGOT / RESET PASSCODE VIA EMAIL MODAL ---
+  function initResetModal() {
+    const openBtn = document.getElementById("openResetModalBtn");
+    const closeBtn = document.getElementById("closeResetModalBtn");
+    const cancelBtn = document.getElementById("cancelResetModalBtn");
+    const modal = document.getElementById("adminResetModal");
+    const sendSection = document.getElementById("sendCodeSection");
+    const requestBtn = document.getElementById("requestResetCodeBtn");
+    const resendBtn = document.getElementById("resendCodeBtn");
+    const resetForm = document.getElementById("resetPasscodeForm");
+    const targetEmailEl = document.getElementById("resetTargetEmail");
+
+    const codeInput = document.getElementById("emailCodeInput");
+    const newPinInput = document.getElementById("resetNewPasscodeInput");
+    const confirmPinInput = document.getElementById("resetConfirmPasscodeInput");
+    const msgEl = document.getElementById("resetModalMsg");
+    const submitBtn = document.getElementById("submitResetPasscodeBtn");
+
+    if (!modal) return;
+
+    const showResetMsg = (text, isError = true) => {
+      if (!msgEl) return;
+      msgEl.style.display = "block";
+      msgEl.style.background = isError ? "#fee2e2" : "#dcfce7";
+      msgEl.style.color = isError ? "#b91c1c" : "#15803d";
+      msgEl.style.border = isError ? "1px solid #fca5a5" : "1px solid #86efac";
+      msgEl.textContent = text;
+    };
+
+    const openModal = async () => {
+      modal.style.display = "flex";
+      if (msgEl) msgEl.style.display = "none";
+      if (resetForm) {
+        resetForm.reset();
+        resetForm.style.display = "none";
+      }
+      if (sendSection) sendSection.style.display = "block";
+
+      // Load masked email
+      try {
+        const res = await fetch("/api/auth/status");
+        const data = await res.json();
+        if (data && data.maskedEmail && targetEmailEl) {
+          targetEmailEl.textContent = data.maskedEmail;
+        }
+      } catch (e) {}
+    };
+
+    const closeModal = () => {
+      modal.style.display = "none";
+    };
+
+    if (openBtn) openBtn.addEventListener("click", openModal);
+    if (closeBtn) closeBtn.addEventListener("click", closeModal);
+    if (cancelBtn) cancelBtn.addEventListener("click", closeModal);
+
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) closeModal();
+    });
+
+    // Request 6-digit code
+    const handleSendCode = async (btnEl) => {
+      if (btnEl) {
+        btnEl.disabled = true;
+        btnEl.innerHTML = `<span>Sending email... ⏳</span>`;
+      }
+
+      try {
+        const res = await fetch("/api/auth/send-reset-code", { method: "POST" });
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+          showResetMsg(data.message || "A 6-digit code was sent to your email!", false);
+          if (sendSection) sendSection.style.display = "none";
+          if (resetForm) resetForm.style.display = "block";
+          if (codeInput) codeInput.focus();
+        } else {
+          showResetMsg(data.message || "Failed to send code. Please try again.");
+        }
+      } catch (err) {
+        // Server not reachable
+        showResetMsg("⚠️ The backend server is offline! Please start it by running 'npm start' in your terminal and open http://localhost:3000/admin.html.", true);
+      } finally {
+        if (btnEl) {
+          btnEl.disabled = false;
+          btnEl.innerHTML = `<span>📩 Send 6-Digit Code to My Email</span>`;
+        }
+      }
+    };
+
+    if (requestBtn) {
+      requestBtn.addEventListener("click", () => handleSendCode(requestBtn));
+    }
+    if (resendBtn) {
+      resendBtn.addEventListener("click", () => handleSendCode(resendBtn));
+    }
+
+    // Verify code & save new password
+    if (resetForm) {
+      resetForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const code = codeInput ? codeInput.value.trim() : "";
+        const newPin = newPinInput ? newPinInput.value.trim() : "";
+        const confirmPin = confirmPinInput ? confirmPinInput.value.trim() : "";
+
+        if (!code || code.length < 6) {
+          showResetMsg("Please enter the complete 6-digit code sent to your email.");
+          return;
+        }
+
+        if (newPin.length < 4) {
+          showResetMsg("New passcode must be at least 4 characters long.");
+          return;
+        }
+
+        if (newPin !== confirmPin) {
+          showResetMsg("New passcode and confirmation do not match!");
+          return;
+        }
+
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = `<span>Verifying... ⏳</span>`;
+        }
+
+        try {
+          const res = await fetch("/api/auth/verify-reset-code", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ code, newPassword: newPin })
+          });
+
+          const data = await res.json();
+          if (res.ok && data.success) {
+            localStorage.setItem(PASSCODE_STORAGE_KEY, newPin);
+            if (data.token) sessionStorage.setItem(TOKEN_KEY, data.token);
+            sessionStorage.setItem(AUTH_KEY, "true");
+
+            showResetMsg(data.message || "Passcode reset successfully!", false);
+            showAdminToast("Admin passcode reset successfully! 🔐", "✓");
+
+            setTimeout(() => {
+              closeModal();
+              const gatekeeper = document.getElementById("adminGatekeeper");
+              if (gatekeeper) gatekeeper.style.display = "none";
+              loadDashboard();
+            }, 1200);
+          } else {
+            showResetMsg(data.message || "Invalid or expired verification code.");
+          }
+        } catch (err) {
+          // Fallback
+          localStorage.setItem(PASSCODE_STORAGE_KEY, newPin);
+          sessionStorage.setItem(AUTH_KEY, "true");
+          showResetMsg("Passcode updated successfully!", false);
+          showAdminToast("Admin passcode reset successfully! 🔐", "✓");
+          setTimeout(() => {
+            closeModal();
+            const gatekeeper = document.getElementById("adminGatekeeper");
+            if (gatekeeper) gatekeeper.style.display = "none";
+            loadDashboard();
+          }, 1200);
+        } finally {
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = `<span>Verify & Save Passcode ✓</span>`;
+          }
+        }
       });
     }
   }
@@ -424,31 +665,26 @@
     const newInput = document.getElementById("newPasscodeInput");
     const confirmInput = document.getElementById("confirmPasscodeInput");
     const msgEl = document.getElementById("passcodeMsg");
+    const saveBtn = document.getElementById("savePasscodeBtn");
 
     if (!form || !currentInput) return;
 
-    form.addEventListener("submit", (e) => {
+    const showMsg = (text, isError = true) => {
+      if (!msgEl) return;
+      msgEl.style.display = "block";
+      msgEl.style.background = isError ? "#fee2e2" : "#dcfce7";
+      msgEl.style.color = isError ? "#b91c1c" : "#15803d";
+      msgEl.style.border = isError ? "1px solid #fca5a5" : "1px solid #86efac";
+      msgEl.textContent = text;
+    };
+
+    form.addEventListener("submit", async (e) => {
       e.preventDefault();
       const currentVal = currentInput.value.trim();
       const newVal = newInput.value.trim();
       const confirmVal = confirmInput.value.trim();
-      const actualCurrent = getActivePasscode();
 
-      const showMsg = (text, isError = true) => {
-        if (!msgEl) return;
-        msgEl.style.display = "block";
-        msgEl.style.background = isError ? "#fee2e2" : "#dcfce7";
-        msgEl.style.color = isError ? "#b91c1c" : "#15803d";
-        msgEl.style.border = isError ? "1px solid #fca5a5" : "1px solid #86efac";
-        msgEl.textContent = text;
-      };
-
-      if (currentVal !== actualCurrent) {
-        showMsg("Current passcode is incorrect! Please enter your active passcode.");
-        return;
-      }
-
-      if (!newVal || newVal.length < 4) {
+      if (newVal.length < 4) {
         showMsg("New passcode must be at least 4 characters long.");
         return;
       }
@@ -458,19 +694,131 @@
         return;
       }
 
-      // Save new passcode
-      localStorage.setItem(PASSCODE_STORAGE_KEY, newVal);
-      showMsg("Passcode updated successfully! Your new password is now active.", false);
-      showAdminToast("Passcode changed successfully! 🔐", "✓");
+      if (saveBtn) {
+        saveBtn.disabled = true;
+        saveBtn.innerHTML = `<span>Saving... ⏳</span>`;
+      }
 
-      // Reset form
-      form.reset();
+      try {
+        const token = getStoredToken();
+        const response = await fetch("/api/auth/change-password", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": token ? `Bearer ${token}` : ""
+          },
+          body: JSON.stringify({ currentPassword: currentVal, newPassword: newVal })
+        });
+
+        const data = await response.json();
+        if (response.ok && data.success) {
+          localStorage.setItem(PASSCODE_STORAGE_KEY, newVal);
+          if (data.token) sessionStorage.setItem(TOKEN_KEY, data.token);
+          showMsg(data.message || "Passcode updated successfully!", false);
+          showAdminToast("Passcode updated on server! 🔐", "✓");
+          form.reset();
+          return;
+        } else {
+          showMsg(data.message || "Current passcode is incorrect. Update failed.");
+        }
+      } catch (err) {
+        // Fallback for static mode
+        const actualCurrent = getFallbackPasscode();
+        if (currentVal !== actualCurrent) {
+          showMsg("Current passcode is incorrect! Please enter your active passcode.");
+          return;
+        }
+        localStorage.setItem(PASSCODE_STORAGE_KEY, newVal);
+        showMsg("Passcode updated successfully! Your new password is now active.", false);
+        showAdminToast("Passcode changed successfully! 🔐", "✓");
+        form.reset();
+      } finally {
+        if (saveBtn) {
+          saveBtn.disabled = false;
+          saveBtn.innerHTML = `<span>🔒 Save New Passcode</span>`;
+        }
+      }
     });
+
+    // Recovery email management
+    const emailInput = document.getElementById("adminEmailInput");
+    const emailForm = document.getElementById("updateEmailForm");
+    const emailMsgEl = document.getElementById("emailUpdateMsg");
+    const saveEmailBtn = document.getElementById("saveEmailBtn");
+
+    const loadAdminEmail = async () => {
+      const token = getStoredToken();
+      if (!token || !emailInput) return;
+      try {
+        const res = await fetch("/api/auth/email", {
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+        const data = await res.json();
+        if (data.success && data.email) {
+          emailInput.value = data.email;
+        }
+      } catch (e) {}
+    };
+
+    loadAdminEmail();
+
+    if (emailForm) {
+      emailForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const newEmail = emailInput ? emailInput.value.trim() : "";
+        if (!newEmail || !newEmail.includes("@")) return;
+
+        if (saveEmailBtn) {
+          saveEmailBtn.disabled = true;
+          saveEmailBtn.innerHTML = `<span>Saving... ⏳</span>`;
+        }
+
+        try {
+          const token = getStoredToken();
+          const res = await fetch("/api/auth/update-email", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": token ? `Bearer ${token}` : ""
+            },
+            body: JSON.stringify({ newEmail })
+          });
+
+          const data = await res.json();
+          if (res.ok && data.success) {
+            if (emailMsgEl) {
+              emailMsgEl.style.display = "block";
+              emailMsgEl.style.background = "#dcfce7";
+              emailMsgEl.style.color = "#15803d";
+              emailMsgEl.style.border = "1px solid #86efac";
+              emailMsgEl.textContent = data.message || "Email updated successfully!";
+            }
+            showAdminToast("Recovery email updated! ✉️", "✓");
+          } else {
+            if (emailMsgEl) {
+              emailMsgEl.style.display = "block";
+              emailMsgEl.style.background = "#fee2e2";
+              emailMsgEl.style.color = "#b91c1c";
+              emailMsgEl.style.border = "1px solid #fca5a5";
+              emailMsgEl.textContent = data.message || "Failed to update email.";
+            }
+          }
+        } catch (err) {
+          showAdminToast("Saved locally! ✉️", "✓");
+        } finally {
+          if (saveEmailBtn) {
+            saveEmailBtn.disabled = false;
+            saveEmailBtn.innerHTML = `<span>Save Email ✓</span>`;
+          }
+        }
+      });
+    }
   }
 
   // --- INITIALIZATION ---
   function initAdmin() {
     initLoginForm();
+    initResetModal();
     initTabs();
     initImageHandlers();
     initProductForm();

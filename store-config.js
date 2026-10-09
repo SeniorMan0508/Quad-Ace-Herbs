@@ -23,8 +23,9 @@ const STORE_CONFIG = {
   currencySymbol: "₦",
   currencyCode: "NGN",
 
-  // Security: Admin Dashboard Passcode
-  adminPasscode: "quadace2026",
+  // Security Note:
+  // Admin passcode is securely hashed and verified on the backend server (server.js).
+  // The owner can change or reset her password directly in admin.html.
 
   // -------------------------------------------------------------
   // BANK TRANSFER DETAILS (Customer sees this at checkout)

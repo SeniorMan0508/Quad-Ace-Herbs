@@ -314,7 +314,10 @@
 
       <form id="adminLoginForm" onsubmit="return false;">
         <div class="form-group" style="text-align: left; margin-bottom: 1rem;">
-          <label class="form-label" for="adminPinInput">Admin Passcode</label>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+            <label class="form-label" for="adminPinInput" style="margin: 0;">Admin Passcode</label>
+            <button type="button" id="toggleLoginPinBtn" style="background: none; border: none; color: var(--text-muted); font-size: 0.78rem; cursor: pointer; padding: 0;">👁️ Show</button>
+          </div>
           <input type="password" id="adminPinInput" class="form-input" placeholder="Enter admin passcode" style="text-align: center; font-size: 1.15rem; letter-spacing: 0.15em;" required autofocus>
         </div>
 
@@ -322,13 +325,69 @@
           ⚠️ Incorrect passcode! Please try again.
         </div>
 
-        <button type="submit" class="btn-primary" id="unlockAdminBtn" style="width: 100%; justify-content: center;">
+        <button type="submit" class="btn-primary" id="unlockAdminBtn" style="width: 100%; justify-content: center; margin-bottom: 1rem;">
           <span>Unlock Admin Dashboard 🌿</span>
         </button>
 
-        <!-- <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 1.25rem;">
-          Passcode is configured in <code style="background: #e2e8f0; padding: 0.2rem 0.4rem; border-radius: 4px;">store-config.js</code> (Default: <code>quadace2026</code>)
-        </p> -->
+        <div style="border-top: 1px solid rgba(0,0,0,0.08); padding-top: 0.85rem; text-align: center;">
+          <button type="button" id="openResetModalBtn" style="background: none; border: none; color: var(--primary-green); font-size: 0.82rem; font-weight: 700; cursor: pointer; text-decoration: underline;">
+            Forgot Passcode? Send Reset Code to Email ✉️
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- FORGOT / RESET PASSCODE VIA EMAIL MODAL -->
+  <div class="admin-gatekeeper-overlay" id="adminResetModal" style="display: none;">
+    <div class="admin-gate-card" style="max-width: 480px; text-align: left;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.65rem;">
+        <h3 style="color: var(--deep-forest); margin: 0; font-size: 1.25rem;">✉️ Reset Admin Passcode</h3>
+        <button type="button" id="closeResetModalBtn" style="background: #e2e8f0; border: none; width: 30px; height: 30px; border-radius: 50%; font-size: 0.95rem; cursor: pointer; display: flex; align-items: center; justify-content: center;">✕</button>
+      </div>
+      
+      <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.2rem; line-height: 1.45;">
+        A 6-digit security verification code will be sent to the owner's registered email address (<strong id="resetTargetEmail">badm***@gmail.com</strong>).
+      </p>
+
+      <!-- Step 1: Send Code -->
+      <div id="sendCodeSection" style="margin-bottom: 1rem; text-align: center;">
+        <button type="button" class="btn-primary" id="requestResetCodeBtn" style="width: 100%; justify-content: center; padding: 0.85rem;">
+          <span>📩 Send 6-Digit Code to My Email</span>
+        </button>
+      </div>
+
+      <!-- Step 2: Enter Code & Set New Passcode -->
+      <form id="resetPasscodeForm" onsubmit="return false;" style="display: none;">
+        <div class="form-group" style="margin-bottom: 0.85rem;">
+          <label class="form-label" for="emailCodeInput">6-Digit Email Verification Code *</label>
+          <input type="text" id="emailCodeInput" class="form-input" placeholder="e.g. 123456" maxlength="6" style="letter-spacing: 0.25em; text-align: center; font-weight: 800; font-size: 1.25rem;" required autocomplete="off">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.35rem;">
+            <small style="font-size: 0.73rem; color: var(--text-muted);">Check your inbox (and spam/junk folder).</small>
+            <button type="button" id="resendCodeBtn" style="background: none; border: none; color: var(--primary-green); font-size: 0.75rem; font-weight: 700; cursor: pointer; text-decoration: underline; padding: 0;">Resend Code</button>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 0.85rem;">
+          <label class="form-label" for="resetNewPasscodeInput">New Passcode *</label>
+          <input type="password" id="resetNewPasscodeInput" class="form-input" placeholder="Enter new passcode (min. 4 characters)" required>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label class="form-label" for="resetConfirmPasscodeInput">Confirm New Passcode *</label>
+          <input type="password" id="resetConfirmPasscodeInput" class="form-input" placeholder="Repeat new passcode" required>
+        </div>
+
+        <div id="resetModalMsg" style="display: none; padding: 0.5rem 0.75rem; border-radius: var(--radius-sm); font-size: 0.82rem; margin-bottom: 1rem;"></div>
+
+        <div style="display: flex; gap: 0.75rem;">
+          <button type="submit" class="btn-primary" id="submitResetPasscodeBtn" style="flex: 1; justify-content: center;">
+            <span>Verify & Save Passcode ✓</span>
+          </button>
+          <button type="button" class="btn-secondary" id="cancelResetModalBtn" style="justify-content: center; color: var(--deep-forest);">
+            <span>Cancel</span>
+          </button>
+        </div>
       </form>
     </div>
   </div>
@@ -349,13 +408,13 @@
 
         <div style="display: flex; align-items: center; gap: 0.85rem;">
           <a href="shop.html" target="_blank" class="btn-secondary" style="background: rgba(255, 255, 255, 0.1); color: #ffffff; border-color: rgba(255, 255, 255, 0.25); padding: 0.45rem 1rem; font-size: 0.85rem;">
-            <span>🛍️ View Live Shop</span>
+            <span>View Live Shop</span>
           </a>
           <a href="index.html" target="_blank" class="btn-secondary" style="background: rgba(255, 255, 255, 0.1); color: #ffffff; border-color: rgba(255, 255, 255, 0.25); padding: 0.45rem 1rem; font-size: 0.85rem;">
-            <span>🏠 View Home</span>
+            <span>View Home</span>
           </a>
           <button type="button" id="adminLogoutBtn" style="background: none; border: 1px solid rgba(255, 255, 255, 0.3); color: #fca5a5; padding: 0.45rem 0.85rem; border-radius: var(--radius-sm); font-size: 0.82rem; cursor: pointer;">
-            <span>🚪 Logout</span>
+            <span>Logout</span>
           </button>
         </div>
       </div>
@@ -682,6 +741,26 @@
               <button type="submit" class="btn-primary" id="savePasscodeBtn" style="padding: 0.6rem 1.5rem;">
                 <span>🔒 Save New Passcode</span>
               </button>
+            </form>
+          </div>
+
+          <!-- Admin Recovery Email Card -->
+          <div style="background: #ffffff; border: 1.5px solid rgba(24, 66, 46, 0.2); border-radius: var(--radius-lg); padding: 1.5rem; margin-bottom: 2rem; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
+            <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.5rem;">
+              <span style="font-size: 1.5rem;">✉️</span>
+              <h4 style="color: var(--deep-forest); font-size: 1.15rem; margin: 0;">Admin Recovery Email</h4>
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">
+              When you click "Forgot Passcode", one-time 6-digit verification codes are sent directly to this email address:
+            </p>
+            <form id="updateEmailForm" onsubmit="return false;" style="max-width: 520px;">
+              <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                <input type="email" id="adminEmailInput" class="form-input" style="flex: 1; min-width: 240px;" placeholder="e.g. badmusdaniel0508@gmail.com" required>
+                <button type="submit" class="btn-primary" id="saveEmailBtn" style="padding: 0.6rem 1.25rem;">
+                  <span>Save Email ✓</span>
+                </button>
+              </div>
+              <div id="emailUpdateMsg" style="display: none; padding: 0.5rem 0.75rem; border-radius: var(--radius-sm); font-size: 0.82rem; margin-top: 0.75rem;"></div>
             </form>
           </div>
 

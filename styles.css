@@ -2497,18 +2497,20 @@ a {
     font-size: 0.9rem;
   }
 
-  /* Modal Overlay on Mobile - Never clips top in negative space! */
+  /* Modal Overlay on Mobile - Single smooth scrolling container with safe area padding */
   .modal-overlay {
-    padding: 0.75rem 0.5rem;
+    padding: 0.75rem 0.5rem calc(5rem + env(safe-area-inset-bottom, 25px));
     align-items: flex-start;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
-  /* ORDER CONFIRMATION RECEIPT MODAL (MOBILE FIX) */
+  /* ORDER CONFIRMATION RECEIPT MODAL (MOBILE FIX - NO CLIPPING) */
   .receipt-card {
-    padding: 1.5rem 1rem 1.25rem;
+    padding: 1.5rem 1rem calc(2rem + env(safe-area-inset-bottom, 20px));
     border-radius: var(--radius-lg);
-    max-height: calc(100dvh - 1.5rem);
-    max-height: calc(100vh - 1.5rem);
+    max-height: none !important;
+    overflow: visible !important;
     width: 100%;
     margin: 0 auto;
     text-align: center;
@@ -3271,12 +3273,14 @@ a {
   }
 
   .modal-overlay {
-    padding: 0.5rem 0.35rem;
+    padding: 0.5rem 0.35rem calc(5.5rem + env(safe-area-inset-bottom, 30px));
   }
 
   .receipt-card {
-    padding: 1.25rem 0.85rem;
+    padding: 1.25rem 0.85rem calc(2rem + env(safe-area-inset-bottom, 20px));
     border-radius: var(--radius-md);
+    max-height: none !important;
+    overflow: visible !important;
   }
 
   .receipt-card h3 {

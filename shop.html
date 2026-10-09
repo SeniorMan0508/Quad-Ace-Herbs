@@ -629,14 +629,16 @@
         </div>
       </div>
 
-      <div style="background: #eef9f2; border: 1px solid #b7e6c7; border-radius: var(--radius-md); padding: 0.85rem 1rem; margin-bottom: 1.25rem; font-size: 0.825rem; color: #166534; text-align: left;">
-        ⚡ <strong>Fast Track Your Delivery:</strong> Click the green button below to send your order reference and receipt directly to the herbalist on WhatsApp (+234 905 512 6388) so your dispatch rider is assigned immediately!
+      <div style="background: #eef9f2; border: 1.5px solid #27ae60; border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1.25rem; font-size: 0.85rem; color: #166534; text-align: left;">
+        <div style="margin-bottom: 0.75rem; line-height: 1.45;">
+          ⚡ <strong>Fast Track Your Delivery:</strong> Tap the green button below to send your order reference and receipt directly to the herbalist on WhatsApp (+234 905 512 6388) so your dispatch rider is assigned immediately!
+        </div>
+        <button class="btn-whatsapp-order" id="receiptWhatsAppNotifyBtn" style="width: 100%; justify-content: center; font-size: 0.95rem; font-weight: 700; padding: 0.85rem 1rem; background: #25D366; color: #ffffff; border: none; border-radius: var(--radius-full); box-shadow: 0 4px 14px rgba(37,211,102,0.35); cursor: pointer; display: flex; align-items: center; gap: 0.5rem;">
+          <span>💬 Send Receipt via WhatsApp to Seller</span>
+        </button>
       </div>
 
       <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-        <button class="btn-whatsapp-order" id="receiptWhatsAppNotifyBtn">
-          <span>💬 Send Receipt via WhatsApp to Seller</span>
-        </button>
         <button class="btn-secondary" onclick="window.print()" style="color: var(--deep-forest); border-color: rgba(24, 66, 46, 0.2); justify-content: center;">
           <span>🖨️ Print / Save Receipt</span>
         </button>
