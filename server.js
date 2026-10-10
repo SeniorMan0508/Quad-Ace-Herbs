@@ -104,7 +104,10 @@ function maskEmail(email) {
 function getEmailTransporter() {
   if (process.env.SMTP_USER && process.env.SMTP_PASS) {
     return nodemailer.createTransport({
-      service: process.env.SMTP_SERVICE || 'gmail',
+      host: 'smtp.gmail.com',
+      port: 465,
+      secure: true,
+      family: 4, // Force IPv4 on cloud hosts like Render to prevent ENETUNREACH IPv6 errors
       auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS
@@ -872,11 +875,26 @@ app.get('*', (req, res) => {
 });
 
 // Start Server
-app.listen(PORT, () => {
+const os = require('os');
+function getLocalNetworkIp() {
+  const nets = os.networkInterfaces();
+  for (const name of Object.keys(nets)) {
+    for (const net of nets[name]) {
+      if (net.family === 'IPv4' && !net.internal) {
+        return net.address;
+      }
+    }
+  }
+  return '127.0.0.1';
+}
+
+app.listen(PORT, '0.0.0.0', () => {
+  const lanIp = getLocalNetworkIp();
   console.log(`\n======================================================`);
   console.log(`🚀 Quad-Ace Herbs Web Server Running`);
-  console.log(`🌐 Local URL:     http://localhost:${PORT}`);
-  console.log(`🛍️  Shop Page:     http://localhost:${PORT}/shop.html`);
-  console.log(`🔒 Admin Portal:  http://localhost:${PORT}/admin.html`);
+  console.log(`💻 Laptop URL:     http://localhost:${PORT}`);
+  console.log(`📱 Phone (Wi-Fi):  http://${lanIp}:${PORT}`);
+  console.log(`🛍️  Shop Page:     http://${lanIp}:${PORT}/shop.html`);
+  console.log(`🔒 Admin Portal:  http://${lanIp}:${PORT}/admin.html`);
   console.log(`======================================================\n`);
 });

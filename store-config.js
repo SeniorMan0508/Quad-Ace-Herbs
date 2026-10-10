@@ -8,6 +8,7 @@
 const STORE_CONFIG = {
   // Brand Information
   storeName: "Quad-Ace Herbs",
+  backendUrl: "https://quad-ace-herbs.onrender.com",
   logoImage: "images/bg-image.jpeg",
   tagline: "Authentic Ancestral Remedies • 100% Wildcrafted African Botanicals",
   established: "2018",

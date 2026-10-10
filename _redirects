@@ -1,0 +1,4 @@
+# Netlify API Proxy to Render Backend
+/api/*  https://quad-ace-herbs.onrender.com/api/:splat  200!
+/shop   /shop.html                                     200
+/admin  /admin.html                                    200
