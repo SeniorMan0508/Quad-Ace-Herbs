@@ -1,4 +1,9 @@
-# Netlify API Proxy to Render Backend
+# Route order notification email to Netlify Function (uses port 587 without Render SMTP block)
+/api/orders/notify-email  /.netlify/functions/notify-email  200
+
+# Proxy all other API requests (admin auth, products, reviews) to Render backend
 /api/*  https://quad-ace-herbs.onrender.com/api/:splat  200!
-/shop   /shop.html                                     200
-/admin  /admin.html                                    200
+
+# Clean frontend routes
+/shop   /shop.html   200
+/admin  /admin.html  200

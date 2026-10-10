@@ -34,14 +34,11 @@
     if (window.location.protocol === "file:") {
       return "http://localhost:3000";
     }
-    // If running in development on any custom port (e.g. Live Server port 5500 on laptop or mobile)
+    // If running in local development on any custom port (e.g. Live Server port 5500 on laptop or mobile)
     if (window.location.port && window.location.port !== "3000") {
       return `${window.location.protocol}//${window.location.hostname}:3000`;
     }
-    // When hosted on Netlify or custom production domain, direct API calls to Render backend
-    if (window.location.hostname.includes("netlify.app") || (window.location.hostname !== "localhost" && window.location.hostname !== "127.0.0.1" && !window.location.port)) {
-      return (typeof STORE_CONFIG !== "undefined" && STORE_CONFIG.backendUrl) ? STORE_CONFIG.backendUrl : "https://quad-ace-herbs.onrender.com";
-    }
+    // In production (Netlify or custom domain), return "" so Netlify _redirects proxies seamlessly
     return "";
   }
 
