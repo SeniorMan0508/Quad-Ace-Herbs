@@ -315,15 +315,15 @@
         <div class="checkout-steps">
           <div class="step-indicator active" id="stepIndicator1">
             <span class="step-num">1</span>
-            <span>Delivery Info</span>
+            <span class="step-label">Delivery <span class="step-label-extra">Info</span></span>
           </div>
           <div class="step-indicator" id="stepIndicator2">
             <span class="step-num">2</span>
-            <span>Shipping Zone</span>
+            <span class="step-label">Shipping <span class="step-label-extra">Zone</span></span>
           </div>
           <div class="step-indicator" id="stepIndicator3">
             <span class="step-num">3</span>
-            <span>Payment & Confirmation</span>
+            <span class="step-label">Payment <span class="step-label-extra">& Confirm</span></span>
           </div>
         </div>
 
@@ -368,7 +368,7 @@
               </div>
             </div>
 
-            <div style="display: flex; justify-content: flex-end;">
+            <div class="checkout-nav-row single-btn">
               <button class="btn-primary" type="button" id="goToStep2Btn">
                 <span>Continue to Shipping Method →</span>
               </button>
@@ -413,7 +413,7 @@
               </label>
             </div>
 
-            <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div class="checkout-nav-row">
               <button class="btn-secondary" type="button" id="backToStep1Btn" style="color: var(--deep-forest); border-color: rgba(24, 66, 46, 0.2);">
                 <span>← Back</span>
               </button>
@@ -557,12 +557,13 @@
               </div>
             </div>
 
-            <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div class="checkout-nav-row">
               <button class="btn-secondary" type="button" id="backToStep2Btn" style="color: var(--deep-forest); border-color: rgba(24, 66, 46, 0.2);">
                 <span>← Back</span>
               </button>
               <button class="btn-primary" type="button" id="completeOrderBtn">
-                <span>Confirm Order & Send Proof 🌿</span>
+                <span class="btn-text-full">Confirm Order & Send Proof 🌿</span>
+                <span class="btn-text-short">Confirm & Send Proof 🌿</span>
               </button>
             </div>
           </div>
@@ -574,6 +575,7 @@
   <!-- ORDER SUCCESS / RECEIPT MODAL -->
   <div class="modal-overlay" id="receiptModalOverlay">
     <div class="receipt-card">
+      <button type="button" class="receipt-top-close-btn" id="receiptTopCloseBtn" aria-label="Close Receipt Modal">✕</button>
       <div class="receipt-success-icon" id="receiptStatusIcon" style="background: rgba(39, 174, 96, 0.15); color: #27ae60; border-color: #27ae60;">🧾</div>
       <h3 id="receiptStatusTitle">Proof of Payment Received! 🌿</h3>
       <p style="color: var(--text-secondary); margin-bottom: 0.75rem;" id="receiptStatusDesc">

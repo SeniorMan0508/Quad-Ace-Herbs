@@ -890,12 +890,16 @@
 
     // Show modal
     const overlay = document.getElementById("quickViewOverlay");
-    if (overlay) overlay.classList.add("active");
+    if (overlay) {
+      overlay.classList.add("active");
+      document.body.classList.add("modal-open");
+    }
   }
 
   function closeQuickView() {
     const overlay = document.getElementById("quickViewOverlay");
     if (overlay) overlay.classList.remove("active");
+    checkAnyModalActive();
   }
 
   // --- REMEDY QUIZ MATCHER ---
@@ -980,6 +984,14 @@
     });
   }
 
+  // --- MODAL SCROLL LOCK HELPER ---
+  function checkAnyModalActive() {
+    const anyModal = document.querySelector(".modal-overlay.active");
+    if (!anyModal) {
+      document.body.classList.remove("modal-open");
+    }
+  }
+
   // --- CHECKOUT FLOW ---
   function openCheckoutModal() {
     if (state.cart.length === 0) {
@@ -991,12 +1003,16 @@
     setCheckoutStep(1);
 
     const overlay = document.getElementById("checkoutModalOverlay");
-    if (overlay) overlay.classList.add("active");
+    if (overlay) {
+      overlay.classList.add("active");
+      document.body.classList.add("modal-open");
+    }
   }
 
   function closeCheckoutModal() {
     const overlay = document.getElementById("checkoutModalOverlay");
     if (overlay) overlay.classList.remove("active");
+    checkAnyModalActive();
   }
 
   function setCheckoutStep(step) {
@@ -1543,7 +1559,16 @@ Please verify the payment alert and confirm dispatch! Thank you for choosing Qua
     }
 
     const receiptOverlay = document.getElementById("receiptModalOverlay");
-    if (receiptOverlay) receiptOverlay.classList.add("active");
+    if (receiptOverlay) {
+      receiptOverlay.classList.add("active");
+      document.body.classList.add("modal-open");
+    }
+  }
+
+  function closeReceiptModal() {
+    const receiptOverlay = document.getElementById("receiptModalOverlay");
+    if (receiptOverlay) receiptOverlay.classList.remove("active");
+    checkAnyModalActive();
   }
 
   // --- FAST 1-CLICK WHATSAPP CART ORDER ---
@@ -1567,6 +1592,9 @@ Please verify the payment alert and confirm dispatch! Thank you for choosing Qua
     closeCart,
     openQuickView,
     closeQuickView,
+    openCheckoutModal,
+    closeCheckoutModal,
+    closeReceiptModal,
     quickAdd: (id) => {
       addToCart(id);
       openCart();
@@ -1658,9 +1686,33 @@ Please verify the payment alert and confirm dispatch! Thank you for choosing Qua
     document.getElementById("openCheckoutModalBtn").addEventListener("click", openCheckoutModal);
     document.getElementById("closeCheckoutBtn").addEventListener("click", closeCheckoutModal);
 
-    // Receipt Modal Close
-    document.getElementById("closeReceiptBtn").addEventListener("click", () => {
-      document.getElementById("receiptModalOverlay").classList.remove("active");
+    // Receipt Modal Close (Bottom button & Top Close '✕' button)
+    const closeReceiptBtn = document.getElementById("closeReceiptBtn");
+    if (closeReceiptBtn) closeReceiptBtn.addEventListener("click", closeReceiptModal);
+
+    const receiptTopCloseBtn = document.getElementById("receiptTopCloseBtn");
+    if (receiptTopCloseBtn) receiptTopCloseBtn.addEventListener("click", closeReceiptModal);
+
+    // Overlay backdrop click to dismiss modals safely
+    ["checkoutModalOverlay", "receiptModalOverlay", "quickViewOverlay"].forEach(modalId => {
+      const modalEl = document.getElementById(modalId);
+      if (modalEl) {
+        modalEl.addEventListener("click", (e) => {
+          if (e.target === modalEl) {
+            modalEl.classList.remove("active");
+            checkAnyModalActive();
+          }
+        });
+      }
+    });
+
+    // Escape key closes open modals
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        closeCheckoutModal();
+        closeQuickView();
+        closeReceiptModal();
+      }
     });
 
     // Mobile Navigation Menu Toggle
