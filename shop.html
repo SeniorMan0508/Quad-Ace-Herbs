@@ -232,7 +232,7 @@
               <span>+ Add to Cart</span>
             </button>
             <a href="#" target="_blank" class="btn-secondary" id="qvWhatsAppBtn" style="justify-content: center;">
-              <span>💬 Ask Herbalist</span>
+              <span>💬 Ask Quad-Ace Herbs</span>
             </a>
           </div>
         </div>
@@ -465,7 +465,7 @@
                 </div>
 
                 <div class="bank-instructions" id="checkoutBankInstructions">
-                  Please use your Name or Phone number as the payment narration. Once the transfer is complete, click <strong>"Confirm Order & Send to Seller"</strong> to notify the herbalist on WhatsApp immediately!
+                  Please use your Order Number or Phone number as the payment narration. Once your transfer is complete, attach your screenshot receipt below and click <strong>"Confirm Order & Send Proof"</strong>. Quad-Ace Herbs will verify your payment alert and dispatch your herbs immediately!
                 </div>
 
                 <!-- Payment Verification & Receipt Upload -->
@@ -537,7 +537,7 @@
                 <span>💬</span> <span>1-Click Order Confirmation on WhatsApp</span>
               </h4>
               <p style="font-size: 0.88rem; color: #2e7d32; line-height: 1.5;">
-                Clicking confirm will automatically format your full order items, delivery address, and total into a ready-to-send WhatsApp message straight to our verified seller number: <strong>+234 905 512 6388</strong>.
+                Clicking confirm will automatically format your full order items, delivery address, and total into a ready-to-send WhatsApp message straight to Quad-Ace Herbs: <strong>+234 905 512 6388</strong>.
               </p>
             </div>
 
@@ -631,12 +631,26 @@
         </div>
       </div>
 
-      <div style="background: #eef9f2; border: 1.5px solid #27ae60; border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1.25rem; font-size: 0.85rem; color: #166534; text-align: left;">
+      <!-- Bank Transfer Confirmation Notice (Shown for Bank Transfer - No WhatsApp Needed) -->
+      <div id="receiptBankConfirmationBox" style="background: #eef9f2; border: 1.5px solid #27ae60; border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1.25rem; font-size: 0.85rem; color: #166534; text-align: left;">
+        <div style="display: flex; align-items: flex-start; gap: 0.65rem; line-height: 1.45;">
+          <span style="font-size: 1.3rem; flex-shrink: 0;">✅</span>
+          <div>
+            <strong style="color: #1b5e20; font-size: 0.92rem;">Order Confirmed & Recorded!</strong>
+            <p style="margin: 0.35rem 0 0 0; color: #2e7d32; font-size: 0.83rem;">
+              Quad-Ace Herbs will verify the payment alert in her Kuda bank account and dispatch your package immediately to your address. You do not need to do anything further!
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- WhatsApp Action Box (Shown ONLY when customer chooses to order through WhatsApp) -->
+      <div id="receiptWhatsAppPromptBox" style="display: none; background: #eef9f2; border: 1.5px solid #27ae60; border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1.25rem; font-size: 0.85rem; color: #166534; text-align: left;">
         <div style="margin-bottom: 0.75rem; line-height: 1.45;">
-          ⚡ <strong>Fast Track Your Delivery:</strong> Tap the green button below to send your order reference and receipt directly to the herbalist on WhatsApp (+234 905 512 6388) so your dispatch rider is assigned immediately!
+          💬 <strong>Finalize Your Order on WhatsApp:</strong> Tap the green button below to send your order reference and details directly to Quad-Ace Herbs on WhatsApp (+234 905 512 6388) to confirm dispatch!
         </div>
         <button class="btn-whatsapp-order" id="receiptWhatsAppNotifyBtn" style="width: 100%; justify-content: center; font-size: 0.95rem; font-weight: 700; padding: 0.85rem 1rem; background: #25D366; color: #ffffff; border: none; border-radius: var(--radius-full); box-shadow: 0 4px 14px rgba(37,211,102,0.35); cursor: pointer; display: flex; align-items: center; gap: 0.5rem;">
-          <span>💬 Send Receipt via WhatsApp to Seller</span>
+          <span>💬 Send Order to Quad-Ace Herbs on WhatsApp</span>
         </button>
       </div>
 
@@ -719,7 +733,7 @@
           <li><a href="index.html#guide">Traditional Brewing & Dosage Guide</a></li>
           <li><a href="index.html#quiz">Herbal Remedy Finder</a></li>
           <li><a href="index.html#reviews">Customer Testimonials</a></li>
-          <li><a href="index.html#contact">Consult the Herbalist</a></li>
+          <li><a href="index.html#contact">Consult Quad-Ace Herbs</a></li>
         </ul>
       </div>
 

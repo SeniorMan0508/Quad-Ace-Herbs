@@ -1030,6 +1030,23 @@
       if (idx + 1 === step) ind.classList.add("active");
       else if (idx + 1 < step) ind.classList.add("completed");
     });
+
+    if (step === 3) {
+      const completeOrderBtn = document.getElementById("completeOrderBtn");
+      if (completeOrderBtn) {
+        if (state.selectedPaymentMethod === "whatsapp") {
+          completeOrderBtn.innerHTML = `
+            <span class="btn-text-full">Confirm & Order on WhatsApp 💬</span>
+            <span class="btn-text-short">Order on WhatsApp 💬</span>
+          `;
+        } else {
+          completeOrderBtn.innerHTML = `
+            <span class="btn-text-full">Confirm Order & Send Proof 🌿</span>
+            <span class="btn-text-short">Confirm & Send Proof 🌿</span>
+          `;
+        }
+      }
+    }
   }
 
   function updateCheckoutRecap() {
@@ -1124,12 +1141,25 @@
         tab.classList.add("active");
         state.selectedPaymentMethod = tab.dataset.paymethod;
 
+        const completeOrderBtn = document.getElementById("completeOrderBtn");
         if (state.selectedPaymentMethod === "bank") {
           document.getElementById("bankDetailsView").style.display = "block";
           document.getElementById("whatsappMethodView").style.display = "none";
+          if (completeOrderBtn) {
+            completeOrderBtn.innerHTML = `
+              <span class="btn-text-full">Confirm Order & Send Proof 🌿</span>
+              <span class="btn-text-short">Confirm & Send Proof 🌿</span>
+            `;
+          }
         } else {
           document.getElementById("bankDetailsView").style.display = "none";
           document.getElementById("whatsappMethodView").style.display = "block";
+          if (completeOrderBtn) {
+            completeOrderBtn.innerHTML = `
+              <span class="btn-text-full">Confirm & Order on WhatsApp 💬</span>
+              <span class="btn-text-short">Order on WhatsApp 💬</span>
+            `;
+          }
         }
       });
     });
@@ -1425,8 +1455,11 @@ Please verify the payment alert and confirm dispatch! Thank you for choosing Qua
     closeCheckoutModal();
     showReceiptModal(orderData, waLink);
 
-    // Auto-launch WhatsApp so the seller gets both WhatsApp AND Email!
-    window.open(waLink, "_blank");
+    // Only launch WhatsApp if the customer chose WhatsApp Checkout!
+    // For Direct Bank Transfer, no need to go to WhatsApp — the order and payment proof are recorded directly.
+    if (orderData.paymentMethod === "whatsapp") {
+      window.open(waLink, "_blank");
+    }
 
     // Clear cart & attached receipt
     state.cart = [];
@@ -1537,10 +1570,23 @@ Please verify the payment alert and confirm dispatch! Thank you for choosing Qua
     document.getElementById("receiptPayMethod").textContent = order.paymentMethod === "bank" ? `Bank Transfer (${STORE_CONFIG.bankDetails.bankName})` : "WhatsApp Direct Order";
     document.getElementById("receiptTotalAmount").textContent = formatMoney(order.finalTotal);
 
-    const waBtn = document.getElementById("receiptWhatsAppNotifyBtn");
-    if (waBtn) {
-      waBtn.innerHTML = `<span>💬 Send Receipt via WhatsApp to Seller</span>`;
-      waBtn.onclick = () => window.open(waLink, "_blank");
+    // Show Confirmation Notice for Bank Transfer vs Action Button for WhatsApp Order
+    const bankBox = document.getElementById("receiptBankConfirmationBox");
+    const waBox = document.getElementById("receiptWhatsAppPromptBox");
+
+    if (order.paymentMethod === "bank") {
+      if (bankBox) bankBox.style.display = "block";
+      if (waBox) waBox.style.display = "none";
+    } else {
+      if (bankBox) bankBox.style.display = "none";
+      if (waBox) {
+        waBox.style.display = "block";
+        const waBtn = document.getElementById("receiptWhatsAppNotifyBtn");
+        if (waBtn) {
+          waBtn.innerHTML = `<span>💬 Send Order to Quad-Ace Herbs on WhatsApp</span>`;
+          waBtn.onclick = () => window.open(waLink, "_blank");
+        }
+      }
     }
 
     // Reset Post-Purchase Review Box in Receipt Modal
