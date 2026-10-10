@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Quad-Ace Herbs | Authentic African Herbal Remedies & Natural Botanicals</title>
   <meta name="description" content="Shop authentic wildcrafted African herbs, Agbo Jedi, Man-Power roots, Hormonal Balance teas, Agbo Idakole, Prekese, and raw medicinal barks. Fast delivery across Nigeria and worldwide.">
+  <link rel="icon" type="x-icon/image" href="./images/bg-image.jpeg">
   <link rel="stylesheet" href="styles.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌿</text></svg>">
+  <title>Quad-Ace Herbs | Authentic African Herbal Remedies & Natural Botanicals</title>
 </head>
 <body>
 
@@ -26,7 +26,7 @@
 
       <ul class="nav-links">
           <li><a href="index.html" class="active">Home</a></li>
-          <li><a href="shop.html">Shop Catalog 🌿</a></li>
+          <li><a href="shop.html">Shop Catalog</a></li>
           <li><a href="#quiz">Remedy Finder</a></li>
           <li><a href="#guide">Brewing & Dosage</a></li>
           <li><a href="#reviews">Customer Stories</a></li>
@@ -341,14 +341,37 @@
         <p>Read real experiences from people whose wellness has been transformed by Quad-Ace Herbs.</p>
       </div>
 
-      <div class="testimonials-grid">
+      <!-- Action Bar: Aggregate Rating & Write Review Button -->
+      <div class="reviews-action-bar">
+        <div class="reviews-stats-summary">
+          <div class="rating-badge-large">
+            <span>★★★★★</span>
+            <span>4.9 / 5.0 Rating</span>
+          </div>
+          <div class="reviews-verified-note">
+            <span>🛡️</span>
+            <span><strong>100% Verified Buyer Stories</strong> • Based on authentic customer feedback</span>
+          </div>
+        </div>
+
+        <button type="button" class="btn-write-review" id="openReviewModalBtn">
+          <span>✍️ Share Your Review / Leave Comment</span>
+        </button>
+      </div>
+
+      <!-- Dynamic Testimonials Grid (Rendered by app.js from server & localStorage) -->
+      <div class="testimonials-grid" id="testimonialsGrid">
         <div class="testimonial-card">
+          <div class="testimonial-card-header">
+            <span class="testimonial-remedy-badge">🌿 Agbo Jedi-Jedi Extra Strength</span>
+            <span class="testimonial-date">Verified Purchase</span>
+          </div>
           <div class="testimonial-stars">★★★★★</div>
           <p class="testimonial-text">
             "I had suffered from severe Jedi-Jedi and lower back pain for over 8 months. Sitting in traffic was pure torture. After just 4 days of taking Quad-Ace Agbo Jedi Extra Strength, the waist stiffness completely dissolved. This is the real deal!"
           </p>
           <div class="testimonial-author">
-            <div class="author-avatar">O</div>
+            <div class="author-avatar" style="background: linear-gradient(135deg, #18422e, #27ae60);">O</div>
             <div class="author-info">
               <h5>Olumide B.</h5>
               <span>Lekki, Lagos • <strong class="verified-badge">✓ Verified Buyer</strong></span>
@@ -357,12 +380,16 @@
         </div>
 
         <div class="testimonial-card">
+          <div class="testimonial-card-header">
+            <span class="testimonial-remedy-badge">⚡ Man-Power Virility Roots</span>
+            <span class="testimonial-date">Verified Purchase</span>
+          </div>
           <div class="testimonial-stars">★★★★★</div>
           <p class="testimonial-text">
             "The Man-Power Stamina roots are incredible. No strange chemical headaches or rapid heartbeats like the synthetic pills sold in pharmacies. Just pure, natural, energetic power and lasting confidence. My wife noticed the difference immediately."
           </p>
           <div class="testimonial-author">
-            <div class="author-avatar">C</div>
+            <div class="author-avatar" style="background: linear-gradient(135deg, #8c5b23, #d4af37);">C</div>
             <div class="author-info">
               <h5>Chinedu E.</h5>
               <span>Abuja, FCT • <strong class="verified-badge">✓ Verified Buyer</strong></span>
@@ -371,18 +398,30 @@
         </div>
 
         <div class="testimonial-card">
+          <div class="testimonial-card-header">
+            <span class="testimonial-remedy-badge">🌸 Queen's Hormonal Balance</span>
+            <span class="testimonial-date">Verified Purchase</span>
+          </div>
           <div class="testimonial-stars">★★★★★</div>
           <p class="testimonial-text">
             "I ordered the Queen's Hormonal Balance tea from the UK via DHL. It arrived in London in just 4 days! My cycle that had seized for 3 months returned naturally with zero pain. God bless Quad-Ace Herbs!"
           </p>
           <div class="testimonial-author">
-            <div class="author-avatar">A</div>
+            <div class="author-avatar" style="background: linear-gradient(135deg, #7c2d12, #ea580c);">A</div>
             <div class="author-info">
               <h5>Amina K.</h5>
               <span>London, United Kingdom • <strong class="verified-badge">✓ Verified Buyer</strong></span>
             </div>
           </div>
         </div>
+      </div>
+
+      <!-- Load More Customer Stories Button -->
+      <div class="reviews-load-more-container" id="reviewsLoadMoreContainer" style="display: none;">
+        <button type="button" class="btn-load-more-reviews" id="loadMoreReviewsBtn">
+          <span>Show More Customer Stories</span>
+          <span class="load-more-count" id="loadMoreReviewsCount">(6 more)</span>
+        </button>
       </div>
     </div>
   </section>
@@ -785,6 +824,41 @@
         </button>
       </div>
 
+      <!-- Post-Purchase Customer Review Card -->
+      <div class="receipt-review-box" id="receiptReviewBox">
+        <div class="receipt-review-header">
+          <span class="receipt-review-star-icon">⭐</span>
+          <div>
+            <h5>Leave a Review & Share Your Experience</h5>
+            <p>Your comment will be posted live to our homepage customer testimonials!</p>
+          </div>
+        </div>
+        <div class="receipt-review-inputs" id="receiptReviewInputs">
+          <div class="receipt-stars-row">
+            <span class="rating-text" style="font-size: 0.82rem; color: var(--text-secondary);">Your Rating:</span>
+            <div class="interactive-star-rating" id="receiptStarRating">
+              <span class="star-item active" data-rating="1">★</span>
+              <span class="star-item active" data-rating="2">★</span>
+              <span class="star-item active" data-rating="3">★</span>
+              <span class="star-item active" data-rating="4">★</span>
+              <span class="star-item active" data-rating="5">★</span>
+            </div>
+            <span class="rating-text" id="receiptRatingText">5.0 / 5 (Excellent)</span>
+          </div>
+          <textarea id="receiptCommentText" class="receipt-comment-textarea" placeholder="Write a short comment or expectation (e.g. 'Smooth order process! Can’t wait to start my Agbo Jedi remedy.')..." rows="3"></textarea>
+          <button type="button" class="btn-submit-receipt-review" id="submitReceiptReviewBtn">
+            <span>🌿 Post Comment to Website</span>
+          </button>
+        </div>
+        <div class="receipt-review-success" id="receiptReviewSuccess" style="display: none;">
+          <div class="success-icon">✓</div>
+          <div>
+            <strong>Thank you for your comment!</strong>
+            <p>Your review is now live on our landing page under Customer Stories.</p>
+          </div>
+        </div>
+      </div>
+
       <div style="display: flex; flex-direction: column; gap: 0.75rem;">
         <button class="btn-secondary" onclick="window.print()" style="color: var(--deep-forest); border-color: rgba(24, 66, 46, 0.2); justify-content: center;">
           <span>🖨️ Print / Save Receipt</span>
@@ -793,6 +867,78 @@
           <span>Continue Shopping</span>
         </button>
       </div>
+    </div>
+  </div>
+
+  <!-- WRITE A REVIEW MODAL (FOR LANDING PAGE TESTIMONIALS) -->
+  <div class="modal-overlay" id="writeReviewModalOverlay">
+    <div class="review-modal-card">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem;">
+        <div>
+          <span style="display: inline-block; background: rgba(39, 174, 96, 0.1); color: #1e7040; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; padding: 0.2rem 0.65rem; border-radius: 99px; margin-bottom: 0.4rem;">
+            🌿 Verified Testimonials
+          </span>
+          <h3 style="font-family: var(--font-heading); color: var(--deep-forest); font-size: 1.45rem; margin: 0;">
+            Share Your Healing Story
+          </h3>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0.25rem 0 0 0;">
+            Your authentic experience helps other Nigerians and international buyers find traditional remedies with confidence.
+          </p>
+        </div>
+        <button class="modal-close-btn" id="closeReviewModalBtn" style="color: var(--text-muted);">&times;</button>
+      </div>
+
+      <form id="writeReviewForm" onsubmit="return false;">
+        <div class="form-grid" style="gap: 1rem; margin-bottom: 1rem;">
+          <div class="form-group">
+            <label class="form-label" for="reviewAuthorName">Your Full Name / Alias *</label>
+            <input type="text" id="reviewAuthorName" class="form-input" placeholder="e.g. Babatunde A." required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="reviewAuthorLocation">City & State / Country *</label>
+            <input type="text" id="reviewAuthorLocation" class="form-input" placeholder="e.g. Ikeja, Lagos or London, UK" required>
+          </div>
+
+          <div class="form-group full-width">
+            <label class="form-label" for="reviewRemedySelect">Remedy Used / Purchased *</label>
+            <select id="reviewRemedySelect" class="form-input" style="background: #fff; cursor: pointer;">
+              <option value="Agbo Jedi-Jedi Extra Strength">Agbo Jedi-Jedi Extra Strength</option>
+              <option value="Man-Power Virility & Stamina Roots Infusion">Man-Power Virility Roots</option>
+              <option value="Queen's Hormonal Balance & Womb Cleanser">Queen's Hormonal Balance</option>
+              <option value="Agbo Idakole Potent Male Tonic">Agbo Idakole Male Tonic</option>
+              <option value="Prekese (Aidan) & Bitter Kola Pods Bundle">Raw Prekese & Roots Bundle</option>
+              <option value="General Herbal Consultation">General Herbal Wellness</option>
+            </select>
+          </div>
+
+          <div class="form-group full-width">
+            <label class="form-label">Your Rating *</label>
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <div class="interactive-star-rating" id="modalStarPicker">
+                <span class="star-item active" data-rating="1">★</span>
+                <span class="star-item active" data-rating="2">★</span>
+                <span class="star-item active" data-rating="3">★</span>
+                <span class="star-item active" data-rating="4">★</span>
+                <span class="star-item active" data-rating="5">★</span>
+              </div>
+              <span class="rating-text" id="modalRatingText" style="font-size: 0.9rem;">5.0 / 5 (Excellent)</span>
+            </div>
+          </div>
+
+          <div class="form-group full-width">
+            <label class="form-label" for="reviewCommentText">Your Review / Experience *</label>
+            <textarea id="reviewCommentText" class="form-textarea" rows="4" placeholder="How did this remedy help your body? How quickly did you feel results?" required></textarea>
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+          <button type="button" class="btn-secondary" id="cancelReviewModalBtn" style="color: var(--deep-forest);">Cancel</button>
+          <button type="submit" class="btn-primary" id="submitModalReviewBtn">
+            <span>🌿 Publish Review to Website</span>
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 
@@ -849,7 +995,12 @@
   <footer class="main-footer" id="contact">
     <div class="container footer-grid">
       <div class="footer-brand">
-        <h4>🌿 Quad-Ace Herbs</h4>
+        <div class="footer-col">
+          <a href="index.html" class="brand-logo footer-logo">
+            <img class="brand-icon" src="./images/bg-image.jpeg" alt="logo Image">
+            <h2>Quad-Ace Herbs</h2>
+          </a>
+        </div>
         <p>
           Nigeria's foremost trusted source for authentic ancestral herbal remedies, Agbo Jedi-Jedi, Man-Power roots, Hormonal Balance, and whole wildcrafted African botanicals.
         </p>

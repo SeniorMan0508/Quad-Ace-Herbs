@@ -72,6 +72,24 @@ In the **"⚙️ Store Info & Backup"** tab under **"Admin Recovery Email"**, sh
 
 ---
 
+## 💬 4. Customer Comments & Post-Purchase Reviews
+
+Customers can now leave reviews and comments that **always appear on the website homepage**:
+
+### ⭐ How Customers Submit Reviews:
+1. **Immediately After Checkout:**
+   - In the **Order Receipt Modal**, right after confirming their order, customers see a dedicated **"⭐ Leave a Review & Share Your Experience"** box.
+   - They pick their star rating (1–5 stars), write their comment, and click **"🌿 Post Comment to Website"**.
+   - Their comment is instantly saved to the database (`data/reviews.json`) and appears live on the home page with a **"✓ Verified Buyer"** badge!
+2. **From the Landing Page Directly:**
+   - Under the **"Customer Stories"** section on the homepage, customers can click **"✍️ Share Your Review / Leave Comment"** at any time to open a review modal and submit feedback.
+
+### 🛡️ Admin Moderation of Reviews:
+- In the [Admin Dashboard](file:///c:/Users/USER/OneDrive/Desktop/herbs%20website/admin.html), click the **"💬 Customer Reviews"** tab to view all customer comments, ratings, remedies reviewed, and dates.
+- The owner can click **"🗑️ Delete"** next to any comment to remove it from the website immediately if inappropriate.
+
+---
+
 ## 📁 Summary of Files:
 - [server.js](file:///c:/Users/USER/OneDrive/Desktop/herbs%20website/server.js) — Secure Node.js & Express backend for password auth, resets, and hosting.
 - [index.html](file:///c:/Users/USER/OneDrive/Desktop/herbs%20website/index.html) — Brand homepage with remedies, remedy finder quiz, dosage guide, and customer reviews.

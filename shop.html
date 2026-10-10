@@ -29,7 +29,7 @@
 
       <ul class="nav-links">
         <li><a href="index.html">Home</a></li>
-          <li><a href="shop.html" class="active">Shop Catalog 🌿</a></li>
+          <li><a href="shop.html" class="active">Shop Catalog </a></li>
           <li><a href="index.html#quiz">Remedy Finder</a></li>
           <li><a href="index.html#guide">Brewing & Dosage</a></li>
           <li><a href="index.html#reviews">Customer Stories</a></li>
@@ -638,6 +638,41 @@
         </button>
       </div>
 
+      <!-- Post-Purchase Customer Review Card -->
+      <div class="receipt-review-box" id="receiptReviewBox">
+        <div class="receipt-review-header">
+          <span class="receipt-review-star-icon">⭐</span>
+          <div>
+            <h5>Leave a Review & Share Your Experience</h5>
+            <p>Your comment will be posted live to our homepage customer testimonials!</p>
+          </div>
+        </div>
+        <div class="receipt-review-inputs" id="receiptReviewInputs">
+          <div class="receipt-stars-row">
+            <span class="rating-text" style="font-size: 0.82rem; color: var(--text-secondary);">Your Rating:</span>
+            <div class="interactive-star-rating" id="receiptStarRating">
+              <span class="star-item active" data-rating="1">★</span>
+              <span class="star-item active" data-rating="2">★</span>
+              <span class="star-item active" data-rating="3">★</span>
+              <span class="star-item active" data-rating="4">★</span>
+              <span class="star-item active" data-rating="5">★</span>
+            </div>
+            <span class="rating-text" id="receiptRatingText">5.0 / 5 (Excellent)</span>
+          </div>
+          <textarea id="receiptCommentText" class="receipt-comment-textarea" placeholder="Write a short comment or expectation (e.g. 'Smooth order process! Can’t wait to start my Agbo Jedi remedy.')..." rows="3"></textarea>
+          <button type="button" class="btn-submit-receipt-review" id="submitReceiptReviewBtn">
+            <span>🌿 Post Comment to Website</span>
+          </button>
+        </div>
+        <div class="receipt-review-success" id="receiptReviewSuccess" style="display: none;">
+          <div class="success-icon">✓</div>
+          <div>
+            <strong>Thank you for your comment!</strong>
+            <p>Your review is now live on our landing page under Customer Stories.</p>
+          </div>
+        </div>
+      </div>
+
       <div style="display: flex; flex-direction: column; gap: 0.75rem;">
         <button class="btn-secondary" onclick="window.print()" style="color: var(--deep-forest); border-color: rgba(24, 66, 46, 0.2); justify-content: center;">
           <span>🖨️ Print / Save Receipt</span>
@@ -658,6 +693,7 @@
       <div class="footer-col">
         <a href="index.html" class="brand-logo footer-logo">
           <img class="brand-icon" src="./images/bg-image.jpeg" alt="logo Image">
+          <h2>Quad-Ace Herbs</h2>
         </a>
         <p class="footer-text">
           Preserving ancestral Yoruba and African botanical wisdom. Hand-harvested, pesticide-free, and prepared under traditional hygiene standards.

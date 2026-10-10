@@ -49,6 +49,17 @@
     return localStorage.getItem(PASSCODE_STORAGE_KEY) || "quadace2026";
   }
 
+  // --- API BASE URL HELPER ---
+  function getApiBaseUrl() {
+    if (window.location.protocol === "file:") {
+      return "http://localhost:3000";
+    }
+    if ((window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") && window.location.port !== "3000") {
+      return `${window.location.protocol}//${window.location.hostname}:3000`;
+    }
+    return "";
+  }
+
   // --- PASSCODE GATEKEEPER ---
   function checkAuth() {
     const gatekeeper = document.getElementById("adminGatekeeper");
@@ -92,7 +103,7 @@
 
       // 1. Try server verification first
       try {
-        const response = await fetch("/api/auth/login", {
+        const response = await fetch(`${getApiBaseUrl()}/api/auth/login`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ password: enteredPin })
@@ -203,7 +214,7 @@
 
       // Load masked email
       try {
-        const res = await fetch("/api/auth/status");
+        const res = await fetch(`${getApiBaseUrl()}/api/auth/status`);
         const data = await res.json();
         if (data && data.maskedEmail && targetEmailEl) {
           targetEmailEl.textContent = data.maskedEmail;
@@ -231,7 +242,7 @@
       }
 
       try {
-        const res = await fetch("/api/auth/send-reset-code", { method: "POST" });
+        const res = await fetch(`${getApiBaseUrl()}/api/auth/send-reset-code`, { method: "POST" });
         const data = await res.json();
 
         if (res.ok && data.success) {
@@ -289,7 +300,7 @@
         }
 
         try {
-          const res = await fetch("/api/auth/verify-reset-code", {
+          const res = await fetch(`${getApiBaseUrl()}/api/auth/verify-reset-code`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ code, newPassword: newPin })
@@ -353,8 +364,19 @@
         if (targetId === "tabManage") {
           renderManageTable();
         }
+        if (targetId === "tabReviews") {
+          renderAdminReviews();
+        }
       });
     });
+
+    const refreshReviewsBtn = document.getElementById("refreshAdminReviewsBtn");
+    if (refreshReviewsBtn) {
+      refreshReviewsBtn.addEventListener("click", () => {
+        renderAdminReviews();
+        showAdminToast("Reviews refreshed from server ✓", "🔄");
+      });
+    }
   }
 
   // --- IMAGE SELECTION & UPLOAD HANDLERS ---
@@ -652,10 +674,125 @@
     }
   }
 
+  // --- CUSTOMER REVIEWS MANAGEMENT ---
+  const REVIEWS_STORAGE_KEY = "quadace_customer_reviews";
+
+  async function getAdminReviews() {
+    try {
+      const res = await fetch(`${getApiBaseUrl()}/api/reviews`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data && Array.isArray(data.reviews)) {
+          localStorage.setItem(REVIEWS_STORAGE_KEY, JSON.stringify(data.reviews));
+          return data.reviews;
+        }
+      }
+    } catch (e) {}
+
+    try {
+      const saved = localStorage.getItem(REVIEWS_STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) return parsed;
+      }
+    } catch (e) {}
+
+    return [];
+  }
+
+  async function renderAdminReviews() {
+    const tbody = document.getElementById("reviewsTableBody");
+    if (!tbody) return;
+
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 2rem; color: var(--text-muted);">Loading reviews... ⏳</td></tr>`;
+
+    const reviews = await getAdminReviews();
+    updateReviewsStats(reviews.length);
+
+    if (reviews.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="6" style="text-align: center; padding: 3rem; color: var(--text-muted);">
+            No customer reviews posted yet.
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    tbody.innerHTML = reviews.map(rev => {
+      const stars = "★".repeat(Math.min(5, Math.max(1, rev.rating || 5)));
+      const dateStr = rev.createdAt ? new Date(rev.createdAt).toLocaleDateString("en-GB", { day: 'numeric', month: 'short', year: 'numeric' }) : "Verified Buyer";
+
+      return `
+        <tr data-review-id="${rev.id}">
+          <td>
+            <div style="font-weight: 700; color: var(--deep-forest);">${rev.name}</div>
+            <div style="font-size: 0.78rem; color: var(--text-muted);">${rev.location || 'Nigeria'}</div>
+          </td>
+          <td>
+            <span class="product-category-tag" style="background: rgba(39, 174, 96, 0.1); color: #1e7040;">🌿 ${rev.remedy || 'Traditional Remedy'}</span>
+          </td>
+          <td style="color: #f59e0b; font-size: 1.1rem; white-space: nowrap;">
+            ${stars} <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 700;">(${rev.rating || 5}.0)</span>
+          </td>
+          <td>
+            <div style="font-size: 0.88rem; color: var(--text-primary); line-height: 1.5; max-width: 420px; font-style: italic;">
+              "${rev.comment}"
+            </div>
+          </td>
+          <td style="font-size: 0.8rem; color: var(--text-muted); white-space: nowrap;">
+            ${dateStr}
+          </td>
+          <td style="text-align: right; white-space: nowrap;">
+            <button type="button" class="btn-action-del btn-del-review" data-id="${rev.id}" data-name="${rev.name}">
+              🗑️ Delete
+            </button>
+          </td>
+        </tr>
+      `;
+    }).join("");
+
+    tbody.querySelectorAll(".btn-del-review").forEach(btn => {
+      btn.addEventListener("click", () => {
+        handleDeleteReview(btn.dataset.id, btn.dataset.name);
+      });
+    });
+  }
+
+  async function handleDeleteReview(reviewId, authorName) {
+    const confirmed = window.confirm(`Are you sure you want to delete the review by '${authorName}'? It will be removed from the website homepage.`);
+    if (!confirmed) return;
+
+    try {
+      await fetch(`${getApiBaseUrl()}/api/reviews/${reviewId}`, { method: "DELETE" });
+    } catch (e) {}
+
+    try {
+      const saved = localStorage.getItem(REVIEWS_STORAGE_KEY);
+      if (saved) {
+        let list = JSON.parse(saved);
+        list = list.filter(r => r.id !== reviewId);
+        localStorage.setItem(REVIEWS_STORAGE_KEY, JSON.stringify(list));
+      }
+    } catch (e) {}
+
+    showAdminToast(`Review by '${authorName}' removed.`, "🗑️");
+    renderAdminReviews();
+  }
+
+  function updateReviewsStats(count) {
+    const totalEl = document.getElementById("statTotalReviews");
+    const badgeEl = document.getElementById("tabReviewsBadge");
+    if (totalEl) totalEl.textContent = count;
+    if (badgeEl) badgeEl.textContent = count;
+  }
+
   // --- LOAD DASHBOARD ---
   function loadDashboard() {
     updateStats();
     renderManageTable();
+    getAdminReviews().then(reviews => updateReviewsStats(reviews.length));
   }
 
   // --- CHANGE PASSCODE HANDLER ---
@@ -701,7 +838,7 @@
 
       try {
         const token = getStoredToken();
-        const response = await fetch("/api/auth/change-password", {
+        const response = await fetch(`${getApiBaseUrl()}/api/auth/change-password`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -750,7 +887,7 @@
       const token = getStoredToken();
       if (!token || !emailInput) return;
       try {
-        const res = await fetch("/api/auth/email", {
+        const res = await fetch(`${getApiBaseUrl()}/api/auth/email`, {
           headers: { "Authorization": `Bearer ${token}` }
         });
         const data = await res.json();
@@ -775,7 +912,7 @@
 
         try {
           const token = getStoredToken();
-          const res = await fetch("/api/auth/update-email", {
+          const res = await fetch(`${getApiBaseUrl()}/api/auth/update-email`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

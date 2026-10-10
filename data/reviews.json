@@ -1,0 +1,62 @@
+[
+  {
+    "id": "rev-1791593295797-2ncq",
+    "name": "Badmus Daniel Ayodapo",
+    "location": "Lagos, Nigeria",
+    "rating": 5,
+    "remedy": "Agbo Jedi-Jedi Extra Strength",
+    "comment": "your herbs is the best, wish i have knew you earlier",
+    "verifiedBuyer": true,
+    "createdAt": "2026-10-10T00:48:15.797Z"
+  },
+  {
+    "id": "rev-1791588121279-yi9y",
+    "name": "Babatunde Adeleke",
+    "location": "Ikeja, Lagos",
+    "rating": 5,
+    "remedy": "Agbo Jedi-Jedi Extra Strength",
+    "comment": "Ordered and received in under 24 hours. The waist pain from sitting in traffic has completely subsided after 3 days. Pure herbal potency!",
+    "verifiedBuyer": true,
+    "createdAt": "2026-10-09T23:22:01.279Z"
+  },
+  {
+    "id": "rev-1",
+    "name": "Olumide B.",
+    "location": "Lekki, Lagos",
+    "rating": 5,
+    "remedy": "Agbo Jedi-Jedi Extra Strength",
+    "comment": "I had suffered from severe Jedi-Jedi and lower back pain for over 8 months. Sitting in traffic was pure torture. After just 4 days of taking Quad-Ace Agbo Jedi Extra Strength, the waist stiffness completely dissolved. This is the real deal!",
+    "verifiedBuyer": true,
+    "createdAt": "2026-09-28T10:30:00.000Z"
+  },
+  {
+    "id": "rev-2",
+    "name": "Chinedu E.",
+    "location": "Abuja, FCT",
+    "rating": 5,
+    "remedy": "Man-Power Virility Roots",
+    "comment": "The Man-Power Stamina roots are incredible. No strange chemical headaches or rapid heartbeats like the synthetic pills sold in pharmacies. Just pure, natural, energetic power and lasting confidence. My wife noticed the difference immediately.",
+    "verifiedBuyer": true,
+    "createdAt": "2026-10-01T14:15:00.000Z"
+  },
+  {
+    "id": "rev-3",
+    "name": "Amina K.",
+    "location": "London, United Kingdom",
+    "rating": 5,
+    "remedy": "Queen's Hormonal Balance",
+    "comment": "I ordered the Queen's Hormonal Balance tea from the UK via DHL. It arrived in London in just 4 days! My cycle that had seized for 3 months returned naturally with zero pain. God bless Quad-Ace Herbs!",
+    "verifiedBuyer": true,
+    "createdAt": "2026-10-04T09:45:00.000Z"
+  },
+  {
+    "id": "rev-4",
+    "name": "Folashade A.",
+    "location": "Ibadan, Oyo State",
+    "rating": 5,
+    "remedy": "Raw Prekese & Roots Bundle",
+    "comment": "The Bitter Kola & Prekese pod infusion cleared my morning fatigue and bloating within a week. Authentic herbs, properly prepared. Quad-Ace Herbs is now my family's go-to apothecary.",
+    "verifiedBuyer": true,
+    "createdAt": "2026-10-06T16:20:00.000Z"
+  }
+]

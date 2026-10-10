@@ -15,13 +15,29 @@
     lastOrder: null,
     attachedReceiptData: null,
     attachedReceiptName: null,
-    attachedReceiptSize: null
+    attachedReceiptSize: null,
+    reviews: [],
+    visibleReviewsLimit: 6,
+    currentOrderForReview: null,
+    selectedReceiptRating: 5,
+    selectedModalRating: 5
   };
 
   // --- HELPER: FORMAT CURRENCY ---
   function formatMoney(amount) {
     const symbol = STORE_CONFIG.currencySymbol || "₦";
     return symbol + Number(amount).toLocaleString("en-NG");
+  }
+
+  // --- HELPER: API BASE URL (Seamlessly supports both port 3000 and Live Server 5500) ---
+  function getApiBaseUrl() {
+    if (window.location.protocol === "file:") {
+      return "http://localhost:3000";
+    }
+    if ((window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") && window.location.port !== "3000") {
+      return `${window.location.protocol}//${window.location.hostname}:3000`;
+    }
+    return "";
   }
 
   // --- LOCAL STORAGE CART PERSISTENCE ---
@@ -97,6 +113,440 @@
     if (rateNationwide) rateNationwide.textContent = STORE_CONFIG.shipping.nationwide.feeLabel || "Sorted with dispatch rider";
     const rateInternational = document.getElementById("rateInternational");
     if (rateInternational) rateInternational.textContent = STORE_CONFIG.shipping.international.feeLabel || "Sorted with courier";
+  }
+
+  // --- REVIEWS & TESTIMONIALS SYSTEM ---
+  const REVIEWS_STORAGE_KEY = "quadace_customer_reviews";
+
+  const DEFAULT_TESTIMONIALS = [
+    {
+      id: "rev-1",
+      name: "Olumide B.",
+      location: "Lekki, Lagos",
+      rating: 5,
+      remedy: "Agbo Jedi-Jedi Extra Strength",
+      comment: "I had suffered from severe Jedi-Jedi and lower back pain for over 8 months. Sitting in traffic was pure torture. After just 4 days of taking Quad-Ace Agbo Jedi Extra Strength, the waist stiffness completely dissolved. This is the real deal!",
+      verifiedBuyer: true,
+      createdAt: "2026-09-28T10:30:00.000Z"
+    },
+    {
+      id: "rev-2",
+      name: "Chinedu E.",
+      location: "Abuja, FCT",
+      rating: 5,
+      remedy: "Man-Power Virility Roots",
+      comment: "The Man-Power Stamina roots are incredible. No strange chemical headaches or rapid heartbeats like the synthetic pills sold in pharmacies. Just pure, natural, energetic power and lasting confidence. My wife noticed the difference immediately.",
+      verifiedBuyer: true,
+      createdAt: "2026-10-01T14:15:00.000Z"
+    },
+    {
+      id: "rev-3",
+      name: "Amina K.",
+      location: "London, United Kingdom",
+      rating: 5,
+      remedy: "Queen's Hormonal Balance",
+      comment: "I ordered the Queen's Hormonal Balance tea from the UK via DHL. It arrived in London in just 4 days! My cycle that had seized for 3 months returned naturally with zero pain. God bless Quad-Ace Herbs!",
+      verifiedBuyer: true,
+      createdAt: "2026-10-04T09:45:00.000Z"
+    },
+    {
+      id: "rev-4",
+      name: "Folashade A.",
+      location: "Ibadan, Oyo State",
+      rating: 5,
+      remedy: "Raw Prekese & Roots Bundle",
+      comment: "The Bitter Kola & Prekese pod infusion cleared my morning fatigue and bloating within a week. Authentic herbs, properly prepared. Quad-Ace Herbs is now my family's go-to apothecary.",
+      verifiedBuyer: true,
+      createdAt: "2026-10-06T16:20:00.000Z"
+    }
+  ];
+
+  function getAvatarGradient(name) {
+    const gradients = [
+      "linear-gradient(135deg, #18422e, #27ae60)",
+      "linear-gradient(135deg, #8c5b23, #d4af37)",
+      "linear-gradient(135deg, #7c2d12, #ea580c)",
+      "linear-gradient(135deg, #0f766e, #14b8a6)",
+      "linear-gradient(135deg, #4338ca, #6366f1)",
+      "linear-gradient(135deg, #047857, #10b981)"
+    ];
+    let hash = 0;
+    const str = name || "Q";
+    for (let i = 0; i < str.length; i++) {
+      hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    return gradients[Math.abs(hash) % gradients.length];
+  }
+
+  function formatReviewTime(isoString) {
+    if (!isoString) return "Verified Purchase";
+    try {
+      const date = new Date(isoString);
+      const now = new Date();
+      const diffMs = now - date;
+      const diffMins = Math.floor(diffMs / 60000);
+      const diffHours = Math.floor(diffMins / 60);
+      const diffDays = Math.floor(diffHours / 24);
+
+      if (diffMins < 5) return "Just now";
+      if (diffMins < 60) return `${diffMins} mins ago`;
+      if (diffHours < 24) return `${diffHours} hours ago`;
+      if (diffDays === 1) return "Yesterday";
+      if (diffDays < 30) return `${diffDays} days ago`;
+      return date.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+    } catch (e) {
+      return "Verified Purchase";
+    }
+  }
+
+  function escapeHTML(str) {
+    if (!str) return "";
+    return str.toString()
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  async function loadReviews() {
+    try {
+      const res = await fetch(`${getApiBaseUrl()}/api/reviews`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data && Array.isArray(data.reviews) && data.reviews.length > 0) {
+          state.reviews = data.reviews;
+          localStorage.setItem(REVIEWS_STORAGE_KEY, JSON.stringify(data.reviews));
+          renderTestimonials();
+          return;
+        }
+      }
+    } catch (e) {
+      // Local fallback
+    }
+
+    try {
+      const saved = localStorage.getItem(REVIEWS_STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          state.reviews = parsed;
+          renderTestimonials();
+          return;
+        }
+      }
+    } catch (e) {}
+
+    state.reviews = [...DEFAULT_TESTIMONIALS];
+    renderTestimonials();
+  }
+
+  function renderTestimonials(highlightId = null) {
+    const container = document.getElementById("testimonialsGrid");
+    if (!container) return;
+
+    if (!state.reviews || state.reviews.length === 0) {
+      state.reviews = [...DEFAULT_TESTIMONIALS];
+    }
+
+    const totalReviews = state.reviews.length;
+    const limit = state.visibleReviewsLimit || 6;
+    const visibleList = state.reviews.slice(0, limit);
+
+    container.innerHTML = visibleList.map(rev => {
+      const initial = (rev.name && rev.name.trim().length > 0) ? rev.name.trim()[0].toUpperCase() : "Q";
+      const gradient = getAvatarGradient(rev.name || "Customer");
+      const stars = "★".repeat(Math.max(1, Math.min(5, Number(rev.rating) || 5)));
+      const isNew = rev.id === highlightId;
+      const formattedDate = formatReviewTime(rev.createdAt);
+
+      return `
+        <div class="testimonial-card ${isNew ? 'new-review-highlight' : ''}" id="review-${rev.id}">
+          <div class="testimonial-card-header">
+            <span class="testimonial-remedy-badge">🌿 ${escapeHTML(rev.remedy || 'Traditional Remedy')}</span>
+            <span class="testimonial-date">${formattedDate}</span>
+          </div>
+          <div class="testimonial-stars">${stars}</div>
+          <p class="testimonial-text">
+            "${escapeHTML(rev.comment)}"
+          </p>
+          <div class="testimonial-author">
+            <div class="author-avatar" style="background: ${gradient};">${initial}</div>
+            <div class="author-info">
+              <h5>${escapeHTML(rev.name)}</h5>
+              <span>${escapeHTML(rev.location || 'Nigeria')} • <strong class="verified-badge">✓ Verified Buyer</strong></span>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join("");
+
+    // Update Load More Button & Remaining Count
+    const loadMoreContainer = document.getElementById("reviewsLoadMoreContainer");
+    const loadMoreCount = document.getElementById("loadMoreReviewsCount");
+    if (loadMoreContainer) {
+      if (totalReviews > limit) {
+        loadMoreContainer.style.display = "block";
+        const remaining = totalReviews - limit;
+        if (loadMoreCount) {
+          loadMoreCount.textContent = `(${remaining} more)`;
+        }
+      } else {
+        loadMoreContainer.style.display = "none";
+      }
+    }
+  }
+
+  async function postReviewToServerAndLocal(reviewPayload) {
+    let createdReview = null;
+
+    try {
+      const res = await fetch(`${getApiBaseUrl()}/api/reviews`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(reviewPayload)
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.success && data.review) {
+          createdReview = data.review;
+        }
+      }
+    } catch (e) {
+      console.warn("Could not reach backend /api/reviews, saving to local store", e);
+    }
+
+    if (!createdReview) {
+      createdReview = {
+        id: `local-rev-${Date.now()}`,
+        name: reviewPayload.name,
+        location: reviewPayload.location || "Lagos, Nigeria",
+        rating: reviewPayload.rating || 5,
+        remedy: reviewPayload.remedy || "Authentic Herbal Remedy",
+        comment: reviewPayload.comment,
+        verifiedBuyer: true,
+        createdAt: new Date().toISOString()
+      };
+    }
+
+    if (!state.reviews) state.reviews = [];
+    state.reviews = [createdReview, ...state.reviews.filter(r => r.id !== createdReview.id)];
+
+    try {
+      localStorage.setItem(REVIEWS_STORAGE_KEY, JSON.stringify(state.reviews));
+    } catch (e) {}
+
+    renderTestimonials(createdReview.id);
+    return createdReview;
+  }
+
+  function updateStarPickerUI(containerId, textId, rating) {
+    const container = document.getElementById(containerId);
+    const textEl = document.getElementById(textId);
+    if (!container) return;
+
+    const labels = {
+      1: "1.0 / 5 (Needs Improvement)",
+      2: "2.0 / 5 (Fair)",
+      3: "3.0 / 5 (Good)",
+      4: "4.0 / 5 (Very Good)",
+      5: "5.0 / 5 (Excellent)"
+    };
+
+    container.querySelectorAll(".star-item").forEach(star => {
+      const starRating = Number(star.dataset.rating);
+      if (starRating <= rating) {
+        star.classList.add("active");
+      } else {
+        star.classList.remove("active");
+      }
+    });
+
+    if (textEl) {
+      textEl.textContent = labels[rating] || `${rating}.0 / 5`;
+    }
+  }
+
+  function initStarRatings() {
+    const bindPicker = (containerId, textId, onSelect) => {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+
+      container.querySelectorAll(".star-item").forEach(star => {
+        star.addEventListener("click", () => {
+          const rating = Number(star.dataset.rating);
+          updateStarPickerUI(containerId, textId, rating);
+          onSelect(rating);
+        });
+
+        star.addEventListener("mouseenter", () => {
+          const hoverRating = Number(star.dataset.rating);
+          container.querySelectorAll(".star-item").forEach(s => {
+            if (Number(s.dataset.rating) <= hoverRating) {
+              s.classList.add("hovered");
+            } else {
+              s.classList.remove("hovered");
+            }
+          });
+        });
+
+        star.addEventListener("mouseleave", () => {
+          container.querySelectorAll(".star-item").forEach(s => s.classList.remove("hovered"));
+        });
+      });
+    };
+
+    bindPicker("receiptStarRating", "receiptRatingText", (rating) => {
+      state.selectedReceiptRating = rating;
+    });
+
+    bindPicker("modalStarPicker", "modalRatingText", (rating) => {
+      state.selectedModalRating = rating;
+    });
+  }
+
+  function initReceiptReviewHandler() {
+    const submitBtn = document.getElementById("submitReceiptReviewBtn");
+    if (!submitBtn) return;
+
+    submitBtn.addEventListener("click", async () => {
+      const commentInput = document.getElementById("receiptCommentText");
+      const comment = commentInput ? commentInput.value.trim() : "";
+
+      if (!comment || comment.length < 3) {
+        showToast("Please enter a short comment about your purchase!", "⚠️");
+        if (commentInput) commentInput.focus();
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `<span>Publishing comment... ⏳</span>`;
+
+      const order = state.currentOrderForReview || {};
+      const cust = order.customer || {};
+      const remedyName = (order.items && order.items.length > 0 && order.items[0].name)
+        ? order.items[0].name
+        : "Quad-Ace Herbs Traditional Formulation";
+
+      let location = "Lagos, Nigeria";
+      if (cust.city && cust.state) {
+        location = `${cust.city}, ${cust.state}`;
+      } else if (cust.city || cust.state) {
+        location = cust.city || cust.state;
+      }
+
+      const reviewPayload = {
+        name: cust.name || "Happy Customer",
+        location: location,
+        remedy: remedyName,
+        rating: state.selectedReceiptRating || 5,
+        comment: comment,
+        verifiedBuyer: true
+      };
+
+      await postReviewToServerAndLocal(reviewPayload);
+
+      const reviewInputs = document.getElementById("receiptReviewInputs");
+      const reviewSuccess = document.getElementById("receiptReviewSuccess");
+      if (reviewInputs) reviewInputs.style.display = "none";
+      if (reviewSuccess) reviewSuccess.style.display = "flex";
+
+      showToast("🌿 Your review is now live on our website homepage!", "⭐");
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = `<span>🌿 Post Comment to Website</span>`;
+    });
+  }
+
+  function initWriteReviewModal() {
+    const openBtn = document.getElementById("openReviewModalBtn");
+    const modal = document.getElementById("writeReviewModalOverlay");
+    const closeBtn = document.getElementById("closeReviewModalBtn");
+    const cancelBtn = document.getElementById("cancelReviewModalBtn");
+    const form = document.getElementById("writeReviewForm");
+
+    if (!modal) return;
+
+    const openModal = () => {
+      modal.classList.add("active");
+      state.selectedModalRating = 5;
+      updateStarPickerUI("modalStarPicker", "modalRatingText", 5);
+      const nameIn = document.getElementById("reviewAuthorName");
+      if (nameIn) setTimeout(() => nameIn.focus(), 150);
+    };
+
+    const closeModal = () => {
+      modal.classList.remove("active");
+    };
+
+    if (openBtn) openBtn.addEventListener("click", openModal);
+    if (closeBtn) closeBtn.addEventListener("click", closeModal);
+    if (cancelBtn) cancelBtn.addEventListener("click", closeModal);
+
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) closeModal();
+    });
+
+    if (form) {
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const nameInput = document.getElementById("reviewAuthorName");
+        const locationInput = document.getElementById("reviewAuthorLocation");
+        const remedySelect = document.getElementById("reviewRemedySelect");
+        const commentInput = document.getElementById("reviewCommentText");
+        const submitBtn = document.getElementById("submitModalReviewBtn");
+
+        const name = nameInput ? nameInput.value.trim() : "";
+        const location = locationInput ? locationInput.value.trim() : "";
+        const remedy = remedySelect ? remedySelect.value : "Agbo Jedi-Jedi Extra Strength";
+        const comment = commentInput ? commentInput.value.trim() : "";
+
+        if (!name || !comment) {
+          showToast("Please provide your name and review comment!", "⚠️");
+          return;
+        }
+
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = `<span>Publishing review... ⏳</span>`;
+        }
+
+        const reviewPayload = {
+          name,
+          location: location || "Nigeria",
+          remedy,
+          rating: state.selectedModalRating || 5,
+          comment,
+          verifiedBuyer: true
+        };
+
+        await postReviewToServerAndLocal(reviewPayload);
+
+        form.reset();
+        closeModal();
+        showToast("🌿 Thank you! Your review is now live on our website!", "⭐");
+
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = `<span>🌿 Publish Review to Website</span>`;
+        }
+
+        const reviewsSection = document.getElementById("reviews");
+        if (reviewsSection) {
+          reviewsSection.scrollIntoView({ behavior: "smooth" });
+        }
+      });
+    }
+  }
+
+  // --- REVIEWS LOAD MORE HANDLER ---
+  function initLoadMoreReviews() {
+    const loadMoreBtn = document.getElementById("loadMoreReviewsBtn");
+    if (!loadMoreBtn) return;
+
+    loadMoreBtn.addEventListener("click", () => {
+      state.visibleReviewsLimit = (state.visibleReviewsLimit || 6) + 6;
+      renderTestimonials();
+    });
   }
 
   // --- RENDER CATEGORY PILLS ---
@@ -904,8 +1354,14 @@ ${transferSessionId ? `• *Session ID / Ref:* ${transferSessionId}\n` : ""}• 
 (Customer placed order directly via WhatsApp)`;
     }
 
+    // Store Logo Image URL
+    const storeLogoUrl = (window.location.origin && window.location.origin !== "null")
+      ? `${window.location.origin}/images/bg-image.jpeg`
+      : "images/bg-image.jpeg";
+
     const waMessageText = 
-`🌿 *NEW ORDER FROM QUAD-ACE HERBS* 🌿
+`*QUAD-ACE HERBS - OFFICIAL STORE ORDER*
+🖼️ *Store Logo:* ${storeLogoUrl}
 ━━━━━━━━━━━━━━━━━━━━
 *Order Ref:* ${orderData.orderRef}
 *Date:* ${new Date().toLocaleDateString('en-GB')}
@@ -927,47 +1383,21 @@ ${orderData.discount > 0 ? `*Discount:* -${formatMoney(orderData.discount)}\n` :
 ━━━━━━━━━━━━━━━━━━━━
 *Payment Method:* ${paymentLabel}
 
-Please verify the payment alert and confirm dispatch! Thank you 🌿`;
+Please verify the payment alert and confirm dispatch! Thank you for choosing Quad-Ace Herbs.`;
 
     const encodedWaMessage = encodeURIComponent(waMessageText);
     const waLink = `https://wa.me/${STORE_CONFIG.whatsappNumber}?text=${encodedWaMessage}`;
 
-    // AUTOMATIC EMAIL DISPATCH TO SELLER'S GMAIL:
-    if (STORE_CONFIG.sellerEmail) {
-      const emailPayload = {
-        _subject: `🌿 New Order from ${orderData.customer.name} (${orderData.orderRef}) - Quad-Ace Herbs`,
-        _template: "table",
-        _captcha: "false",
-        "Order Reference": orderData.orderRef,
-        "Customer Name": orderData.customer.name,
-        "Customer Phone": orderData.customer.phone,
-        "Customer Email": orderData.customer.email || "Not provided",
-        "Delivery Address": orderData.customer.address,
-        "Delivery Notes": orderData.customer.notes || "None",
-        "Items Ordered": itemsFormatted.replace(/\*/g, ""),
-        "Subtotal": formatMoney(orderData.subtotal),
-        "Delivery Zone": deliveryNote,
-        "Total Amount Due": formatMoney(orderData.finalTotal),
-        "Payment Method": paymentLabel,
-        "Payment Proof Attached": state.attachedReceiptData ? `Yes (${state.attachedReceiptName})` : "No screenshot attached",
-        "Sender Bank (Claimed)": senderBank || "Not specified",
-        "Sender Name (Claimed)": senderName || "Not specified",
-        "Session ID / Ref": transferSessionId || "None",
-        "Payment Status": state.attachedReceiptData ? "PROOF ATTACHED (Cross-check Kuda alert before dispatch!)" : "PENDING VERIFICATION (Check bank app alert before dispatch!)"
-      };
-
-      fetch(`https://formsubmit.co/ajax/${STORE_CONFIG.sellerEmail}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json"
-        },
-        body: JSON.stringify(emailPayload)
-      })
-      .then(res => res.json())
-      .then(data => console.log("Order email dispatched to seller:", data))
-      .catch(err => console.warn("Order email alert:", err));
-    }
+    // DEDICATED BACKEND EMAIL DISPATCH WITH EMBEDDED BRAND LOGO & RICH ORDER STYLING:
+    // (Sends directly to store owner's Gmail via authenticated SMTP with embedded logo CID)
+    fetch(`${getApiBaseUrl()}/api/orders/notify-email`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(orderData)
+    })
+    .then(res => res.json())
+    .then(data => console.log("[ORDER NOTIFICATION] Branded order email sent:", data))
+    .catch(err => console.warn("[ORDER NOTIFICATION] Backend email endpoint:", err));
 
     // Close Checkout Modal & Open Receipt
     closeCheckoutModal();
@@ -1091,6 +1521,21 @@ Please verify the payment alert and confirm dispatch! Thank you 🌿`;
       waBtn.onclick = () => window.open(waLink, "_blank");
     }
 
+    // Reset Post-Purchase Review Box in Receipt Modal
+    state.currentOrderForReview = order;
+    state.selectedReceiptRating = 5;
+    const reviewBox = document.getElementById("receiptReviewBox");
+    const reviewInputs = document.getElementById("receiptReviewInputs");
+    const reviewSuccess = document.getElementById("receiptReviewSuccess");
+    const reviewCommentInput = document.getElementById("receiptCommentText");
+
+    if (reviewBox && reviewInputs && reviewSuccess) {
+      reviewInputs.style.display = "block";
+      reviewSuccess.style.display = "none";
+      if (reviewCommentInput) reviewCommentInput.value = "";
+      updateStarPickerUI("receiptStarRating", "receiptRatingText", 5);
+    }
+
     const receiptOverlay = document.getElementById("receiptModalOverlay");
     if (receiptOverlay) receiptOverlay.classList.add("active");
   }
@@ -1150,6 +1595,11 @@ Please verify the payment alert and confirm dispatch! Thank you 🌿`;
     initAccordions();
     initCheckoutForm();
     updateCartUI();
+    loadReviews();
+    initStarRatings();
+    initReceiptReviewHandler();
+    initWriteReviewModal();
+    initLoadMoreReviews();
 
     // Search Input
     const searchInput = document.getElementById("searchInput");
