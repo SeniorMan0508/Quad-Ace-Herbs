@@ -1390,9 +1390,13 @@ Please verify the payment alert and confirm dispatch! Thank you for choosing Qua
     const encodedWaMessage = encodeURIComponent(waMessageText);
     const waLink = `https://wa.me/${STORE_CONFIG.whatsappNumber}?text=${encodedWaMessage}`;
 
-    // DEDICATED BACKEND EMAIL DISPATCH WITH EMBEDDED BRAND LOGO & RICH ORDER STYLING:
-    // (Sends directly to store owner's Gmail via authenticated SMTP with embedded logo CID)
-    fetch(`${getApiBaseUrl()}/api/orders/notify-email`, {
+    // DEDICATED EMAIL DISPATCH WITH EMBEDDED BRAND LOGO & RICH ORDER STYLING:
+    // (Bypasses cloud host SMTP restrictions by using Netlify serverless function on Render)
+    const emailEndpoint = (window.location.hostname.includes("onrender.com"))
+      ? "https://quad-ace-herbs.netlify.app/.netlify/functions/notify-email"
+      : `${getApiBaseUrl()}/api/orders/notify-email`;
+
+    fetch(emailEndpoint, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(orderData)
