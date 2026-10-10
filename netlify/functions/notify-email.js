@@ -2,7 +2,7 @@ const nodemailer = require('nodemailer');
 const fs = require('fs');
 const path = require('path');
 
-const DEFAULT_OWNER_EMAIL = "badmusdaniel0508@gmail.com";
+const DEFAULT_OWNER_EMAIL = process.env.ADMIN_EMAIL || process.env.SMTP_USER || "seller@quadaceherbs.com";
 
 function getEmailTransporter() {
   const user = process.env.SMTP_USER;

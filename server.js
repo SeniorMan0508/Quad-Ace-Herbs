@@ -89,7 +89,7 @@ function isValidSession(token) {
 }
 
 // --- EMAIL SENDER CONFIGURATION ---
-const DEFAULT_OWNER_EMAIL = "badmusdaniel0508@gmail.com";
+const DEFAULT_OWNER_EMAIL = process.env.ADMIN_EMAIL || process.env.SMTP_USER || "seller@quadaceherbs.com";
 const DEFAULT_INITIAL_PASSWORD = "quadace2026";
 
 function maskEmail(email) {
